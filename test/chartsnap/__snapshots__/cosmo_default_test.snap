@@ -1,0 +1,1194 @@
+[cosmo_default_test]
+SnapShot = """
+- object:
+    apiVersion: admissionregistration.k8s.io/v1
+    kind: MutatingWebhookConfiguration
+    metadata:
+        annotations:
+            cert-manager.io/inject-ca-from: testns/cosmo-webhook-cert
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-mutating-webhook-configuration
+    webhooks:
+        - admissionReviewVersions:
+            - v1
+            - v1alpha1
+          clientConfig:
+            caBundle: Cg==
+            service:
+                name: cosmo-webhook-service
+                namespace: testns
+                path: /mutate-cosmo-workspace-github-io-v1alpha1-instance
+          failurePolicy: Fail
+          name: minstance.kb.io
+          rules:
+            - apiGroups:
+                - cosmo-workspace.github.io
+              apiVersions:
+                - v1alpha1
+              operations:
+                - CREATE
+                - UPDATE
+              resources:
+                - instances
+          sideEffects: None
+        - admissionReviewVersions:
+            - v1
+            - v1alpha1
+          clientConfig:
+            caBundle: Cg==
+            service:
+                name: cosmo-webhook-service
+                namespace: testns
+                path: /mutate-cosmo-workspace-github-io-v1alpha1-instance
+          failurePolicy: Fail
+          name: mclusterinstance.kb.io
+          rules:
+            - apiGroups:
+                - cosmo-workspace.github.io
+              apiVersions:
+                - v1alpha1
+              operations:
+                - CREATE
+                - UPDATE
+              resources:
+                - clusterinstances
+          sideEffects: None
+        - admissionReviewVersions:
+            - v1
+            - v1alpha1
+          clientConfig:
+            caBundle: Cg==
+            service:
+                name: cosmo-webhook-service
+                namespace: testns
+                path: /mutate-cosmo-workspace-github-io-v1alpha1-user
+          failurePolicy: Fail
+          name: muser.kb.io
+          rules:
+            - apiGroups:
+                - cosmo-workspace.github.io
+              apiVersions:
+                - v1alpha1
+              operations:
+                - CREATE
+                - UPDATE
+              resources:
+                - users
+          sideEffects: None
+        - admissionReviewVersions:
+            - v1
+            - v1alpha1
+          clientConfig:
+            caBundle: Cg==
+            service:
+                name: cosmo-webhook-service
+                namespace: testns
+                path: /mutate-cosmo-workspace-github-io-v1alpha1-workspace
+          failurePolicy: Fail
+          name: mworkspace.kb.io
+          rules:
+            - apiGroups:
+                - cosmo-workspace.github.io
+              apiVersions:
+                - v1alpha1
+              operations:
+                - CREATE
+                - UPDATE
+              resources:
+                - workspaces
+          sideEffects: None
+- object:
+    apiVersion: admissionregistration.k8s.io/v1
+    kind: ValidatingWebhookConfiguration
+    metadata:
+        annotations:
+            cert-manager.io/inject-ca-from: testns/cosmo-webhook-cert
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-validating-webhook-configuration
+    webhooks:
+        - admissionReviewVersions:
+            - v1
+            - v1alpha1
+          clientConfig:
+            caBundle: Cg==
+            service:
+                name: cosmo-webhook-service
+                namespace: testns
+                path: /validate-cosmo-workspace-github-io-v1alpha1-instance
+          failurePolicy: Fail
+          name: vclusterinstance.kb.io
+          rules:
+            - apiGroups:
+                - cosmo-workspace.github.io
+              apiVersions:
+                - v1alpha1
+              operations:
+                - CREATE
+                - UPDATE
+              resources:
+                - clusterinstances
+          sideEffects: None
+        - admissionReviewVersions:
+            - v1
+            - v1alpha1
+          clientConfig:
+            caBundle: Cg==
+            service:
+                name: cosmo-webhook-service
+                namespace: testns
+                path: /validate-cosmo-workspace-github-io-v1alpha1-instance
+          failurePolicy: Fail
+          name: vinstance.kb.io
+          rules:
+            - apiGroups:
+                - cosmo-workspace.github.io
+              apiVersions:
+                - v1alpha1
+              operations:
+                - CREATE
+                - UPDATE
+              resources:
+                - instances
+          sideEffects: None
+        - admissionReviewVersions:
+            - v1
+            - v1alpha1
+          clientConfig:
+            caBundle: Cg==
+            service:
+                name: cosmo-webhook-service
+                namespace: testns
+                path: /validate-cosmo-workspace-github-io-v1alpha1-user
+          failurePolicy: Fail
+          name: vuser.kb.io
+          rules:
+            - apiGroups:
+                - cosmo-workspace.github.io
+              apiVersions:
+                - v1alpha1
+              operations:
+                - CREATE
+                - UPDATE
+              resources:
+                - users
+          sideEffects: None
+        - admissionReviewVersions:
+            - v1
+            - v1alpha1
+          clientConfig:
+            caBundle: Cg==
+            service:
+                name: cosmo-webhook-service
+                namespace: testns
+                path: /validate-cosmo-workspace-github-io-v1alpha1-workspace
+          failurePolicy: Fail
+          name: vworkspace.kb.io
+          rules:
+            - apiGroups:
+                - cosmo-workspace.github.io
+              apiVersions:
+                - v1alpha1
+              operations:
+                - CREATE
+                - UPDATE
+              resources:
+                - workspaces
+          sideEffects: None
+- object:
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-controller-manager
+        namespace: testns
+    spec:
+        replicas: 1
+        selector:
+            matchLabels:
+                app.kubernetes.io/instance: testrelease
+                app.kubernetes.io/name: cosmo
+        template:
+            metadata:
+                labels:
+                    app.kubernetes.io/instance: testrelease
+                    app.kubernetes.io/name: cosmo
+            spec:
+                affinity: {}
+                containers:
+                    - args:
+                        - --port=9443
+                        - --health-probe-bind-address=:8081
+                        - --metrics-bind-address=127.0.0.1:8080
+                        - --leader-elect
+                        - --zap-log-level=info
+                        - --zap-time-encoding=iso8601
+                        - --traefik-entrypoints=web,websecure
+                        - --traefik-authen-middleware=cosmo-auth
+                        - --traefik-authen-middleware-namespace=testns
+                        - --traefik-username-header-middleware=cosmo-username-headers
+                        - --workspace-urlbase-protocol=https
+                        - --workspace-urlbase-host={{NETRULE}}-{{WORKSPACE}}-{{USER}}
+                        - --workspace-urlbase-domain=example.com
+                      command:
+                        - /manager
+                      image: ghcr.io/cosmo-workspace/cosmo-controller-manager:v0.10.0
+                      imagePullPolicy: IfNotPresent
+                      livenessProbe:
+                        httpGet:
+                            path: /healthz
+                            port: 8081
+                        initialDelaySeconds: 15
+                        periodSeconds: 20
+                      name: manager
+                      ports:
+                        - containerPort: 9443
+                          name: webhook-server
+                          protocol: TCP
+                      readinessProbe:
+                        httpGet:
+                            path: /readyz
+                            port: 8081
+                        initialDelaySeconds: 5
+                        periodSeconds: 10
+                      resources:
+                        limits:
+                            cpu: 500m
+                            memory: 256Mi
+                        requests:
+                            cpu: 100m
+                            memory: 20Mi
+                      securityContext:
+                        allowPrivilegeEscalation: false
+                      volumeMounts:
+                        - mountPath: /tmp/k8s-webhook-server/serving-certs
+                          name: cert
+                          readOnly: true
+                    - args:
+                        - --secure-listen-address=0.0.0.0:8443
+                        - --upstream=http://127.0.0.1:8080/
+                        - --logtostderr=true
+                        - --v=10
+                      image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
+                      imagePullPolicy: IfNotPresent
+                      name: kube-rbac-proxy
+                      ports:
+                        - containerPort: 8443
+                          name: https
+                      resources:
+                        limits:
+                            cpu: 500m
+                            memory: 256Mi
+                        requests:
+                            cpu: 100m
+                            memory: 20Mi
+                      securityContext:
+                        allowPrivilegeEscalation: false
+                imagePullSecrets: []
+                nodeSelector: {}
+                securityContext:
+                    runAsNonRoot: true
+                serviceAccountName: cosmo-controller-manager
+                terminationGracePeriodSeconds: 10
+                tolerations: []
+                volumes:
+                    - name: cert
+                      secret:
+                        defaultMode: 420
+                        secretName: webhook-server-cert
+- object:
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-dashboard
+        namespace: testns
+    spec:
+        replicas: 1
+        selector:
+            matchLabels:
+                app.kubernetes.io/instance: testrelease
+                app.kubernetes.io/name: cosmo
+        template:
+            metadata:
+                labels:
+                    app.kubernetes.io/instance: testrelease
+                    app.kubernetes.io/name: cosmo
+            spec:
+                containers:
+                    - args:
+                        - --port=8443
+                        - --maxage-minutes=
+                        - --zap-log-level=info
+                        - --zap-time-encoding=iso8601
+                        - --cookie-domain=$(COOKIE_DOMAIN)
+                        - --cookie-hashkey=$(COOKIE_HASHKEY)
+                        - --cookie-blockkey=$(COOKIE_BLOCKKEY)
+                        - --cookie-session-name=$(COOKIE_SESSION_NAME)
+                        - --graceful-shutdown-seconds=10
+                        - --timeout-seconds=5
+                        - --insecure
+                      command:
+                        - /app/dashboard
+                      envFrom:
+                        - secretRef:
+                            name: cosmo-auth-env
+                      image: ghcr.io/cosmo-workspace/cosmo-dashboard:v0.10.0
+                      imagePullPolicy: IfNotPresent
+                      livenessProbe:
+                        httpGet:
+                            path: /
+                            port: 8443
+                            scheme: HTTP
+                        initialDelaySeconds: 15
+                        periodSeconds: 20
+                      name: dashboard
+                      ports:
+                        - containerPort: 8443
+                          name: https
+                          protocol: TCP
+                      resources:
+                        limits:
+                            cpu: 100m
+                            memory: 128Mi
+                        requests:
+                            cpu: 100m
+                            memory: 20Mi
+                      securityContext: {}
+                      volumeMounts: null
+                securityContext: {}
+                serviceAccountName: cosmo-dashboard
+                terminationGracePeriodSeconds: 10
+                volumes: null
+- object:
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+        annotations: null
+        labels:
+            app.kubernetes.io/instance: testrelease-testns
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: traefik
+            helm.sh/chart: traefik-23.0.1
+        name: testrelease-traefik
+        namespace: cosmo-system
+    spec:
+        minReadySeconds: 0
+        replicas: 1
+        selector:
+            matchLabels:
+                app.kubernetes.io/instance: testrelease-testns
+                app.kubernetes.io/name: traefik
+        strategy:
+            rollingUpdate:
+                maxSurge: 1
+                maxUnavailable: 0
+            type: RollingUpdate
+        template:
+            metadata:
+                annotations:
+                    prometheus.io/path: /metrics
+                    prometheus.io/port: \"9100\"
+                    prometheus.io/scrape: \"true\"
+                labels:
+                    app.kubernetes.io/instance: testrelease-testns
+                    app.kubernetes.io/managed-by: Helm
+                    app.kubernetes.io/name: traefik
+                    helm.sh/chart: traefik-23.0.1
+            spec:
+                containers:
+                    - args:
+                        - --global.sendanonymoususage
+                        - --serversTransport.insecureSkipVerify=true
+                        - --entrypoints.metrics.address=:9100/tcp
+                        - --entrypoints.traefik.address=:9000/tcp
+                        - --entrypoints.web.address=:8000/tcp
+                        - --entrypoints.websecure.address=:8443/tcp
+                        - --api.dashboard=true
+                        - --ping=true
+                        - --metrics.prometheus=true
+                        - --metrics.prometheus.entrypoint=metrics
+                        - --providers.kubernetescrd
+                        - --providers.kubernetescrd.allowCrossNamespace=true
+                        - --providers.kubernetesingress
+                        - --providers.kubernetesingress.ingressendpoint.publishedservice=testns/testrelease-traefik
+                        - --entrypoints.websecure.http.tls=true
+                        - --experimental.localPlugins.cosmoauth.modulename=github.com/cosmo-workspace/cosmoauth
+                      envFrom:
+                        - secretRef:
+                            name: cosmo-auth-env
+                      image: docker.io/traefik:v2.10.1
+                      imagePullPolicy: IfNotPresent
+                      lifecycle: null
+                      livenessProbe:
+                        failureThreshold: 3
+                        httpGet:
+                            path: /ping
+                            port: 9000
+                            scheme: HTTP
+                        initialDelaySeconds: 2
+                        periodSeconds: 10
+                        successThreshold: 1
+                        timeoutSeconds: 2
+                      name: testrelease-traefik
+                      ports:
+                        - containerPort: 9100
+                          name: metrics
+                          protocol: TCP
+                        - containerPort: 9000
+                          name: traefik
+                          protocol: TCP
+                        - containerPort: 8000
+                          name: web
+                          protocol: TCP
+                        - containerPort: 8443
+                          name: websecure
+                          protocol: TCP
+                      readinessProbe:
+                        failureThreshold: 1
+                        httpGet:
+                            path: /ping
+                            port: 9000
+                            scheme: HTTP
+                        initialDelaySeconds: 2
+                        periodSeconds: 10
+                        successThreshold: 1
+                        timeoutSeconds: 2
+                      resources: null
+                      securityContext:
+                        capabilities:
+                            drop:
+                                - ALL
+                        readOnlyRootFilesystem: true
+                      volumeMounts:
+                        - mountPath: /data
+                          name: data
+                        - mountPath: /tmp
+                          name: tmp
+                        - mountPath: /plugins-storage
+                          name: plugins
+                        - mountPath: /plugins-local
+                          name: local-plugins
+                hostNetwork: false
+                initContainers:
+                    - command:
+                        - sh
+                        - -c
+                        - cp -r /plugins-local/* /local-plugins/
+                      image: ghcr.io/cosmo-workspace/cosmo-traefik-plugins:latest
+                      imagePullPolicy: IfNotPresent
+                      name: copy-plugins
+                      volumeMounts:
+                        - mountPath: /local-plugins
+                          name: local-plugins
+                securityContext:
+                    fsGroupChangePolicy: OnRootMismatch
+                    runAsGroup: 65532
+                    runAsNonRoot: true
+                    runAsUser: 65532
+                serviceAccountName: testrelease-traefik
+                terminationGracePeriodSeconds: 60
+                volumes:
+                    - emptyDir: {}
+                      name: data
+                    - emptyDir: {}
+                      name: tmp
+                    - emptyDir: {}
+                      name: local-plugins
+                    - emptyDir: {}
+                      name: plugins
+- object:
+    apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-dashboard-cert
+        namespace: testns
+    spec:
+        dnsNames:
+            - cosmo-dashboard.testns.svc
+            - cosmo-dashboard.testns.svc.cluster.local
+        issuerRef:
+            kind: Issuer
+            name: cosmo-selfsigned-issuer
+            namespace: testns
+        secretName: dashboard-server-cert
+- object:
+    apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-webhook-cert
+        namespace: testns
+    spec:
+        dnsNames:
+            - cosmo-webhook-service.testns.svc
+            - cosmo-webhook-service.testns.svc.cluster.local
+        issuerRef:
+            kind: Issuer
+            name: cosmo-selfsigned-issuer
+            namespace: testns
+        secretName: webhook-server-cert
+- object:
+    apiVersion: cert-manager.io/v1
+    kind: Issuer
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-selfsigned-issuer
+        namespace: testns
+    spec:
+        selfSigned: {}
+- object:
+    apiVersion: cosmo-workspace.github.io/v1alpha1
+    kind: Template
+    metadata:
+        annotations:
+            cosmo-workspace.github.io/disable-nameprefix: \"true\"
+            useraddon.cosmo-workspace.github.io/default: \"true\"
+        creationTimestamp: null
+        labels:
+            cosmo-workspace.github.io/type: useraddon
+        name: cosmo-username-headers
+    spec:
+        description: Traefik middleware for user authorization. DO NOT EDIT
+        rawYaml: |
+            apiVersion: traefik.io/v1alpha1
+            kind: Middleware
+            metadata:
+              labels:
+                cosmo-workspace.github.io/instance: '{{INSTANCE}}'
+                cosmo-workspace.github.io/template: '{{TEMPLATE}}'
+              name: cosmo-username-headers
+              namespace: '{{NAMESPACE}}'
+            spec:
+              headers:
+                customRequestHeaders:
+                  X-Cosmo-UserName: '{{USER_NAME}}'
+                customResponseHeaders:
+                  X-Cosmo-UserName: '{{USER_NAME}}'
+- object:
+    apiVersion: networking.k8s.io/v1
+    kind: IngressClass
+    metadata:
+        annotations:
+            ingressclass.kubernetes.io/is-default-class: \"true\"
+        labels:
+            app.kubernetes.io/instance: testrelease-testns
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: traefik
+            helm.sh/chart: traefik-23.0.1
+        name: testrelease-traefik
+    spec:
+        controller: traefik.io/ingress-controller
+- object:
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-dashboard
+    rules:
+        - apiGroups:
+            - \"\"
+          resources:
+            - namespaces
+            - secrets
+          verbs:
+            - create
+            - delete
+            - patch
+            - update
+            - get
+            - list
+            - watch
+        - apiGroups:
+            - rbac.authorization.k8s.io
+          resources:
+            - roles
+            - rolebindings
+          verbs:
+            - create
+            - delete
+            - patch
+            - update
+            - get
+            - list
+            - watch
+            - bind
+        - apiGroups:
+            - cosmo-workspace.github.io
+          resources:
+            - workspaces
+            - users
+          verbs:
+            - create
+            - delete
+            - patch
+            - update
+            - get
+            - list
+            - watch
+        - apiGroups:
+            - cosmo-workspace.github.io
+          resources:
+            - workspaces/status
+            - users/status
+          verbs:
+            - get
+            - list
+            - watch
+        - apiGroups:
+            - cosmo-workspace.github.io
+          resources:
+            - instances
+            - templates
+            - clusterinstances
+            - clustertemplates
+          verbs:
+            - create
+            - delete
+            - patch
+            - update
+            - get
+            - list
+            - watch
+        - apiGroups:
+            - cosmo-workspace.github.io
+          resources:
+            - instances/status
+          verbs:
+            - get
+            - list
+            - watch
+- object:
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-manager-role
+    rules:
+        - apiGroups:
+            - '*'
+          resources:
+            - '*'
+          verbs:
+            - create
+            - delete
+            - get
+            - list
+            - patch
+            - update
+            - watch
+- object:
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-metrics-reader
+    rules:
+        - nonResourceURLs:
+            - /metrics
+          verbs:
+            - get
+- object:
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-proxy-role
+    rules:
+        - apiGroups:
+            - authentication.k8s.io
+          resources:
+            - tokenreviews
+          verbs:
+            - create
+        - apiGroups:
+            - authorization.k8s.io
+          resources:
+            - subjectaccessreviews
+          verbs:
+            - create
+- object:
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease-testns
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: traefik
+            helm.sh/chart: traefik-23.0.1
+        name: testrelease-traefik-testns
+    rules:
+        - apiGroups:
+            - extensions
+            - networking.k8s.io
+          resources:
+            - ingressclasses
+            - ingresses
+          verbs:
+            - get
+            - list
+            - watch
+        - apiGroups:
+            - \"\"
+          resources:
+            - services
+            - endpoints
+            - secrets
+          verbs:
+            - get
+            - list
+            - watch
+        - apiGroups:
+            - extensions
+            - networking.k8s.io
+          resources:
+            - ingresses/status
+          verbs:
+            - update
+        - apiGroups:
+            - traefik.io
+            - traefik.containo.us
+          resources:
+            - ingressroutes
+            - ingressroutetcps
+            - ingressrouteudps
+            - middlewares
+            - middlewaretcps
+            - tlsoptions
+            - tlsstores
+            - traefikservices
+            - serverstransports
+          verbs:
+            - get
+            - list
+            - watch
+- object:
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-dashboard-rolebinding
+    roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: cosmo-dashboard
+    subjects:
+        - kind: ServiceAccount
+          name: cosmo-dashboard
+          namespace: testns
+- object:
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-manager-rolebinding
+    roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: cosmo-manager-role
+    subjects:
+        - kind: ServiceAccount
+          name: cosmo-controller-manager
+          namespace: testns
+- object:
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-proxy-rolebinding
+    roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: cosmo-proxy-role
+    subjects:
+        - kind: ServiceAccount
+          name: cosmo-controller-manager
+          namespace: testns
+- object:
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease-testns
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: traefik
+            helm.sh/chart: traefik-23.0.1
+        name: testrelease-traefik-testns
+    roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: testrelease-traefik-testns
+    subjects:
+        - kind: ServiceAccount
+          name: testrelease-traefik
+          namespace: cosmo-system
+- object:
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: Role
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-leader-election-role
+        namespace: testns
+    rules:
+        - apiGroups:
+            - \"\"
+          resources:
+            - configmaps
+          verbs:
+            - get
+            - list
+            - watch
+            - create
+            - update
+            - patch
+            - delete
+        - apiGroups:
+            - coordination.k8s.io
+          resources:
+            - leases
+          verbs:
+            - get
+            - list
+            - watch
+            - create
+            - update
+            - patch
+            - delete
+        - apiGroups:
+            - \"\"
+          resources:
+            - events
+          verbs:
+            - create
+            - patch
+- object:
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-leader-election-rolebinding
+        namespace: testns
+    roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: Role
+        name: cosmo-leader-election-role
+    subjects:
+        - kind: ServiceAccount
+          name: cosmo-controller-manager
+          namespace: testns
+- object:
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: testrelease-cosmo
+        namespace: testns
+    spec:
+        entryPoints:
+            - web
+            - websecure
+        routes:
+            - kind: Rule
+              match: Host(`dashboard.example.com`) && (Path(`/`) || PathPrefix(`/logo`,`/assets/`,`/dashboard.v1alpha1.AuthService/`))
+              priority: 1001
+              services:
+                - kind: Service
+                  name: testrelease-cosmo
+                  namespace: testns
+                  port: cosmo-dashboard-server
+                  scheme: https
+            - kind: Rule
+              match: Host(`dashboard.example.com`)
+              middlewares:
+                - name: cosmo-auth
+              priority: 1000
+              services:
+                - kind: Service
+                  name: testrelease-cosmo
+                  namespace: testns
+                  port: cosmo-dashboard-server
+                  scheme: https
+- object:
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    metadata:
+        annotations: null
+        labels:
+            app.kubernetes.io/instance: testrelease-testns
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: traefik
+            helm.sh/chart: traefik-23.0.1
+        name: testrelease-traefik-dashboard
+        namespace: cosmo-system
+    spec:
+        entryPoints:
+            - traefik
+        routes:
+            - kind: Rule
+              match: PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+              services:
+                - kind: TraefikService
+                  name: api@internal
+- object:
+    apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    metadata:
+        name: cosmo-auth
+        namespace: testns
+    spec:
+        plugin:
+            cosmoauth:
+                cookieBlockKey: ${COOKIE_BLOCKKEY}
+                cookieDomain: ${COOKIE_DOMAIN}
+                cookieHashKey: ${COOKIE_HASHKEY}
+                cookieSessionName: ${COOKIE_SESSION_NAME}
+                logLevel: DEBUG
+                signInUrl: ${SIGNIN_URL}
+- object:
+    apiVersion: v1
+    data:
+        controller_manager_config.yaml: |
+            apiVersion: controller-runtime.sigs.k8s.io/v1alpha1
+            kind: ControllerManagerConfig
+            health:
+              healthProbeBindAddress: :8081
+            metrics:
+              bindAddress: 127.0.0.1:8080
+            webhook:
+              port: 9443
+            leaderElection:
+              leaderElect: true
+              resourceName: 04c57811.cosmo-workspace.github.io
+    kind: ConfigMap
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-manager-config
+        namespace: testns
+- object:
+    apiVersion: v1
+    data:
+        COOKIE_BLOCKKEY: '###DYNAMIC_FIELD###'
+        COOKIE_DOMAIN: ZXhhbXBsZS5jb20=
+        COOKIE_HASHKEY: '###DYNAMIC_FIELD###'
+        COOKIE_SESSION_NAME: '###DYNAMIC_FIELD###'
+        SIGNIN_URL: aHR0cHM6Ly9kYXNoYm9hcmQuZXhhbXBsZS5jb20vIy9zaWduaW4=
+    kind: Secret
+    metadata:
+        name: cosmo-auth-env
+        namespace: testns
+- object:
+    apiVersion: v1
+    kind: Service
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-controller-manager-metrics-service
+        namespace: testns
+    spec:
+        ports:
+            - name: https
+              port: 8443
+              targetPort: 8443
+        selector:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/name: cosmo
+- object:
+    apiVersion: v1
+    kind: Service
+    metadata:
+        annotations:
+            traefik.ingress.kubernetes.io/service.serversscheme: http
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-dashboard
+        namespace: testns
+    spec:
+        ports:
+            - name: cosmo-dashboard-server
+              port: 8443
+              protocol: TCP
+              targetPort: 8443
+        selector:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/name: cosmo
+        type: ClusterIP
+- object:
+    apiVersion: v1
+    kind: Service
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-webhook-service
+        namespace: testns
+    spec:
+        ports:
+            - port: 443
+              targetPort: 9443
+        selector:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/name: cosmo
+- object:
+    apiVersion: v1
+    kind: Service
+    metadata:
+        annotations: null
+        labels:
+            app.kubernetes.io/instance: testrelease-testns
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: traefik
+            helm.sh/chart: traefik-23.0.1
+        name: testrelease-traefik
+        namespace: cosmo-system
+    spec:
+        ports:
+            - name: web
+              port: 80
+              protocol: TCP
+              targetPort: web
+            - name: websecure
+              port: 443
+              protocol: TCP
+              targetPort: websecure
+        selector:
+            app.kubernetes.io/instance: testrelease-testns
+            app.kubernetes.io/name: traefik
+        type: LoadBalancer
+- object:
+    apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-controller-manager
+        namespace: testns
+- object:
+    apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+        labels:
+            app.kubernetes.io/instance: testrelease
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: cosmo
+            app.kubernetes.io/version: v0.10.0
+            helm.sh/chart: cosmo-0.10.0
+        name: cosmo-dashboard
+        namespace: testns
+- object:
+    apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+        annotations: null
+        labels:
+            app.kubernetes.io/instance: testrelease-testns
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: traefik
+            helm.sh/chart: traefik-23.0.1
+        name: testrelease-traefik
+        namespace: cosmo-system
+"""

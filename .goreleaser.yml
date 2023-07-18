@@ -1,0 +1,23 @@
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - id: chartsnap
+    main: ./cmd/chartsnap/main.go
+    binary: chartsnap
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+archives:
+  - builds:
+      - chartsnap
+    name_template: "chartsnap_{{ .Tag }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    wrap_in_directory: false
+    format: tar.gz
+release:
+  draft: true
