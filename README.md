@@ -65,7 +65,7 @@ var _ = Describe("Workspace controller", func() {
 Download release binary or 
 
 ```sh
-go install github.com/cosmo/controller-testtools/cmd/chartsnap
+go install github.com/cosmo-workspace/controller-testtools/cmd/chartsnap@latest
 ```
 
 #### Quickstart
