@@ -3,7 +3,7 @@ before:
     - go mod tidy
 builds:
   - id: chartsnap
-    main: ./cmd/chartsnap/main.go
+    main: ./main.go
     binary: chartsnap
     env:
       - CGO_ENABLED=0
