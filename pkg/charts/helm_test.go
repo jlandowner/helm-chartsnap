@@ -8,11 +8,12 @@ import (
 
 func TestHelmTemplateCmdOptions_Execute(t *testing.T) {
 	type fields struct {
-		HelmPath    string
-		ReleaseName string
-		Namespace   string
-		Chart       string
-		ValuesFile  string
+		HelmPath       string
+		ReleaseName    string
+		Namespace      string
+		Chart          string
+		ValuesFile     string
+		AdditionalArgs []string
 	}
 	type args struct {
 		ctx context.Context
@@ -29,11 +30,12 @@ func TestHelmTemplateCmdOptions_Execute(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			o := &HelmTemplateCmdOptions{
-				HelmPath:    tt.fields.HelmPath,
-				ReleaseName: tt.fields.ReleaseName,
-				Namespace:   tt.fields.Namespace,
-				Chart:       tt.fields.Chart,
-				ValuesFile:  tt.fields.ValuesFile,
+				HelmPath:       tt.fields.HelmPath,
+				ReleaseName:    tt.fields.ReleaseName,
+				Namespace:      tt.fields.Namespace,
+				Chart:          tt.fields.Chart,
+				ValuesFile:     tt.fields.ValuesFile,
+				AdditionalArgs: tt.fields.AdditionalArgs,
 			}
 			got, err := o.Execute(tt.args.ctx)
 			if (err != nil) != tt.wantErr {
