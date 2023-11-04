@@ -10,7 +10,7 @@ import (
 	"github.com/cosmo-workspace/controller-testtools/pkg/snap"
 	"github.com/cosmo-workspace/controller-testtools/pkg/unstructured"
 	"golang.org/x/exp/slog"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 func Snap(ctx context.Context, o HelmTemplateCmdOptions) (match bool, failureMessage string, err error) {
