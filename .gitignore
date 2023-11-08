@@ -4,3 +4,6 @@ dist/
 
 dist/
 cover.out
+
+bin
+releases
