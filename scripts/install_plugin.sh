@@ -15,11 +15,9 @@ validate_command() {
     command -v "$1" >/dev/null 2>&1 || error_exit "Required command '$1' not found. Please install it."
 }
 
-# Function to detect the latest version from GitHub API
-get_latest_version() {
-    local latest_version
-    latest_version="$(curl -s "${api_repo}" | grep -oE '"name": "v[^"]+' | cut -d 'v' -f 2)"
-    echo "$latest_version"
+# Function to detect the specified version from plugin.yaml
+get_plugin_version() {
+    cat $HELM_PLUGIN_DIR/plugin.yaml | grep version: | cut -d " " -f 2
 }
 
 # Function to download and install the plugin
@@ -48,7 +46,6 @@ name="chartsnap"
 repo_name="helm-chartsnap"
 repo_owner="jlandowner"
 repo="https://github.com/${repo_owner}/${repo_name}"
-api_repo="https://api.github.com/repos/${repo_owner}/${repo_name}/releases/latest"
 HELM_PUSH_PLUGIN_NO_INSTALL_HOOK="${HELM_PUSH_PLUGIN_NO_INSTALL_HOOK:-}"
 
 # Check if in development mode
@@ -58,13 +55,7 @@ if [ -n "$HELM_PUSH_PLUGIN_NO_INSTALL_HOOK" ]; then
 fi
 
 # Autodetect the latest version
-version=$(get_latest_version)
-echo "Tried to autodetect latest version: $version"
-[ -z "$version" ] && {
-    version="$(awk -F '"' '/version/ {print $2}' plugin.yaml)"
-    echo "Defaulted to version: $version"
-}
-
+version=$(get_plugin_version)
 echo "Downloading and installing ${name} v${version} ..."
 
 # Convert architecture of the target system to a compatible GOARCH value
