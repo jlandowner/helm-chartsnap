@@ -2,10 +2,10 @@ name: Release 🚀
 on:
   workflow_dispatch:
     inputs:
-      tag:
+      semver:
         type: string
         required: true
-        description: 'Git tag to create'
+        description: 'Semver for release. (e.g. 0.0.1) Not prefix v!'
 
 jobs:
   create-tag:
@@ -19,9 +19,9 @@ jobs:
 
       - name: Try to update inline versions
         run: |
-          make update-versions VERSION=${GIT_TAG}
+          make update-versions VERSION=${SEMVER}
         env:
-          GIT_TAG: ${{ github.event.inputs.tag }}
+          SEMVER: ${{ github.event.inputs.semver }}
 
       - name: Check Diff
         id: diff
@@ -44,7 +44,7 @@ jobs:
           git tag ${GIT_TAG}
           git push origin ${GIT_TAG}
         env:
-          GIT_TAG: ${{ github.event.inputs.tag }}
+          GIT_TAG: v${{ github.event.inputs.semver }}
 
   create-release:
     runs-on: ubuntu-latest
