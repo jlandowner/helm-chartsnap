@@ -56,7 +56,7 @@ fi
 
 # Autodetect the latest version
 version=$(get_plugin_version)
-echo "Downloading and installing ${name} v${version} ..."
+echo "Downloading and installing ${name} ${version} ..."
 
 # Convert architecture of the target system to a compatible GOARCH value
 case $(uname -m) in
@@ -73,19 +73,19 @@ esac
 
 # Construct the plugin download URL
 if [ "$(uname)" = "Darwin" ]; then
-    url="${repo}/releases/download/v${version}/${name}_v${version}_darwin_${arch}.tar.gz"
+    url="${repo}/releases/download/${version}/${name}_${version}_darwin_${arch}.tar.gz"
 elif [ "$(uname)" = "Linux" ] ; then
-    url="${repo}/releases/download/v${version}/${name}_v${version}_linux_${arch}.tar.gz"
+    url="${repo}/releases/download/${version}/${name}_${version}_linux_${arch}.tar.gz"
 else
-    url="${repo}/releases/download/v${version}/${name}_v${version}_windows_${arch}.tar.gz"
+    url="${repo}/releases/download/${version}/${name}_${version}_windows_${arch}.tar.gz"
 fi
 
 echo "$url"
 
 mkdir -p "bin"
-mkdir -p "releases/v${version}"
+mkdir -p "releases/${version}"
 
-install_plugin "$version" "$url" "releases/v${version}.tar.gz" "releases/v${version}"
+install_plugin "$version" "$url" "releases/${version}.tar.gz" "releases/${version}"
 
 echo
 echo "${name} is installed. To start it, run the following command:"
