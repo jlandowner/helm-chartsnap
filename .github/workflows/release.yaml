@@ -1,4 +1,4 @@
-name: Release build
+name: Release 🚀
 on:
   workflow_dispatch:
     inputs:
