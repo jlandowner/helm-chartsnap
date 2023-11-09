@@ -2,18 +2,19 @@
 
 Snapshot testing tool for Helm charts.
 
-Bring powerful Web testing capabilities with minimal configuration just within `values.yaml` file. 
+Bring powerful UI testing capabilities for Helm chart with minimal configuration just within `values.yaml` file. 
 
 ## Why Snapshot Testing? 📸
 
-We believe that snapshot testing, similar to the approach used in web testing with tools like Jest and vitest, is the optimal way to test Helm charts. Snapshot testing provides several benefits:
+I believe that snapshot testing, popular testing approach in Web or UI testing with tools like Jest, is the best way to test Helm charts. Snapshot testing provides several benefits:
 
 - **Visual comparisons:** Snapshot tests create a baseline output and then compare it to subsequent test results. This allows for easy visual inspection of changes and regressions in Helm chart rendering.
 
-- **Enhanced maintainability:** Snapshot testing simplifies the test setup process, making it more accessible and maintainable, especially when dealing with complex Helm charts.
+- **Enhanced maintainability:** Snapshot testing simplifies the test setup process, making it more accessible and maintainable, especially when dealing with complex Helm charts. The input for the Helm chart is a combination of values. We need only maintain the assumed input combinations(=values.yaml), and their snapshots.
 
-- **Easy updates:** When Helm charts change, you can update the snapshots if the changes are intended. This ensures that your tests adapt to the evolving Helm charts effortlessly.
+- **Continuous testing:** By continuously taking snapshots of the Helm chart in your CI process, you can quickly notice the changes in your whole chart and avoid regressions.
 
+This advantages are not limited to the Helm chart you created, but also the third-party charts you have installed on your Kubernetes if you are a Kubernetes administrator. When upgrading cluster, you can notice any changes of the output manifests produced by your *values*, no matter how minor.
 
 ## Features 🔑
 
