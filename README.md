@@ -54,7 +54,7 @@ Our motivation is to to offer a comprehensive and intuitive approach to conducti
 You can install as Helm plugin.
 
 ```sh
-helm plugin install https://github.com/jlandowner/chartsnap
+helm plugin install https://github.com/github.com/jlandowner/helm-chartsnap
 ```
 
 Other options:
@@ -62,7 +62,7 @@ Other options:
 - Go install
 
   ```sh
-  go install github.com/jlandowner/chartsnap@latest
+  go install github.com/github.com/jlandowner/helm-chartsnap@latest
   ```
 
 - [Download release binary](https://github.com/jlandowner/helm-chartsnap/releases)
