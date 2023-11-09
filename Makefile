@@ -20,3 +20,7 @@ build: goreleaser
 .PHONY: test
 test:
 	$(GO) test ./... -cover cover.out
+
+.PHONY: update-versions
+update-versions:
+	sed -i.bk 's/version: .*/version: $(VERSION)/' plugin.yaml
