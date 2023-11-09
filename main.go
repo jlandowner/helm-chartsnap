@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/cosmo-workspace/controller-testtools/pkg/charts"
 	"github.com/fatih/color"
+	"github.com/jlandowner/helm-chartsnap/pkg/charts"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/slog"
 	"golang.org/x/sync/errgroup"

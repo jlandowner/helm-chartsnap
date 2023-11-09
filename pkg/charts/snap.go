@@ -7,8 +7,8 @@ import (
 	"path"
 	"strings"
 
-	"github.com/cosmo-workspace/controller-testtools/pkg/snap"
-	"github.com/cosmo-workspace/controller-testtools/pkg/unstructured"
+	"github.com/jlandowner/helm-chartsnap/pkg/snap"
+	"github.com/jlandowner/helm-chartsnap/pkg/unstructured"
 	"golang.org/x/exp/slog"
 	"gopkg.in/yaml.v3"
 )

@@ -1,4 +1,4 @@
-module github.com/cosmo-workspace/controller-testtools
+module github.com/jlandowner/helm-chartsnap
 
 go 1.21
 
