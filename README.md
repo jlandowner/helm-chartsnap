@@ -1,4 +1,4 @@
-# chartsnap 📸　 - Helm Chart Snapshot Test Tool
+# chartsnap 📸　
 
 Snapshot testing tool for Helm charts.
 
