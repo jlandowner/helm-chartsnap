@@ -4,7 +4,7 @@ name: chartsnap
 version: 0.0.2
 usage: Snapshot testing for Helm charts
 description: Snapshot testing for Helm charts
-command: "$HELM_PLUGIN_DIR/chartsnap"
+command: "$HELM_PLUGIN_DIR/bin/chartsnap"
 ignoreFlags: false
 hooks:
   install: "cd $HELM_PLUGIN_DIR; scripts/install_plugin.sh"
