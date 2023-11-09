@@ -2,7 +2,7 @@
 
 Snapshot testing tool for Helm charts.
 
-You can achieve powerful testing capabilities with minimal configuration within the `values.yaml` file. 
+Bring powerful Web testing capabilities with minimal configuration just within `values.yaml` file. 
 
 ## Why Snapshot Testing? 📸
 
