@@ -31,7 +31,19 @@ This advantages are not limited to the Helm chart you created, but also the thir
   - Prepared GitHub Action: Comming Soon.
 
 ## Motivation
-A popular helm testing tool [helm-unittest](https://github.com/helm-unittest/helm-unittest) has already [snapshot testing feature](https://github.com/helm-unittest/helm-unittest#snapshot-testing). While helm-unittest is a valuable tool for unit testing Helm charts, it has certain limitations for snapshot testing.
+
+Helm testing tools which can snapshot test.
+- [helm-unittest](https://github.com/helm-unittest/helm-unittest), a popular unittest tool, it has option to do [snapshot testing](https://github.com/helm-unittest/helm-unittest#snapshot-testing).
+- [helm-snapshot](https://github.com/bdun1013/helm-snapshot), a fork of helm-unittest.
+- [terratest](https://terratest.gruntwork.io/), Automated tests for your infrastructure code. It can write tests as Go codes and it has the feature to test the output of Helm. [blog post](https://blog.gruntwork.io/automated-testing-for-kubernetes-and-helm-charts-using-terratest-a4ddc4e67344)
+
+While they are valuable tools for testing Helm charts, it has certain limitations for snapshot testing.
+
+- Original format Test Suite files are required.
+
+
+
+- Not snapshot whole chart by default, but designed to test on a per-file basis within the Helm chart.
 
 helm-unittest is designed that it conducts tests on a per-file basis within the Helm chart. This means that it evaluates each individual file independently, and when Helm chart values or conditions lead to an entire file being conditionally included or excluded, it can result in tests being unable to cover important scenarios.
 
