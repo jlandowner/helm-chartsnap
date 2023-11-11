@@ -21,10 +21,17 @@ build: goreleaser
 test:
 	$(GO) test ./... -cover cover.out
 
+.PHONY: integ-test
+integ-test: debug-plugin
+	helm chartsnap --chart example/app1 $(ARGS)
+	helm chartsnap --chart example/app1 -f example/app1/test/test_ingress_enabled.yaml $(ARGS)
+	helm chartsnap --chart example/app1 -f example/app1/test/ $(ARGS)
+
 .PHONY: update-versions
 update-versions:
 	sed -i.bk 's/version: .*/version: $(VERSION)/' plugin.yaml
 
 .PHONY: debug-plugin
 debug-plugin: build
+	-helm plugin install https://github.com/jlandowner/helm-chartsnap
 	cp ./dist/chartsnap_*/chartsnap ~/.local/share/helm/plugins/helm-chartsnap/bin/
