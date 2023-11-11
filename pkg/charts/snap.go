@@ -79,7 +79,7 @@ func Snap(ctx context.Context, snapFile string, o HelmTemplateCmdOptions) (match
 	if err != nil {
 		return match, "", fmt.Errorf("failed to get snapshot: %w", err)
 	}
-	return match, s.FailureMessage(out), nil
+	return match, s.FailureMessage(nil), nil
 }
 
 func SnapshotID(valuesFile string) string {

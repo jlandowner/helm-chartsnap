@@ -35,3 +35,8 @@ update-versions:
 debug-plugin: build
 	-helm plugin install https://github.com/jlandowner/helm-chartsnap
 	cp ./dist/chartsnap_*/chartsnap ~/.local/share/helm/plugins/helm-chartsnap/bin/
+
+.PHONY: snap-helm-template-help
+snap-helm-template-help:
+	rm -f helm-template.snap
+	$(GO) run hack/helm-template-help-snapshot/main.go
