@@ -3,15 +3,28 @@ package charts
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 	"path"
 	"strings"
 
 	"github.com/jlandowner/helm-chartsnap/pkg/snap"
 	"github.com/jlandowner/helm-chartsnap/pkg/unstructured"
-	"golang.org/x/exp/slog"
 	"gopkg.in/yaml.v3"
 )
+
+var log *slog.Logger
+
+func SetLogger(slogr *slog.Logger) {
+	log = slogr
+}
+
+func Log() *slog.Logger {
+	if log == nil {
+		log = slog.Default()
+	}
+	return log
+}
 
 func Snap(ctx context.Context, o HelmTemplateCmdOptions) (match bool, failureMessage string, err error) {
 	sv := SnapshotValues{}
@@ -27,13 +40,13 @@ func Snap(ctx context.Context, o HelmTemplateCmdOptions) (match bool, failureMes
 			return match, "", fmt.Errorf("failed to decode values file: %w", err)
 		}
 	}
-	slog.Debug("test spec from values file", "spec", sv.TestSpec)
+	Log().Debug("test spec from values file", "spec", sv.TestSpec)
 
 	out, err := o.Execute(ctx)
 	if err != nil {
-		return match, "", fmt.Errorf("failed to execute helm template: %w: %s", err, out)
+		return match, "", fmt.Errorf("'helm template' command failed: %w: %s", err, out)
 	}
-	slog.Debug("helm template output", "output", string(out))
+	Log().Debug("helm template output", "output", string(out))
 
 	manifests, err := unstructured.Decode(string(out))
 	if err != nil {

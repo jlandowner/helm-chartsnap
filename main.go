@@ -115,7 +115,10 @@ MIT 2023 jlandowner/helm-chartsnap
   chartsnap -c YOUR_CHART -f YOUR_TEST_VALUES_FILE -- --skip-tests`,
 		Version: fmt.Sprintf("version=%s commit=%s date=%s", version, commit, date),
 		RunE:    run,
+		PreRunE: prerun,
 	}
+	rootCmd.SilenceUsage = true
+	rootCmd.SilenceErrors = true
 	rootCmd.PersistentFlags().BoolVar(&o.DebugFlag, "debug", false, "debug mode")
 	rootCmd.PersistentFlags().BoolVarP(&o.UpdateSnapshot, "update-snapshot", "u", false, "update snapshot mode")
 	rootCmd.PersistentFlags().StringVarP(&o.Chart, "chart", "c", "", "path to the chart directory. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'CHART'")
@@ -130,20 +133,32 @@ MIT 2023 jlandowner/helm-chartsnap
 	rootCmd.PersistentFlags().StringVarP(&o.ValuesFile, "values", "f", "", "path to a test values file or directory. if directroy is set, all test files are tested. if empty, default values are used. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'VALUES'")
 
 	if err := rootCmd.Execute(); err != nil {
-		slog.Error(err.Error())
+		slog.New(slogHandler()).Error(err.Error())
 		os.Exit(1)
 	}
 }
 
-func run(cmd *cobra.Command, args []string) error {
-	log = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+func slogHandler() slog.Handler {
+	return slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 		Level: func() slog.Leveler {
 			if o.Debug() {
 				return slog.LevelDebug
 			}
 			return slog.LevelInfo
 		}(),
-	}))
+	})
+}
+
+func prerun(cmd *cobra.Command, args []string) error {
+	if o.Chart == "" {
+		// show help message when executed without any args (meaning required --chart flag is not set)
+		return cmd.Help()
+	}
+	return nil
+}
+
+func run(cmd *cobra.Command, args []string) error {
+	log = slog.New(slogHandler())
 	log.Debug("options", printOptions(*o)...)
 	log.Debug("args", "args", args)
 
@@ -178,6 +193,10 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	eg, ctx := errgroup.WithContext(cmd.Context())
+	if o.Debug() {
+		// limit concurrency to 1 for debugging.
+		eg.SetLimit(1)
+	}
 	for _, v := range values {
 		ht := charts.HelmTemplateCmdOptions{
 			HelmPath:       o.HelmBin(),
@@ -187,20 +206,29 @@ func run(cmd *cobra.Command, args []string) error {
 			ValuesFile:     v,
 			AdditionalArgs: args,
 		}
-		ht.SetLogger(log)
+		charts.SetLogger(log)
 		bannerPrintln("RUNS",
 			fmt.Sprintf("Snapshot testing chart=%s values=%s", ht.Chart, ht.ValuesFile), 0, color.BgBlue)
 		eg.Go(func() error {
+			snapshotFilePath := charts.SnapshotFile(ht.Chart, ht.ValuesFile)
+
+			_, err := os.Stat(snapshotFilePath)
+			if err == nil {
+				log.Debug("snapshot file already exists", "path", snapshotFilePath)
+			} else if os.IsNotExist(err) {
+				log.Debug("snapshot file does not exist", "path", snapshotFilePath)
+			}
+
 			if o.UpdateSnapshot {
-				err := os.Remove(charts.SnapshotFile(ht.Chart, ht.ValuesFile))
+				err := os.Remove(snapshotFilePath)
 				if err != nil && !os.IsNotExist(err) {
 					return fmt.Errorf("failed to replace snapshot file: %w", err)
 				}
 			}
 			matched, failureMessage, err := charts.Snap(ctx, ht)
 			if err != nil {
-				bannerPrintln("FAIL", fmt.Sprintf("%v chart=%s values=%s", err, ht.Chart, ht.ValuesFile), color.FgRed, color.BgRed)
-				return fmt.Errorf("failed to get snapshot: %w chart=%s values=%s", err, ht.Chart, ht.ValuesFile)
+				bannerPrintln("FAIL", fmt.Sprintf("chart=%s values=%s err=%v", ht.Chart, ht.ValuesFile, err), color.FgRed, color.BgRed)
+				return fmt.Errorf("failed to get snapshot chart=%s values=%s: %w", ht.Chart, ht.ValuesFile, err)
 			}
 			if !matched {
 				bannerPrintln("FAIL", failureMessage, color.FgRed, color.BgRed)
