@@ -29,14 +29,7 @@ func Snap(ctx context.Context, o HelmTemplateCmdOptions) (match bool, failureMes
 	}
 	slog.Debug("test spec from values file", "spec", sv.TestSpec)
 
-	helmTemplate := HelmTemplateCmdOptions{
-		HelmPath:    o.HelmPath,
-		ReleaseName: o.ReleaseName,
-		Namespace:   o.Namespace,
-		Chart:       o.Chart,
-		ValuesFile:  o.ValuesFile,
-	}
-	out, err := helmTemplate.Execute(ctx)
+	out, err := o.Execute(ctx)
 	if err != nil {
 		return match, "", fmt.Errorf("failed to execute helm template: %w: %s", err, out)
 	}
