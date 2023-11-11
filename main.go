@@ -125,8 +125,8 @@ MIT 2023 jlandowner/helm-chartsnap
 	if err := rootCmd.MarkPersistentFlagRequired("chart"); err != nil {
 		panic(err)
 	}
-	rootCmd.PersistentFlags().StringVar(&o.ReleaseName, "release-name", "testrelease", "release name. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'RELEASE_NAME'")
-	rootCmd.PersistentFlags().StringVar(&o.NamespaceFlag, "namespace", "testns", "namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE'")
+	rootCmd.PersistentFlags().StringVar(&o.ReleaseName, "release-name", "chartsnap", "release name. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'RELEASE_NAME'")
+	rootCmd.PersistentFlags().StringVar(&o.NamespaceFlag, "namespace", "default", "namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE'")
 	rootCmd.PersistentFlags().StringVarP(&o.ValuesFile, "values", "f", "", "path to a test values file or directory. if directroy is set, all test files are tested. if empty, default values are used. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'VALUES'")
 
 	if err := rootCmd.Execute(); err != nil {
