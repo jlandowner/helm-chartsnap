@@ -30,6 +30,7 @@ type option struct {
 	Chart          string
 	ValuesFile     string
 	UpdateSnapshot bool
+	OutputDir      string
 
 	// Below properties are the same as helm global options
 	// They are passed to the plugin as environment variables
@@ -131,6 +132,10 @@ MIT 2023 jlandowner/helm-chartsnap
 	rootCmd.PersistentFlags().StringVar(&o.ReleaseName, "release-name", "chartsnap", "release name. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'RELEASE_NAME'")
 	rootCmd.PersistentFlags().StringVar(&o.NamespaceFlag, "namespace", "default", "namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE'")
 	rootCmd.PersistentFlags().StringVarP(&o.ValuesFile, "values", "f", "", "path to a test values file or directory. if directroy is set, all test files are tested. if empty, default values are used. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'VALUES'")
+	rootCmd.PersistentFlags().StringVarP(&o.OutputDir, "output-dir", "o", "", "directory which is __snapshot__ directory is created. (default: values file directory if --values is set; chart directory if chart is local; else current directory)")
+	if err := rootCmd.MarkPersistentFlagDirname("output-dir"); err != nil {
+		panic(err)
+	}
 
 	if err := rootCmd.Execute(); err != nil {
 		slog.New(slogHandler()).Error(err.Error())
@@ -210,7 +215,12 @@ func run(cmd *cobra.Command, args []string) error {
 		bannerPrintln("RUNS",
 			fmt.Sprintf("Snapshot testing chart=%s values=%s", ht.Chart, ht.ValuesFile), 0, color.BgBlue)
 		eg.Go(func() error {
-			snapshotFilePath := charts.SnapshotFile(ht.Chart, ht.ValuesFile)
+			var snapshotFilePath string
+			if o.OutputDir != "" {
+				snapshotFilePath = charts.SnapshotFilePath(o.OutputDir, ht.ValuesFile)
+			} else {
+				snapshotFilePath = charts.DefaultSnapshotFilePath(ht.Chart, ht.ValuesFile)
+			}
 
 			_, err := os.Stat(snapshotFilePath)
 			if err == nil {
@@ -225,7 +235,7 @@ func run(cmd *cobra.Command, args []string) error {
 					return fmt.Errorf("failed to replace snapshot file: %w", err)
 				}
 			}
-			matched, failureMessage, err := charts.Snap(ctx, ht)
+			matched, failureMessage, err := charts.Snap(ctx, snapshotFilePath, ht)
 			if err != nil {
 				bannerPrintln("FAIL", fmt.Sprintf("chart=%s values=%s err=%v", ht.Chart, ht.ValuesFile, err), color.FgRed, color.BgRed)
 				return fmt.Errorf("failed to get snapshot chart=%s values=%s: %w", ht.Chart, ht.ValuesFile, err)

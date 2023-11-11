@@ -26,7 +26,7 @@ func Log() *slog.Logger {
 	return log
 }
 
-func Snap(ctx context.Context, o HelmTemplateCmdOptions) (match bool, failureMessage string, err error) {
+func Snap(ctx context.Context, snapFile string, o HelmTemplateCmdOptions) (match bool, failureMessage string, err error) {
 	sv := SnapshotValues{}
 	if o.ValuesFile != "" {
 		f, err := os.Open(o.ValuesFile)
@@ -73,7 +73,7 @@ func Snap(ctx context.Context, o HelmTemplateCmdOptions) (match bool, failureMes
 		return match, "", fmt.Errorf("failed to encode manifests: %w", err)
 	}
 
-	s := snap.SnapShotMatcher(SnapshotFile(o.Chart, o.ValuesFile), SnapshotID(o.ValuesFile))
+	s := snap.SnapShotMatcher(snapFile, SnapshotID(o.ValuesFile))
 	match, err = s.Match(string(res))
 
 	if err != nil {
@@ -90,10 +90,20 @@ func SnapshotID(valuesFile string) string {
 	}
 }
 
-func SnapshotFile(chartPath, valuesFile string) string {
+func DefaultSnapshotFilePath(chartPath, valuesFile string) string {
+	// if values file is specified, use the directory of the values file as the snapshot directory.
+	// otherwise, use the chart directory.
 	if valuesFile != "" {
-		return path.Join(path.Dir(valuesFile), "__snapshots__", SnapshotID(valuesFile)+".snap")
+		return SnapshotFilePath(path.Dir(valuesFile), valuesFile)
 	} else {
-		return path.Join(chartPath, "__snapshots__", SnapshotID(valuesFile)+".snap")
+		// if remote chart, create output directory
+		if _, err := os.Stat(path.Join(chartPath, "Chart.yaml")); os.IsNotExist(err) {
+			chartPath = path.Join("__snapshots__", chartPath)
+		}
+		return SnapshotFilePath(chartPath, valuesFile)
 	}
+}
+
+func SnapshotFilePath(dir, valuesFile string) string {
+	return path.Join(dir, "__snapshots__", SnapshotID(valuesFile)+".snap")
 }

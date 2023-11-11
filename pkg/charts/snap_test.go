@@ -1,40 +1,8 @@
 package charts
 
 import (
-	"context"
 	"testing"
 )
-
-func TestSnap(t *testing.T) {
-	type args struct {
-		ctx context.Context
-		o   HelmTemplateCmdOptions
-	}
-	tests := []struct {
-		name               string
-		args               args
-		wantMatch          bool
-		wantFailureMessage string
-		wantErr            bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			gotMatch, gotFailureMessage, err := Snap(tt.args.ctx, tt.args.o)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Snap() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if gotMatch != tt.wantMatch {
-				t.Errorf("Snap() gotMatch = %v, want %v", gotMatch, tt.wantMatch)
-			}
-			if gotFailureMessage != tt.wantFailureMessage {
-				t.Errorf("Snap() gotFailureMessage = %v, want %v", gotFailureMessage, tt.wantFailureMessage)
-			}
-		})
-	}
-}
 
 func TestSnapshotID(t *testing.T) {
 	type args struct {
@@ -45,7 +13,27 @@ func TestSnapshotID(t *testing.T) {
 		args args
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "basename of values file",
+			args: args{
+				valuesFile: "values.yaml",
+			},
+			want: "values",
+		},
+		{
+			name: "basename of values file with path",
+			args: args{
+				valuesFile: "chart/test/values.yaml",
+			},
+			want: "values",
+		},
+		{
+			name: "default if empty",
+			args: args{
+				valuesFile: "",
+			},
+			want: "default",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -56,7 +44,7 @@ func TestSnapshotID(t *testing.T) {
 	}
 }
 
-func TestSnapshotFile(t *testing.T) {
+func TestDefaultSnapshotFilePath(t *testing.T) {
 	type args struct {
 		chartPath  string
 		valuesFile string
@@ -66,12 +54,63 @@ func TestSnapshotFile(t *testing.T) {
 		args args
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "same directory with values file",
+			args: args{
+				chartPath:  "/tmp",
+				valuesFile: "chart/test/values.yaml",
+			},
+			want: "chart/test/__snapshots__/values.snap",
+		},
+		{
+			name: "chart directory with no values file and chart is local",
+			args: args{
+				chartPath:  "../../example/app1",
+				valuesFile: "",
+			},
+			want: "../../example/app1/__snapshots__/default.snap",
+		},
+		{
+			name: "chart directory with no values file and chart is remote",
+			args: args{
+				chartPath:  "ingress-nginx/ingress-nginx",
+				valuesFile: "",
+			},
+			want: "__snapshots__/ingress-nginx/ingress-nginx/__snapshots__/default.snap",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SnapshotFile(tt.args.chartPath, tt.args.valuesFile); got != tt.want {
-				t.Errorf("SnapshotFile() = %v, want %v", got, tt.want)
+			if got := DefaultSnapshotFilePath(tt.args.chartPath, tt.args.valuesFile); got != tt.want {
+				t.Errorf("DefaultSnapshotFilePath() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSnapshotFilePath(t *testing.T) {
+	type args struct {
+		dir        string
+		valuesFile string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "ok",
+			args: args{
+				dir:        "/tmp",
+				valuesFile: "values.yaml",
+			},
+			want: "/tmp/__snapshots__/values.snap",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SnapshotFilePath(tt.args.dir, tt.args.valuesFile); got != tt.want {
+				t.Errorf("SnapshotFilePath() = %v, want %v", got, tt.want)
 			}
 		})
 	}
