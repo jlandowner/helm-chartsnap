@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"path"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/fatih/color"
 	"github.com/jlandowner/helm-chartsnap/pkg/charts"
 	"github.com/spf13/cobra"
-	"golang.org/x/exp/slog"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -25,13 +26,39 @@ var (
 )
 
 type option struct {
-	HelmPath       string
 	ReleaseName    string
-	Namespace      string
 	Chart          string
 	ValuesFile     string
-	Debug          bool
 	UpdateSnapshot bool
+
+	// Below properties are the same as helm global options
+	// They are passed to the plugin as environment variables
+	NamespaceFlag string
+	DebugFlag     bool
+}
+
+func (o *option) Debug() bool {
+	helmDebug, err := strconv.ParseBool(os.Getenv("HELM_DEBUG"))
+	if err == nil {
+		return helmDebug
+	}
+	return o.DebugFlag
+}
+
+func (o *option) Namespace() string {
+	helmNamespace := os.Getenv("HELM_NAMESPACE")
+	if helmNamespace != "" {
+		return helmNamespace
+	}
+	return o.NamespaceFlag
+}
+
+func (o *option) HelmBin() string {
+	helmBin := os.Getenv("HELM_BIN")
+	if helmBin != "" {
+		return helmBin
+	}
+	return "helm"
 }
 
 func main() {
@@ -89,7 +116,7 @@ MIT 2023 jlandowner/helm-chartsnap
 		Version: fmt.Sprintf("version=%s commit=%s date=%s", version, commit, date),
 		RunE:    run,
 	}
-	rootCmd.PersistentFlags().BoolVar(&o.Debug, "debug", false, "debug mode")
+	rootCmd.PersistentFlags().BoolVar(&o.DebugFlag, "debug", false, "debug mode")
 	rootCmd.PersistentFlags().BoolVarP(&o.UpdateSnapshot, "update-snapshot", "u", false, "update snapshot mode")
 	rootCmd.PersistentFlags().StringVarP(&o.Chart, "chart", "c", "", "path to the chart directory. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'CHART'")
 	if err := rootCmd.MarkPersistentFlagDirname("chart"); err != nil {
@@ -99,8 +126,7 @@ MIT 2023 jlandowner/helm-chartsnap
 		panic(err)
 	}
 	rootCmd.PersistentFlags().StringVar(&o.ReleaseName, "release-name", "testrelease", "release name. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'RELEASE_NAME'")
-	rootCmd.PersistentFlags().StringVar(&o.Namespace, "namespace", "testns", "namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE'")
-	rootCmd.PersistentFlags().StringVar(&o.HelmPath, "helm-path", "helm", "path to the helm command")
+	rootCmd.PersistentFlags().StringVar(&o.NamespaceFlag, "namespace", "testns", "namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE'")
 	rootCmd.PersistentFlags().StringVarP(&o.ValuesFile, "values", "f", "", "path to a test values file or directory. if directroy is set, all test files are tested. if empty, default values are used. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'VALUES'")
 
 	if err := rootCmd.Execute(); err != nil {
@@ -112,13 +138,21 @@ MIT 2023 jlandowner/helm-chartsnap
 func run(cmd *cobra.Command, args []string) error {
 	log = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 		Level: func() slog.Leveler {
-			if o.Debug {
+			if o.Debug() {
 				return slog.LevelDebug
 			}
 			return slog.LevelInfo
 		}(),
 	}))
 	log.Debug("options", printOptions(*o)...)
+	log.Debug("args", "args", args)
+
+	for _, v := range os.Environ() {
+		if strings.HasPrefix(v, "HELM_") {
+			e := strings.Split(v, "=")
+			log.Debug("helm env", "key", e[0], "value", e[1])
+		}
+	}
 
 	if o.ValuesFile == "" {
 		values = []string{""}
@@ -146,13 +180,14 @@ func run(cmd *cobra.Command, args []string) error {
 	eg, ctx := errgroup.WithContext(cmd.Context())
 	for _, v := range values {
 		ht := charts.HelmTemplateCmdOptions{
-			HelmPath:       o.HelmPath,
+			HelmPath:       o.HelmBin(),
 			ReleaseName:    o.ReleaseName,
-			Namespace:      o.Namespace,
+			Namespace:      o.Namespace(),
 			Chart:          o.Chart,
 			ValuesFile:     v,
 			AdditionalArgs: args,
 		}
+		ht.SetLogger(log)
 		bannerPrintln("RUNS",
 			fmt.Sprintf("Snapshot testing chart=%s values=%s", ht.Chart, ht.ValuesFile), 0, color.BgBlue)
 		eg.Go(func() error {

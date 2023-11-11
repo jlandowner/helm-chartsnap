@@ -24,3 +24,7 @@ test:
 .PHONY: update-versions
 update-versions:
 	sed -i.bk 's/version: .*/version: $(VERSION)/' plugin.yaml
+
+.PHONY: debug-plugin
+debug-plugin: build
+	cp ./dist/chartsnap_*/chartsnap ~/.local/share/helm/plugins/helm-chartsnap/bin/
