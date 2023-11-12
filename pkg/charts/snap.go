@@ -26,10 +26,16 @@ func Log() *slog.Logger {
 	return log
 }
 
-func Snap(ctx context.Context, snapFile string, o HelmTemplateCmdOptions) (match bool, failureMessage string, err error) {
+type ChartSnapOptions struct {
+	HelmTemplateCmdOptions HelmTemplateCmdOptions
+	SnapshotFile           string
+	DiffContextLineN       int
+}
+
+func Snap(ctx context.Context, o ChartSnapOptions) (match bool, failureMessage string, err error) {
 	sv := SnapshotValues{}
-	if o.ValuesFile != "" {
-		f, err := os.Open(o.ValuesFile)
+	if o.HelmTemplateCmdOptions.ValuesFile != "" {
+		f, err := os.Open(o.HelmTemplateCmdOptions.ValuesFile)
 		if err != nil {
 			return match, "", fmt.Errorf("failed to open values file: %w", err)
 		}
@@ -42,7 +48,7 @@ func Snap(ctx context.Context, snapFile string, o HelmTemplateCmdOptions) (match
 	}
 	Log().Debug("test spec from values file", "spec", sv.TestSpec)
 
-	out, err := o.Execute(ctx)
+	out, err := o.HelmTemplateCmdOptions.Execute(ctx)
 	if err != nil {
 		return match, "", fmt.Errorf("'helm template' command failed: %w: %s", err, out)
 	}
@@ -68,13 +74,12 @@ func Snap(ctx context.Context, snapFile string, o HelmTemplateCmdOptions) (match
 			}
 		}
 	}
-	res, err := unstructured.Encode(manifests)
-	if err != nil {
-		return match, "", fmt.Errorf("failed to encode manifests: %w", err)
-	}
-
-	s := snap.SnapShotMatcher(snapFile, SnapshotID(o.ValuesFile))
-	match, err = s.Match(string(res))
+	snap.SetLogger(Log())
+	s := snap.UnstructuredSnapShotMatcher(
+		o.SnapshotFile,
+		SnapshotID(o.HelmTemplateCmdOptions.ValuesFile),
+		snap.WithDiffContextLineN(o.DiffContextLineN))
+	match, err = snap.UnstructuredMatch(s, manifests)
 
 	if err != nil {
 		return match, "", fmt.Errorf("failed to get snapshot: %w", err)

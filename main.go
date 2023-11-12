@@ -26,11 +26,12 @@ var (
 )
 
 type option struct {
-	ReleaseName    string
-	Chart          string
-	ValuesFile     string
-	UpdateSnapshot bool
-	OutputDir      string
+	ReleaseName      string
+	Chart            string
+	ValuesFile       string
+	UpdateSnapshot   bool
+	OutputDir        string
+	DiffContextLineN int
 
 	// Below properties are the same as helm global options
 	// They are passed to the plugin as environment variables
@@ -64,7 +65,7 @@ func (o *option) HelmBin() string {
 
 func main() {
 	rootCmd := &cobra.Command{
-		Use:   "chartsnap",
+		Use:   "chartsnap -c CHART",
 		Short: "Snapshot testing tool for Helm charts",
 		Long: `
 Snapshot testing tool like Jest for Helm charts.
@@ -113,7 +114,10 @@ MIT 2023 jlandowner/helm-chartsnap
   chartsnap -c YOUR_CHART -f YOUR_TEST_VALUES_FILES_DIRECTOY
   
   # Set addtional args or flags for 'helm template' command:
-  chartsnap -c YOUR_CHART -f YOUR_TEST_VALUES_FILE -- --skip-tests`,
+  chartsnap -c YOUR_CHART -f YOUR_TEST_VALUES_FILE -- --skip-tests
+
+  # Output with no colors:
+  NO_COLOR=1 chartsnap -c YOUR_CHART`,
 		Version: fmt.Sprintf("version=%s commit=%s date=%s", version, commit, date),
 		RunE:    run,
 		PreRunE: prerun,
@@ -136,6 +140,7 @@ MIT 2023 jlandowner/helm-chartsnap
 	if err := rootCmd.MarkPersistentFlagDirname("output-dir"); err != nil {
 		panic(err)
 	}
+	rootCmd.PersistentFlags().IntVarP(&o.DiffContextLineN, "ctx-lines", "N", 3, "number of lines to show in diff output. 0 for full output")
 
 	if err := rootCmd.Execute(); err != nil {
 		slog.New(slogHandler()).Error(err.Error())
@@ -235,14 +240,21 @@ func run(cmd *cobra.Command, args []string) error {
 					return fmt.Errorf("failed to replace snapshot file: %w", err)
 				}
 			}
-			matched, failureMessage, err := charts.Snap(ctx, snapshotFilePath, ht)
+
+			opts := charts.ChartSnapOptions{
+				HelmTemplateCmdOptions: ht,
+				SnapshotFile:           snapshotFilePath,
+				DiffContextLineN:       o.DiffContextLineN,
+			}
+			matched, failureMessage, err := charts.Snap(ctx, opts)
 			if err != nil {
 				bannerPrintln("FAIL", fmt.Sprintf("chart=%s values=%s err=%v", ht.Chart, ht.ValuesFile, err), color.FgRed, color.BgRed)
 				return fmt.Errorf("failed to get snapshot chart=%s values=%s: %w", ht.Chart, ht.ValuesFile, err)
 			}
 			if !matched {
-				bannerPrintln("FAIL", failureMessage, color.FgRed, color.BgRed)
-				return fmt.Errorf("not match snapshot chart=%s values=%s", ht.Chart, ht.ValuesFile)
+				bannerPrintln("FAIL", "Snapshot does not match", color.FgRed, color.BgRed)
+				fmt.Println(failureMessage)
+				return fmt.Errorf("snapshot does not match chart=%s values=%s", ht.Chart, ht.ValuesFile)
 			}
 			return nil
 		})
