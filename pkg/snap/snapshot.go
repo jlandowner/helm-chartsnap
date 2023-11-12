@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -15,9 +17,20 @@ import (
 	"github.com/onsi/gomega/types"
 	"github.com/pelletier/go-toml/v2"
 	"github.com/spf13/afero"
-
-	"fmt"
 )
+
+var log *slog.Logger
+
+func SetLogger(slogr *slog.Logger) {
+	log = slogr
+}
+
+func Log() *slog.Logger {
+	if log == nil {
+		log = slog.Default()
+	}
+	return log
+}
 
 var (
 	shotCountMap = map[string]int{}
@@ -47,11 +60,15 @@ func MatchSnapShot(options ...Option) types.GomegaMatcher {
 	return SnapShotMatcher(snapFile, snapId)
 }
 
-func SnapShotMatcher(snapFile string, snapId string) *snapShotMatcher {
+func SnapShotMatcher(snapFile string, snapId string, diffOpts ...DiffOptions) *snapShotMatcher {
+	o := mergeDiffOpts(diffOpts)
+
 	return &snapShotMatcher{
 		snapFilePath: snapFile,
 		snapId:       snapId,
 		fs:           cacheFs,
+		diffFunc:     Diff,
+		diffOptions:  o,
 	}
 }
 
@@ -63,6 +80,8 @@ type snapShotMatcher struct {
 	fs           afero.Fs
 	expectedJson string
 	actualJson   string
+	diffFunc     func(x, y string, opts DiffOptions) string
+	diffOptions  DiffOptions
 }
 
 func (m *snapShotMatcher) Match(actual interface{}) (success bool, err error) {
@@ -97,8 +116,7 @@ func (m *snapShotMatcher) Match(actual interface{}) (success bool, err error) {
 }
 
 func (m *snapShotMatcher) FailureMessage(actual interface{}) (message string) {
-
-	return "Expected to match\n" + cmp.Diff(m.expectedJson, m.actualJson) + "\n"
+	return "Expected to match\n" + m.diffFunc(m.expectedJson, m.actualJson, m.diffOptions) + "\n"
 }
 
 func (m *snapShotMatcher) NegatedFailureMessage(actual interface{}) (message string) {
