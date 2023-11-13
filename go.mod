@@ -11,7 +11,7 @@ require (
 	github.com/onsi/gomega v1.29.0
 	github.com/pelletier/go-toml/v2 v2.1.0
 	github.com/spf13/afero v1.10.0
-	github.com/spf13/cobra v1.7.0
+	github.com/spf13/cobra v1.8.0
 	golang.org/x/sync v0.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.28.3
