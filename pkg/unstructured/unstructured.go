@@ -67,12 +67,12 @@ func Replace(obj unstructured.Unstructured, key, value string) (*unstructured.Un
 	// patch JSON6902
 	patch, err := jsonpatch.DecodePatch([]byte(str_patch))
 	if err != nil {
-		return nil, fmt.Errorf("failed to decode patch: %w: %s", err, key)
+		return nil, fmt.Errorf("failed to decode patch: %w: %s", err, str_patch)
 	}
 
 	patched, err := patch.Apply(bytes_obj)
 	if err != nil {
-		return nil, fmt.Errorf("failed to patch JSON6902: %w", err)
+		return nil, fmt.Errorf("failed to patch JSON6902: %w: patch=%s: buf=%s", err, str_patch, bytes_obj)
 	}
 
 	_, patchedObj, err := BytesToUnstructured(patched)

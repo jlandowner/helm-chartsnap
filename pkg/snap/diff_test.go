@@ -1,11 +1,68 @@
 package snap
 
 import (
+	"io"
+	"os"
 	"reflect"
 	"testing"
 
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+
 	"github.com/aryann/difflib"
 )
+
+func TestSnapshot(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Snapshot Suite")
+}
+
+var _ = Describe("Snapshot", func() {
+	f := func(m OmegaMatcher, filePath string) (success bool, err error) {
+		f, err := os.Open(filePath)
+		Expect(err).NotTo(HaveOccurred())
+		defer f.Close()
+
+		buf, err := io.ReadAll(f)
+		Expect(err).NotTo(HaveOccurred())
+
+		return m.Match(string(buf))
+	}
+
+	It("should match", func() {
+		m := SnapShotMatcher("testdata/diff.snap", "default")
+		success, err := f(m, "testdata/diff.txt")
+		Expect(err).NotTo(HaveOccurred())
+		Expect(success).To(BeTrue())
+	})
+
+	It("should not match and output diff N=1", func() {
+		m := SnapShotMatcher("testdata/diff.snap", "default", WithDiffContextLineN(1))
+		success, err := f(m, "testdata/diff_diff.txt")
+		Expect(err).NotTo(HaveOccurred())
+		Expect(success).To(BeFalse())
+
+		Expect(m.FailureMessage(nil)).Should(Equal(`Expected to match
+--- line=13
+        --ca-file string                             verify certificates of HTTPS-enabled servers using this CA bundle
+-       --cert-file string                           identify HTTPS client using this SSL certificate file
+        --create-namespace                           create the release namespace if not present
+
+--- line=23
+    -g, --generate-name                              generate the name (and omit the NAME parameter)
+-   -h, --help                                       help for template
++   -h, --help                                       help for templates
+        --include-crds                               include CRDs in the templated output
+
+--- line=56
+    -f, --values strings                             specify values in a YAML file or a URL (can specify multiple)
++       --fake                                       fake
+        --verify                                     verify the package before using it
+
+
+`))
+	})
+})
 
 func TestDiffOptions_ContextLineN(t *testing.T) {
 	type fields struct {
@@ -83,36 +140,6 @@ func Test_mergeDiffOpts(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := mergeDiffOpts(tt.args.opts); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("mergeDiffOpts() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestDiff(t *testing.T) {
-	type args struct {
-		x string
-		y string
-		o DiffOptions
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
-		{
-			name: "single: 0",
-			args: args{
-				x: "a",
-				y: "b",
-				o: DiffOptions{DiffContextLineN: 0},
-			},
-			want: ``,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := Diff(tt.args.x, tt.args.y, tt.args.o); got != tt.want {
-				t.Errorf("Diff() = %v, want %v", got, tt.want)
 			}
 		})
 	}
