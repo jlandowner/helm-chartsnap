@@ -106,7 +106,7 @@ Here is full usage of the command.
 
 ```sh
 Usage:
-  chartsnap [flags]
+  chartsnap -c CHART [flags]
 
 Examples:
 
@@ -125,13 +125,18 @@ Examples:
   # Set addtional args or flags for 'helm template' command:
   chartsnap -c YOUR_CHART -f YOUR_TEST_VALUES_FILE -- --skip-tests
 
+  # Output with no colors:
+  NO_COLOR=1 chartsnap -c YOUR_CHART
+
 Flags:
   -c, --chart string          path to the chart directory. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'CHART'
+  -N, --ctx-lines int         number of lines to show in diff output. 0 for full output (default 3)
       --debug                 debug mode
-      --helm-path string      path to the helm command (default "helm")
+      --fail-once             fail once any test case failed
   -h, --help                  help for chartsnap
-      --namespace string      namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE' (default "testns")
-      --release-name string   release name. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'RELEASE_NAME' (default "testrelease")
+      --namespace string      namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE' (default "default")
+  -o, --output-dir string     directory which is __snapshot__ directory is created. (default: values file directory if --values is set; chart directory if chart is local; else current directory)
+      --release-name string   release name. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'RELEASE_NAME' (default "chartsnap")
   -u, --update-snapshot       update snapshot mode
   -f, --values string         path to a test values file or directory. if directroy is set, all test files are tested. if empty, default values are used. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'VALUES'
   -v, --version               version for chartsnap
