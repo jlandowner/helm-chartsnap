@@ -4,6 +4,8 @@ Snapshot testing tool for Helm charts.
 
 Bring powerful UI testing capabilities for Helm chart with minimal configuration just within `values.yaml` file. 
 
+![screenshot](docs/screenshot.png)
+
 ## Why Snapshot Testing? 📸
 
 I believe that snapshot testing, popular testing approach in Web or UI testing with tools like Jest, is the best way to test Helm charts. Snapshot testing provides several benefits:
