@@ -32,6 +32,7 @@ type option struct {
 	UpdateSnapshot   bool
 	OutputDir        string
 	DiffContextLineN int
+	FailOnce         bool
 
 	// Below properties are the same as helm global options
 	// They are passed to the plugin as environment variables
@@ -141,6 +142,7 @@ MIT 2023 jlandowner/helm-chartsnap
 		panic(err)
 	}
 	rootCmd.PersistentFlags().IntVarP(&o.DiffContextLineN, "ctx-lines", "N", 3, "number of lines to show in diff output. 0 for full output")
+	rootCmd.PersistentFlags().BoolVar(&o.FailOnce, "fail-once", false, "fail once any test case failed")
 
 	if err := rootCmd.Execute(); err != nil {
 		slog.New(slogHandler()).Error(err.Error())
@@ -203,6 +205,10 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	eg, ctx := errgroup.WithContext(cmd.Context())
+	if !o.FailOnce {
+		// not cancel ctx even if some case failed
+		ctx = cmd.Context()
+	}
 	if o.Debug() {
 		// limit concurrency to 1 for debugging.
 		eg.SetLimit(1)
@@ -252,10 +258,11 @@ func run(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("failed to get snapshot chart=%s values=%s: %w", ht.Chart, ht.ValuesFile, err)
 			}
 			if !matched {
-				bannerPrintln("FAIL", "Snapshot does not match", color.FgRed, color.BgRed)
+				bannerPrintln("FAIL", fmt.Sprintf("Snapshot does not match chart=%s values=%s", ht.Chart, ht.ValuesFile), color.FgRed, color.BgRed)
 				fmt.Println(failureMessage)
 				return fmt.Errorf("snapshot does not match chart=%s values=%s", ht.Chart, ht.ValuesFile)
 			}
+			bannerPrintln("PASS", fmt.Sprintf("Snapshot matched chart=%s values=%s", ht.Chart, ht.ValuesFile), color.FgGreen, color.BgGreen)
 			return nil
 		})
 	}
@@ -263,7 +270,7 @@ func run(cmd *cobra.Command, args []string) error {
 	if err := eg.Wait(); err != nil {
 		return err
 	}
-	bannerPrintln("PASS", "Snapshot matched", color.FgGreen, color.BgGreen)
+	bannerPrintln("PASS", "All snapshot matched", color.FgGreen, color.BgGreen)
 
 	return nil
 }
