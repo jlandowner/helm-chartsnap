@@ -23,9 +23,9 @@ test:
 
 .PHONY: integ-test
 integ-test: debug-plugin
-	helm chartsnap --chart example/app1 $(ARGS)
-	helm chartsnap --chart example/app1 -f example/app1/test/test_ingress_enabled.yaml $(ARGS)
-	helm chartsnap --chart example/app1 -f example/app1/test/ $(ARGS)
+	-helm chartsnap --chart example/app1 $(ARGS)
+	-helm chartsnap --chart example/app1 -f example/app1/test/test_ingress_enabled.yaml $(ARGS)
+	-helm chartsnap --chart example/app1 -f example/app1/test/ $(ARGS)
 
 .PHONY: update-versions
 update-versions:
@@ -38,5 +38,4 @@ debug-plugin: build
 
 .PHONY: snap-helm-template-help
 snap-helm-template-help:
-	rm -f helm-template.snap
-	$(GO) run hack/helm-template-help-snapshot/main.go
+	cd hack/helm-template-help-snapshot; $(GO) run main.go
