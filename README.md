@@ -44,7 +44,7 @@ Helm testing tools which can snapshot test.
 
 While they are valuable tools for testing Helm charts, it has certain limitations for snapshot testing.
 
-- Original format Test Suite files are required.
+- You need to learn and prepare the Test Suite files of the tools.
 
 
 
@@ -71,9 +71,6 @@ helm-unittest is designed that it conducts tests on a per-file basis within the 
 For instance, consider a scenario where the Helm chart may create a `Certificate` resource of `cert-manager` when both TLS is enabled and cert-manager is enabled, but create a self-signed TLS `Secret` resource using helm function [`genSelfSignedCert`](https://helm.sh/docs/chart_template_guide/function_list/#genselfsignedcert) when cert-manager is not enabled. Furthermore, whether TLS is enabled or not affects Ingress's TLS properties, Deployment's app-specific TLS options, etc.
 
 In such cases, helm-unittest may not be able to adequately test the entire chart's behavior, as the output of these conditional files may be empty, leading to incomplete tests.
-
-Our motivation is to to offer a comprehensive and intuitive approach to conducting snapshot tests for Helm charts, Assessing the Helm chart as a whole, capturing the complete state of the rendered templates, including conditional logic, and enabling thorough testing, even when files are conditionally included or excluded based on Helm values.
-
 
 ## Installation 🚀
 
