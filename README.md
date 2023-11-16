@@ -130,6 +130,15 @@ Examples:
   # Set addtional args or flags for 'helm template' command:
   chartsnap -c YOUR_CHART -f YOUR_TEST_VALUES_FILE -- --skip-tests
 
+  # Snapshot remote chart in Helm repository:
+  chartsnap -c CHART_NAME -f YOUR_VALUES_FILE -- --repo HELM_REPO_URL
+
+  # Snapshot [`ingress-nginx`](https://kubernetes.github.io/ingress-nginx/) helm chart for specific version with your own value file:
+  chartsnap -c ingress-nginx -f YOUR_VALUES_FILE -- --repo https://kubernetes.github.io/ingress-nginx --namespace kube-system --version 4.8.3
+
+  # Snapshot [`cilium`](https://cilium.io) helm chart with default value and set flags:
+  chartsnap -c cilium -- --repo https://helm.cilium.io --namespace kube-system --set hubble.relay.enabled=true --set hubble.ui.enabled=true
+
   # Output with no colors:
   NO_COLOR=1 chartsnap -c YOUR_CHART
 
