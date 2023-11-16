@@ -1,0 +1,7 @@
+controller:
+  service:
+    internal:
+      enabled: true
+      annotations:
+        # Create internal NLB
+        service.beta.kubernetes.io/aws-load-balancer-scheme: "internal"

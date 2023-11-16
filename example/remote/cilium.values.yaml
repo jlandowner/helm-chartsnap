@@ -1,0 +1,20 @@
+# https://docs.cilium.io/en/stable/installation/k8s-install-helm/
+# EKS
+
+eni:
+  enabled: true
+
+ipam:
+  mode: eni
+
+egressMasqueradeInterfaces: eth0
+
+routingMode: native
+
+# https://docs.cilium.io/en/stable/gettingstarted/hubble/#hubble-ui
+# Enable Hubble UI
+hubble:
+  relay:
+    enabled: true 
+  ui:
+    enabled: true
