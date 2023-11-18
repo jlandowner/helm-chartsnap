@@ -3,18 +3,12 @@ package snap
 import (
 	"io"
 	"os"
-	"testing"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	"github.com/jlandowner/helm-chartsnap/pkg/unstructured"
 )
-
-func TestUnstructuredSnapshot(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "Unstructured Snapshot Suite")
-}
 
 var _ = Describe("Unstructured Snapshot", func() {
 	f := func(m OmegaMatcher, filePath string) (success bool, err error) {

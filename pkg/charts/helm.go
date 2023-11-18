@@ -16,7 +16,7 @@ type HelmTemplateCmdOptions struct {
 	AdditionalArgs []string
 }
 
-func (o *HelmTemplateCmdOptions) Execute(ctx context.Context) ([]byte, error) {
+func (o *HelmTemplateCmdOptions) Args() []string {
 	args := []string{
 		"template", o.ReleaseName, o.Chart,
 	}
@@ -29,6 +29,11 @@ func (o *HelmTemplateCmdOptions) Execute(ctx context.Context) ([]byte, error) {
 	if len(o.AdditionalArgs) > 0 {
 		args = append(args, o.AdditionalArgs...)
 	}
+	return args
+}
+
+func (o *HelmTemplateCmdOptions) Execute(ctx context.Context) ([]byte, error) {
+	args := o.Args()
 	Log().DebugContext(ctx, "executing 'helm template' command", "args", args, "additionalArgs", o.AdditionalArgs)
 
 	// helm template should not be executed in debug mode because YAML parser fails.

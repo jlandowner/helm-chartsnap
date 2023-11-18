@@ -1,18 +1,17 @@
 package snap
 
 import (
-	"testing"
+	"os"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
-func TestSnapshot(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "Snapshot Suite")
-}
-
 var _ = Describe("Snapshot", func() {
+	AfterEach(func() {
+		os.Remove("__snapshots__/snapshot_create_test.snap")
+	})
+
 	It("should match", func() {
 		testdata := `
 Helm is a tool for managing Charts. Charts are packages of pre-configured Kubernetes resources.
@@ -25,7 +24,7 @@ Use Helm to:
 - Intelligently manage your Kubernetes manifest files
 - Manage releases of Helm packages
 `
-		// match snapshot file
+		// create snapshot file
 		Expect(testdata).To(MatchSnapShot())
 	})
 })

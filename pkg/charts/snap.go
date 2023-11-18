@@ -59,21 +59,10 @@ func Snap(ctx context.Context, o ChartSnapOptions) (match bool, failureMessage s
 		return match, "", fmt.Errorf("failed to load helm output: %w: out='%s'", err, string(out))
 	}
 
-	for _, v := range sv.TestSpec.DynamicFields {
-		for i, obj := range manifests {
-			if v.APIVersion == obj.GetAPIVersion() &&
-				v.Kind == obj.GetKind() &&
-				v.Name == obj.GetName() {
-				for _, p := range v.JSONPath {
-					newObj, err := unstructured.Replace(manifests[i], p, "###DYNAMIC_FIELD###")
-					if err != nil {
-						return match, "", fmt.Errorf("failed to replace json path: %w", err)
-					}
-					manifests[i] = *newObj
-				}
-			}
-		}
+	if err := sv.TestSpec.ApplyFixedValue(manifests); err != nil {
+		return match, "", fmt.Errorf("failed to replace json path: %w", err)
 	}
+
 	snap.SetLogger(Log())
 	s := snap.UnstructuredSnapShotMatcher(
 		o.SnapshotFile,

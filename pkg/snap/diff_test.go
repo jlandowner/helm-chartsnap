@@ -12,11 +12,6 @@ import (
 	"github.com/aryann/difflib"
 )
 
-func TestSnapshot(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "Snapshot Suite")
-}
-
 var _ = Describe("Snapshot", func() {
 	f := func(m OmegaMatcher, filePath string) (success bool, err error) {
 		f, err := os.Open(filePath)

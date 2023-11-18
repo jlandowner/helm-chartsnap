@@ -1,12 +1,11 @@
 package charts
 
 import (
-	"context"
 	"reflect"
 	"testing"
 )
 
-func TestHelmTemplateCmdOptions_Execute(t *testing.T) {
+func TestHelmTemplateCmdOptions_Args(t *testing.T) {
 	type fields struct {
 		HelmPath       string
 		ReleaseName    string
@@ -15,17 +14,34 @@ func TestHelmTemplateCmdOptions_Execute(t *testing.T) {
 		ValuesFile     string
 		AdditionalArgs []string
 	}
-	type args struct {
-		ctx context.Context
-	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    []byte
-		wantErr bool
+		name   string
+		fields fields
+		want   []string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "default",
+			fields: fields{
+				HelmPath:    "helm",
+				ReleaseName: "chartsnap",
+				Namespace:   "default",
+				Chart:       "charts/app1/",
+				ValuesFile:  "charts/app1/test/test.values.yaml",
+			},
+			want: []string{"template", "chartsnap", "charts/app1/", "--namespace=default", "--values=charts/app1/test/test.values.yaml"},
+		},
+		{
+			name: "additional args",
+			fields: fields{
+				HelmPath:       "helm",
+				ReleaseName:    "chartsnap",
+				Namespace:      "xxx",
+				Chart:          "postgres",
+				ValuesFile:     "postgres.values.yaml",
+				AdditionalArgs: []string{"--repo", "https://charts.bitnami.com/bitnami", "--skip-tests"},
+			},
+			want: []string{"template", "chartsnap", "postgres", "--namespace=xxx", "--values=postgres.values.yaml", "--repo", "https://charts.bitnami.com/bitnami", "--skip-tests"},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -37,13 +53,9 @@ func TestHelmTemplateCmdOptions_Execute(t *testing.T) {
 				ValuesFile:     tt.fields.ValuesFile,
 				AdditionalArgs: tt.fields.AdditionalArgs,
 			}
-			got, err := o.Execute(tt.args.ctx)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("HelmTemplateCmdOptions.Execute() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			got := o.Args()
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("HelmTemplateCmdOptions.Execute() = %v, want %v", got, tt.want)
+				t.Errorf("HelmTemplateCmdOptions.Args() = %v, want %v", got, tt.want)
 			}
 		})
 	}
