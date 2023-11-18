@@ -2,7 +2,7 @@ all: ingress-nginx cilium
 
 .PHONY: ingress-nginx
 ingress-nginx:
-	helm chartsnap -c ingress-nginx -f ingress-nginx.values.yaml -- --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx
+	helm chartsnap -c ingress-nginx -f ingress-nginx.values.yaml -- --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --skip-tests
 
 .PHONY: cilium
 cilium:
