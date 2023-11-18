@@ -11,17 +11,15 @@ Bring powerful UI testing capabilities for Helm chart with minimal configuration
 
 ![screenshot](docs/screenshot.png)
 
-## Why Snapshot Testing? 📸
+## Overview
+- [Features 🔑](https://github.com/jlandowner/helm-chartsnap/#features-)
+- [Why Snapshot Testing? 📸](https://github.com/jlandowner/helm-chartsnap/#why-snapshot-testing-)
+  - [Motivation](https://github.com/jlandowner/helm-chartsnap/#motivation)
+- [Installation 🚀](https://github.com/jlandowner/helm-chartsnap/#installation-)
+- [Usage](https://github.com/jlandowner/helm-chartsnap/#usage)
+  - [Handling dynamic values 💪](https://github.com/jlandowner/helm-chartsnap/#handling-dynamic-values-)
+- [Showcase & Users ✨](https://github.com/jlandowner/helm-chartsnap/#showcase--users-)
 
-I believe that snapshot testing, popular testing approach in Web or UI testing with tools like Jest, is the best way to test Helm charts. Snapshot testing provides several benefits:
-
-- **Visual comparisons:** Snapshot tests create a baseline output and then compare it to subsequent test results. This allows for easy visual inspection of changes and regressions in Helm chart rendering.
-
-- **Enhanced maintainability:** Snapshot testing simplifies the test setup process, making it more accessible and maintainable, especially when dealing with complex Helm charts. The input for the Helm chart is a combination of values. We need only maintain the assumed input combinations(=values.yaml), and their snapshots.
-
-- **Continuous testing:** By continuously taking snapshots of the Helm chart in your CI process, you can quickly notice the changes in your whole chart and avoid regressions.
-
-This advantages are not limited to the Helm chart you created, but also the third-party charts you have installed on your Kubernetes if you are a Kubernetes administrator. When upgrading cluster, you can notice any changes of the output manifests produced by your *values*, no matter how minor.
 
 ## Features 🔑
 
@@ -37,7 +35,20 @@ This advantages are not limited to the Helm chart you created, but also the thir
 
   - **[GitHub Action](https://github.com/jlandowner/helm-chartsnap-action) is ready**: GitHub action which enables to do continuous snapshot testing for local or remote Helm charts in your CI is ready 🚀 -> [`helm-chart-action`](https://github.com/jlandowner/helm-chartsnap-action)
 
-## Motivation
+## Why Snapshot Testing? 📸
+
+I believe that snapshot testing, popular testing approach in Web or UI testing with tools like Jest, is the best way to test Helm charts. Snapshot testing provides several benefits:
+
+- **Visual comparisons:** Snapshot tests create a baseline output and then compare it to subsequent test results. This allows for easy visual inspection of changes and regressions in Helm chart rendering.
+
+- **Enhanced maintainability:** Snapshot testing simplifies the test setup process, making it more accessible and maintainable, especially when dealing with complex Helm charts. The input for the Helm chart is a combination of values. We need only maintain the assumed input combinations(=values.yaml), and their snapshots.
+
+- **Continuous testing:** By continuously taking snapshots of the Helm chart in your CI process, you can quickly notice the changes in your whole chart and avoid regressions.
+
+This advantages are not limited to the Helm chart you created, but also the third-party charts you have installed on your Kubernetes if you are a Kubernetes administrator. When upgrading cluster, you can notice any changes of the output manifests produced by your *values*, no matter how minor.
+
+
+### Motivation
 
 There are existing Helm testing tools which can snapshot test.
 - [helm-unittest](https://github.com/helm-unittest/helm-unittest), a popular unittest tool, it has option to do [snapshot testing](https://github.com/helm-unittest/helm-unittest#snapshot-testing).
@@ -159,7 +170,7 @@ Flags:
 
 ```
 
-## Handling dynamic values 💪
+### Handling dynamic values 💪
 
 Values files can have a `testSpec` property that can detail or control the test case.
 
@@ -193,7 +204,3 @@ testSpec:
 | [helm-chartsnap-action](https://github.com/jlandowner/helm-chartsnap-action) | GitHub action to use helm chartsnap in CI | https://github.com/jlandowner/helm-chartsnap-action |
 | [cosmo-workspace](https://github.com/cosmo-workspace/cosmo) | Open source WebIDE & DevEnvironment Platform on Kubernetes | https://github.com/cosmo-workspace/cosmo/tree/main/charts/cosmo/test |
 
-
-## LISENCE
-
-[MIT](LICENSE)
