@@ -12,13 +12,13 @@ Bring powerful UI testing capabilities for Helm chart with minimal configuration
 ![screenshot](docs/screenshot.png)
 
 ## Overview
-- [Features 🔑](https://github.com/jlandowner/helm-chartsnap/#features-)
-- [Why Snapshot Testing? 📸](https://github.com/jlandowner/helm-chartsnap/#why-snapshot-testing-)
-  - [Motivation](https://github.com/jlandowner/helm-chartsnap/#motivation)
-- [Installation 🚀](https://github.com/jlandowner/helm-chartsnap/#installation-)
-- [Usage](https://github.com/jlandowner/helm-chartsnap/#usage)
-  - [Handling dynamic values 💪](https://github.com/jlandowner/helm-chartsnap/#handling-dynamic-values-)
-- [Showcase & Users ✨](https://github.com/jlandowner/helm-chartsnap/#showcase--users-)
+- [Features 🔑](#features-)
+- [Why Snapshot Testing? 📸](#why-snapshot-testing-)
+  - [Motivation](#motivation)
+- [Installation 🚀](#installation-)
+- [Usage](#usage)
+  - [Handling dynamic values 💪](#handling-dynamic-values-)
+- [Showcase & Users ✨](#showcase--users-)
 
 
 ## Features 🔑
