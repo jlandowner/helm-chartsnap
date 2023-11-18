@@ -1,3 +1,26 @@
+testSpec:
+  dynamicFields:
+    - apiVersion: v1
+      kind: Secret
+      name: cilium-ca
+      jsonPath:
+        - /data/ca.crt
+        - /data/ca.key
+    - apiVersion: v1
+      kind: Secret
+      name: hubble-relay-client-certs
+      jsonPath:
+        - /data/ca.crt
+        - /data/tls.crt
+        - /data/tls.key
+    - apiVersion: v1
+      kind: Secret
+      name: hubble-server-certs
+      jsonPath:
+        - /data/ca.crt
+        - /data/tls.crt
+        - /data/tls.key
+
 # https://docs.cilium.io/en/stable/installation/k8s-install-helm/
 # EKS
 

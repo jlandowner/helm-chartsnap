@@ -58,3 +58,33 @@ Do snapshot 📸
 ```sh
 helm chartsnap -c cilium -f cilium.values.yaml -- --repo https://helm.cilium.io --namespace kube-system
 ```
+
+However probably you will see the failure that does not match the snapshot of the certificate in Secrets.
+
+Then add the followings to the value file and re-run the snapshot.
+
+```yaml
+# Change to fixed values
+testSpec:
+  dynamicFields:
+    - apiVersion: v1
+      kind: Secret
+      name: cilium-ca
+      jsonPath:
+        - /data/ca.crt
+        - /data/ca.key
+    - apiVersion: v1
+      kind: Secret
+      name: hubble-relay-client-certs
+      jsonPath:
+        - /data/ca.crt
+        - /data/tls.crt
+        - /data/tls.key
+    - apiVersion: v1
+      kind: Secret
+      name: hubble-server-certs
+      jsonPath:
+        - /data/ca.crt
+        - /data/tls.crt
+        - /data/tls.key
+```
