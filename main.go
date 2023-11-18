@@ -64,6 +64,13 @@ func (o *option) HelmBin() string {
 	return "helm"
 }
 
+func (o *option) OK() string {
+	if o.UpdateSnapshot {
+		return "updated"
+	}
+	return "matched"
+}
+
 func main() {
 	rootCmd := &cobra.Command{
 		Use:   "chartsnap -c CHART",
@@ -271,7 +278,7 @@ func run(cmd *cobra.Command, args []string) error {
 				fmt.Println(failureMessage)
 				return fmt.Errorf("snapshot does not match chart=%s values=%s", ht.Chart, ht.ValuesFile)
 			}
-			bannerPrintln("PASS", fmt.Sprintf("Snapshot matched chart=%s values=%s", ht.Chart, ht.ValuesFile), color.FgGreen, color.BgGreen)
+			bannerPrintln("PASS", fmt.Sprintf("Snapshot %s chart=%s values=%s", o.OK(), ht.Chart, ht.ValuesFile), color.FgGreen, color.BgGreen)
 			return nil
 		})
 	}
@@ -279,7 +286,7 @@ func run(cmd *cobra.Command, args []string) error {
 	if err := eg.Wait(); err != nil {
 		return err
 	}
-	bannerPrintln("PASS", "All snapshot matched", color.FgGreen, color.BgGreen)
+	bannerPrintln("PASS", fmt.Sprintf("All snapshots %s", o.OK()), color.FgGreen, color.BgGreen)
 
 	return nil
 }
