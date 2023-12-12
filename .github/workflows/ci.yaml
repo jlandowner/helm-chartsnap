@@ -43,6 +43,24 @@ jobs:
           additional_args: "--namespace kube-system"
           update_snapshot: true
 
+  nginx-gateway-fabric:
+    runs-on: ubuntu-latest
+    name: Do snapshot nginx-gateway-fabric and create PR if snapshot changed
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update Snapshot
+        uses: jlandowner/helm-chartsnap-action@v1
+        id: helm-chartsnap-action
+        with:
+          chart:  oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric
+          additional_args: "--namespace nginx-gateway"
+          update_snapshot: true
+
   local:
     runs-on: ubuntu-latest
     name: Do snapshot cilium and create PR if snapshot changed

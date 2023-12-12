@@ -54,9 +54,11 @@ func Snap(ctx context.Context, o ChartSnapOptions) (match bool, failureMessage s
 	}
 	Log().Debug("helm template output", "output", string(out))
 
-	manifests, err := unstructured.Decode(string(out))
-	if err != nil {
-		return match, "", fmt.Errorf("failed to load helm output: %w: out='%s'", err, string(out))
+	manifests, errs := unstructured.Decode(string(out))
+	if len(errs) > 0 {
+		for _, err := range errs {
+			Log().Info(fmt.Sprintf("WARN: failed to load helm output: %v", err))
+		}
 	}
 
 	if err := sv.TestSpec.ApplyFixedValue(manifests); err != nil {
@@ -92,7 +94,7 @@ func DefaultSnapshotFilePath(chartPath, valuesFile string) string {
 	} else {
 		// if remote chart, create output directory
 		if _, err := os.Stat(path.Join(chartPath, "Chart.yaml")); os.IsNotExist(err) {
-			chartPath = path.Join("__snapshots__", chartPath)
+			chartPath = path.Join("__snapshots__", path.Base(chartPath))
 		}
 		return SnapshotFilePath(chartPath, valuesFile)
 	}

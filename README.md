@@ -152,6 +152,9 @@ Examples:
   # Snapshot [`cilium`](https://cilium.io) helm chart with default value and set flags:
   chartsnap -c cilium -- --repo https://helm.cilium.io --namespace kube-system --set hubble.relay.enabled=true --set hubble.ui.enabled=true
 
+  # Snapshot charts in OCI registry
+  chartsnap -c oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric -n nginx-gateway
+
   # Output with no colors:
   NO_COLOR=1 chartsnap -c YOUR_CHART
 

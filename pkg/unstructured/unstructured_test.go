@@ -117,9 +117,12 @@ metadata:
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Decode(tt.args.source)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Decode() error = %v, wantErr %v", err, tt.wantErr)
+			got, errs := Decode(tt.args.source)
+			if (len(errs) != 0) != tt.wantErr {
+				t.Errorf("Decode() errorcount = %d, wantErr %v", len(errs), tt.wantErr)
+				for _, err := range errs {
+					t.Errorf("Decode() error = %v", err)
+				}
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {

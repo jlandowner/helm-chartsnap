@@ -28,8 +28,8 @@ var _ = Describe("ApplyDynamicFields", func() {
 		buf, err := io.ReadAll(f)
 		Expect(err).NotTo(HaveOccurred())
 
-		manifests, err := unstructuredutil.Decode(string(buf))
-		Expect(err).NotTo(HaveOccurred())
+		manifests, errs := unstructuredutil.Decode(string(buf))
+		Expect(len(errs)).To(BeZero())
 
 		return manifests
 	}
