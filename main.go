@@ -151,7 +151,7 @@ MIT 2023 jlandowner/helm-chartsnap
 		panic(err)
 	}
 	rootCmd.PersistentFlags().StringVar(&o.ReleaseName, "release-name", "chartsnap", "release name. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'RELEASE_NAME'")
-	rootCmd.PersistentFlags().StringVar(&o.NamespaceFlag, "namespace", "default", "namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE'")
+	rootCmd.PersistentFlags().StringVarP(&o.NamespaceFlag, "namespace", "n", "default", "namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE'")
 	rootCmd.PersistentFlags().StringVarP(&o.ValuesFile, "values", "f", "", "path to a test values file or directory. if directroy is set, all test files are tested. if empty, default values are used. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'VALUES'")
 	rootCmd.PersistentFlags().StringVarP(&o.OutputDir, "output-dir", "o", "", "directory which is __snapshot__ directory is created. (default: values file directory if --values is set; chart directory if chart is local; else current directory)")
 	if err := rootCmd.MarkPersistentFlagDirname("output-dir"); err != nil {
