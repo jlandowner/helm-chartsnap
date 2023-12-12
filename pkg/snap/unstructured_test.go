@@ -19,8 +19,8 @@ var _ = Describe("Unstructured Snapshot", func() {
 		buf, err := io.ReadAll(f)
 		Expect(err).NotTo(HaveOccurred())
 
-		manifests, err := unstructured.Decode(string(buf))
-		Expect(err).NotTo(HaveOccurred())
+		manifests, errs := unstructured.Decode(string(buf))
+		Expect(len(errs)).To(BeZero())
 
 		return UnstructuredMatch(m, manifests)
 	}

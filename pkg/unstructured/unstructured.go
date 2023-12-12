@@ -27,10 +27,12 @@ func Encode(arr []unstructured.Unstructured) ([]byte, error) {
 	return yamlv3.Marshal(arr)
 }
 
-func Decode(source string) ([]unstructured.Unstructured, error) {
+func Decode(source string) ([]unstructured.Unstructured, []error) {
 	splitString := regexp.MustCompile(`(?m)^---$`).Split(source, -1)
 	resources := make([]unstructured.Unstructured, 0, len(splitString))
-	for _, v := range splitString {
+
+	var errs []error = make([]error, 0)
+	for i, v := range splitString {
 		if strings.TrimSpace(v) == "" {
 			continue
 		}
@@ -49,12 +51,13 @@ func Decode(source string) ([]unstructured.Unstructured, error) {
 		}
 		_, obj, err := StringToUnstructured(v)
 		if err != nil {
-			return nil, fmt.Errorf("failed to decode: %w input='%s'", err, v)
+			errs = append(errs, fmt.Errorf("failed to decode manifest at index %d: %w input='%s'", i, err, v))
+			obj = UnknownUnstructured(v)
 		}
 		resources = append(resources, *obj)
 	}
 
-	return resources, nil
+	return resources, errs
 }
 
 func Replace(obj unstructured.Unstructured, key, value string) (*unstructured.Unstructured, error) {

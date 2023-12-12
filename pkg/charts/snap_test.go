@@ -76,7 +76,15 @@ func TestDefaultSnapshotFilePath(t *testing.T) {
 				chartPath:  "ingress-nginx/ingress-nginx",
 				valuesFile: "",
 			},
-			want: "__snapshots__/ingress-nginx/ingress-nginx/__snapshots__/default.snap",
+			want: "__snapshots__/ingress-nginx/__snapshots__/default.snap",
+		},
+		{
+			name: "chart directory with no values file and chart is in OCI registry",
+			args: args{
+				chartPath:  "oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric",
+				valuesFile: "",
+			},
+			want: "__snapshots__/nginx-gateway-fabric/__snapshots__/default.snap",
 		},
 	}
 	for _, tt := range tests {
