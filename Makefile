@@ -1,11 +1,13 @@
 all: build
 
-GO ?= go1.21.3
+GO ?= go1.21.5
 
 go:
-	go install golang.org/dl/$(GO)@latest
-	rm -f $$(which $(GO)))/go
+	-go install golang.org/dl/$(GO)@latest
+	$(GO) download
+	rm -f $$(dirname $$(which $(GO)))/go
 	ln -s $$(which $(GO)) $$(dirname $$(which $(GO)))/go
+	go version
 
 helm:
 	curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
