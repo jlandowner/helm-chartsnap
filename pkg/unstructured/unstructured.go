@@ -32,7 +32,7 @@ func Decode(source string) ([]unstructured.Unstructured, []error) {
 	resources := make([]unstructured.Unstructured, 0, len(splitString))
 
 	var errs []error = make([]error, 0)
-	for i, v := range splitString {
+	for _, v := range splitString {
 		if strings.TrimSpace(v) == "" {
 			continue
 		}
@@ -51,8 +51,9 @@ func Decode(source string) ([]unstructured.Unstructured, []error) {
 		}
 		_, obj, err := StringToUnstructured(v)
 		if err != nil {
-			errs = append(errs, fmt.Errorf("failed to decode manifest at index %d: %w input='%s'", i, err, v))
-			obj = UnknownUnstructured(v)
+			err := NewUnknownError(v)
+			obj = err.Unstructured()
+			errs = append(errs, err)
 		}
 		resources = append(resources, *obj)
 	}

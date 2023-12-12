@@ -54,10 +54,11 @@ func Snap(ctx context.Context, o ChartSnapOptions) (match bool, failureMessage s
 	}
 	Log().Debug("helm template output", "output", string(out))
 
-	manifests, errs := unstructured.Decode(string(out))
-	if len(errs) > 0 {
-		for _, err := range errs {
-			Log().Info(fmt.Sprintf("WARN: failed to load helm output: %v", err))
+	manifests, decodeErrs := unstructured.Decode(string(out))
+	if len(decodeErrs) > 0 {
+		for _, err := range decodeErrs {
+			Log().Info("loading helm output is done with warning")
+			fmt.Println(err)
 		}
 	}
 
