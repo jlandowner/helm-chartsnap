@@ -1,0 +1,36 @@
+{{ $tls := fromYaml ( include "app1.gen-certs" . ) }}
+---
+{{- if not $.Values.certManager.enabled }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app1-cert
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "app1.labels" . | nindent 4 }}
+type: kubernetes.io/tls
+data:
+  ca.crt: {{ $tls.caCert }}
+  tls.crt: {{ $tls.clientCert }}
+  tls.key: {{ $tls.clientKey }}
+{{- else }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    {{- include "app1.labels" . | nindent 4 }}
+  name: app1-cert
+  namespace: {{ .Release.Namespace }}
+spec:
+  dnsNames:
+    - {{ include "app1.fullname" . }}.{{.Release.Namespace}}.svc
+    - {{ include "app1.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local
+  issuerRef:
+    {{- if .Values.certManager.issuer.clusterIssuer }}
+    kind: ClusterIssuer
+    {{- else }}
+    kind: Issuer
+    {{- end }}
+    name: {{ .Values.certManager.issuer.name }}
+  secretName: app1-cert
+{{- end }}

@@ -100,6 +100,23 @@ SnapShot = """
         restartPolicy: Never
 - object:
     apiVersion: v1
+    data:
+        ca.crt: '###DYNAMIC_FIELD###'
+        tls.crt: '###DYNAMIC_FIELD###'
+        tls.key: '###DYNAMIC_FIELD###'
+    kind: Secret
+    metadata:
+        labels:
+            app.kubernetes.io/instance: chartsnap
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: app1
+            app.kubernetes.io/version: 1.16.0
+            helm.sh/chart: app1-0.1.0
+        name: app1-cert
+        namespace: code-server
+    type: kubernetes.io/tls
+- object:
+    apiVersion: v1
     kind: Service
     metadata:
         labels:

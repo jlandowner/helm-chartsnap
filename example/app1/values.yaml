@@ -62,7 +62,7 @@ ingress:
 # Configure when using cert-manager for self-signed certificates: https://cert-manager.io/docs/installation/helm/
 # If cert-manager disabled, helm cert generation feature is used
 certManager:
-  enabled: true
+  enabled: false
   issuer:
     create: true
     clusterIssuer: false
