@@ -2,17 +2,34 @@ package charts
 
 import (
 	"fmt"
+	"os"
 
+	"gopkg.in/yaml.v3"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
 	unstructuredutil "github.com/jlandowner/helm-chartsnap/pkg/unstructured"
 )
 
-type SnapshotValues struct {
-	TestSpec TestSpec `yaml:"testSpec,omitempty"`
+func LoadSnapshotConfig(file string) (SnapshotConfig, error) {
+	cfg := SnapshotConfig{}
+	f, err := os.Open(file)
+	if err != nil {
+		return cfg, nil
+	}
+	defer f.Close()
+
+	err = yaml.NewDecoder(f).Decode(&cfg)
+	if err != nil {
+		return cfg, fmt.Errorf("failed to decode config file '%s': %w", file, err)
+	}
+	return cfg, nil
 }
 
-type TestSpec struct {
+type SnapshotValues struct {
+	TestSpec SnapshotConfig `yaml:"testSpec,omitempty"`
+}
+
+type SnapshotConfig struct {
 	DynamicFields []ManifestPath `yaml:"dynamicFields,omitempty"`
 }
 
@@ -23,7 +40,7 @@ type ManifestPath struct {
 	JSONPath   []string `yaml:"jsonPath,omitempty"`
 }
 
-func (t *TestSpec) ApplyFixedValue(manifests []unstructured.Unstructured) error {
+func (t *SnapshotConfig) ApplyFixedValue(manifests []unstructured.Unstructured) error {
 	for _, v := range t.DynamicFields {
 		for i, obj := range manifests {
 			if v.APIVersion == obj.GetAPIVersion() &&
@@ -40,4 +57,10 @@ func (t *TestSpec) ApplyFixedValue(manifests []unstructured.Unstructured) error 
 		}
 	}
 	return nil
+}
+
+func (t *SnapshotConfig) Merge(cfg SnapshotConfig) {
+	// dynamic fields
+	// It doesn't matter if the same field is replaced with a fixed value several times, so just append and not consider duplication.
+	t.DynamicFields = append(t.DynamicFields, cfg.DynamicFields...)
 }

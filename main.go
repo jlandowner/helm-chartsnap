@@ -34,6 +34,7 @@ type option struct {
 	DiffContextLineN int
 	FailFast         bool
 	Parallelism      int
+	ConfigFile       string
 
 	// Below properties are the same as helm global options
 	// They are passed to the plugin as environment variables
@@ -162,6 +163,10 @@ MIT 2023 jlandowner/helm-chartsnap
 	rootCmd.PersistentFlags().IntVarP(&o.DiffContextLineN, "ctx-lines", "N", 3, "number of lines to show in diff output. 0 for full output")
 	rootCmd.PersistentFlags().BoolVar(&o.FailFast, "failfast", false, "fail once any test case failed")
 	rootCmd.PersistentFlags().IntVar(&o.Parallelism, "parallelism", -1, "test concurrency if taking multiple snapshots for a test value file directory. default is unlimited")
+	rootCmd.PersistentFlags().StringVar(&o.ConfigFile, "config-file", ".chartsnap.yaml", "config file name or path, which defines snapshot behavior e.g. dynamic fields")
+	if err := rootCmd.MarkPersistentFlagFilename("config-file"); err != nil {
+		panic(err)
+	}
 
 	if err := rootCmd.Execute(); err != nil {
 		slog.New(slogHandler()).Error(err.Error())
@@ -200,6 +205,8 @@ func run(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	var cfg charts.SnapshotConfig
+
 	if o.ValuesFile == "" {
 		values = []string{""}
 	} else {
@@ -213,7 +220,16 @@ func run(cmd *cobra.Command, args []string) error {
 			}
 			values = make([]string, 0)
 			for _, f := range files {
-				// read only *.yaml
+				// pick config file in a test values directory
+				if f.Name() == o.ConfigFile {
+					cfg, err = charts.LoadSnapshotConfig(path.Join(o.ValuesFile, f.Name()))
+					if err != nil {
+						// err
+					}
+					continue
+				}
+
+				// read test values files (only *.yaml)
 				if !f.IsDir() && strings.HasSuffix(f.Name(), ".yaml") {
 					values = append(values, path.Join(o.ValuesFile, f.Name()))
 				}
@@ -272,6 +288,7 @@ func run(cmd *cobra.Command, args []string) error {
 
 			opts := charts.ChartSnapOptions{
 				HelmTemplateCmdOptions: ht,
+				SnapshotConfig:         cfg,
 				SnapshotFile:           snapshotFilePath,
 				DiffContextLineN:       o.DiffContextLineN,
 			}

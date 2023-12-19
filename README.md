@@ -184,16 +184,15 @@ For this case, chartsnap has a feature that prevents mismatched snapshots by sub
 You can specify the paths of dynamic values in the generated YAML using [JSONPath](https://datatracker.ietf.org/doc/html/rfc6901).
 
 ```yaml:.chartsnap.yaml
-testSpec:
-  dynamicFields:
-    - apiVersion: v1
-      kind: Secret
-      name: cosmo-auth-env
-      jsonPath:
-        - /data/COOKIE_HASHKEY
-        - /data/COOKIE_BLOCKKEY
-        - /data/COOKIE_HASHKEY
-        - /data/COOKIE_SESSION_NAME
+dynamicFields:
+  - apiVersion: v1
+    kind: Secret
+    name: cosmo-auth-env
+    jsonPath:
+      - /data/COOKIE_HASHKEY
+      - /data/COOKIE_BLOCKKEY
+      - /data/COOKIE_HASHKEY
+      - /data/COOKIE_SESSION_NAME
 ```
 
 If you have a test values file directory, place it as a `.chartsnap.yaml` file within that directory. It is a common behavior in all snapshot tests in the directory.

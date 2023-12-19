@@ -1,0 +1,8 @@
+# This file define common behavior of the chart snapshots in the test directory.
+testSpec:
+  dynamicFields:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: app1
+      jsonPath:
+        - /spec/template/spec/containers/0/image

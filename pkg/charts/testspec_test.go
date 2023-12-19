@@ -35,7 +35,7 @@ var _ = Describe("ApplyDynamicFields", func() {
 	}
 
 	It("should replace specified fields", func() {
-		testSpec := &TestSpec{
+		cfg := &SnapshotConfig{
 			DynamicFields: []ManifestPath{
 				{
 					APIVersion: "v1",
@@ -88,8 +88,55 @@ var _ = Describe("ApplyDynamicFields", func() {
 			},
 		}
 		manifests := load("testdata/testspec_test.yaml")
-		err := testSpec.ApplyFixedValue(manifests)
+		err := cfg.ApplyFixedValue(manifests)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(manifests).To(snap.MatchSnapShot())
+	})
+})
+
+var _ = Describe("Merge", func() {
+	It("should merge dynamic fields", func() {
+		cfg1 := SnapshotConfig{
+			DynamicFields: []ManifestPath{
+				{
+					APIVersion: "v1",
+					Kind:       "service",
+					Name:       "chartsnap-app1",
+					JSONPath: []string{
+						"/spec/ports/0/targetPort",
+					},
+				},
+				{
+					APIVersion: "v1",
+					Kind:       "Service",
+					Name:       "chartsnap-app1",
+					JSONPath: []string{
+						"/spec/ports/1/targetPort",
+					},
+				},
+			},
+		}
+		cfg2 := SnapshotConfig{
+			DynamicFields: []ManifestPath{
+				{
+					APIVersion: "v1",
+					Kind:       "service",
+					Name:       "chartsnap-app1",
+					JSONPath: []string{
+						"/spec/ports/0/targetPort",
+					},
+				},
+				{
+					APIVersion: "v1",
+					Kind:       "Pod",
+					Name:       "chartsnap-app1-test-connection",
+					JSONPath: []string{
+						"/metadata/name",
+					},
+				},
+			},
+		}
+		cfg1.Merge(cfg2)
+		Expect(cfg1).To(snap.MatchSnapShot())
 	})
 })
