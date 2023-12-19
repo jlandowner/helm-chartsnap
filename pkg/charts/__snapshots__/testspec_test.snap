@@ -151,3 +151,43 @@ SnapShot = """
   }
 ]
 """
+
+['Merge should merge dynamic fields 1']
+SnapShot = """
+{
+  \"DynamicFields\": [
+    {
+      \"Kind\": \"service\",
+      \"APIVersion\": \"v1\",
+      \"Name\": \"chartsnap-app1\",
+      \"JSONPath\": [
+        \"/spec/ports/0/targetPort\"
+      ]
+    },
+    {
+      \"Kind\": \"Service\",
+      \"APIVersion\": \"v1\",
+      \"Name\": \"chartsnap-app1\",
+      \"JSONPath\": [
+        \"/spec/ports/1/targetPort\"
+      ]
+    },
+    {
+      \"Kind\": \"service\",
+      \"APIVersion\": \"v1\",
+      \"Name\": \"chartsnap-app1\",
+      \"JSONPath\": [
+        \"/spec/ports/0/targetPort\"
+      ]
+    },
+    {
+      \"Kind\": \"Pod\",
+      \"APIVersion\": \"v1\",
+      \"Name\": \"chartsnap-app1-test-connection\",
+      \"JSONPath\": [
+        \"/metadata/name\"
+      ]
+    }
+  ]
+}
+"""

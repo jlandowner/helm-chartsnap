@@ -28,6 +28,7 @@ func Log() *slog.Logger {
 
 type ChartSnapOptions struct {
 	HelmTemplateCmdOptions HelmTemplateCmdOptions
+	SnapshotConfig         SnapshotConfig
 	SnapshotFile           string
 	DiffContextLineN       int
 }
@@ -46,6 +47,10 @@ func Snap(ctx context.Context, o ChartSnapOptions) (match bool, failureMessage s
 			return match, "", fmt.Errorf("failed to decode values file: %w", err)
 		}
 	}
+
+	// merge snapshot config file and config in snapshot values file
+	sv.TestSpec.Merge(o.SnapshotConfig)
+
 	Log().Debug("test spec from values file", "spec", sv.TestSpec)
 
 	out, err := o.HelmTemplateCmdOptions.Execute(ctx)
