@@ -32,7 +32,7 @@ type option struct {
 	UpdateSnapshot   bool
 	OutputDir        string
 	DiffContextLineN int
-	FailOnce         bool
+	FailFast         bool
 	Parallelism      int
 
 	// Below properties are the same as helm global options
@@ -162,7 +162,7 @@ MIT 2023 jlandowner/helm-chartsnap
 		panic(err)
 	}
 	rootCmd.PersistentFlags().IntVarP(&o.DiffContextLineN, "ctx-lines", "N", 3, "number of lines to show in diff output. 0 for full output")
-	rootCmd.PersistentFlags().BoolVar(&o.FailOnce, "fail-once", false, "fail once any test case failed")
+	rootCmd.PersistentFlags().BoolVar(&o.FailFast, "failfast", false, "fail once any test case failed")
 	rootCmd.PersistentFlags().IntVar(&o.Parallelism, "parallelism", -1, "test concurrency if taking multiple snapshots for a test value file directory. default is unlimited")
 
 	if err := rootCmd.Execute(); err != nil {
@@ -226,7 +226,7 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	eg, ctx := errgroup.WithContext(cmd.Context())
-	if !o.FailOnce {
+	if !o.FailFast {
 		// not cancel ctx even if some case failed
 		ctx = cmd.Context()
 	}
