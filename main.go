@@ -33,6 +33,7 @@ type option struct {
 	OutputDir        string
 	DiffContextLineN int
 	FailOnce         bool
+	Parallelism      int
 
 	// Below properties are the same as helm global options
 	// They are passed to the plugin as environment variables
@@ -162,6 +163,7 @@ MIT 2023 jlandowner/helm-chartsnap
 	}
 	rootCmd.PersistentFlags().IntVarP(&o.DiffContextLineN, "ctx-lines", "N", 3, "number of lines to show in diff output. 0 for full output")
 	rootCmd.PersistentFlags().BoolVar(&o.FailOnce, "fail-once", false, "fail once any test case failed")
+	rootCmd.PersistentFlags().IntVar(&o.Parallelism, "parallelism", -1, "test concurrency if taking multiple snapshots for a test value file directory. default is unlimited")
 
 	if err := rootCmd.Execute(); err != nil {
 		slog.New(slogHandler()).Error(err.Error())
@@ -228,6 +230,8 @@ func run(cmd *cobra.Command, args []string) error {
 		// not cancel ctx even if some case failed
 		ctx = cmd.Context()
 	}
+	// limit concurrency to o.Parallelism
+	eg.SetLimit(o.Parallelism)
 	if o.Debug() {
 		// limit concurrency to 1 for debugging.
 		eg.SetLimit(1)
@@ -257,6 +261,8 @@ func run(cmd *cobra.Command, args []string) error {
 				log.Debug("snapshot file already exists", "path", snapshotFilePath)
 			} else if os.IsNotExist(err) {
 				log.Debug("snapshot file does not exist", "path", snapshotFilePath)
+			} else {
+				log.Error("unexpected error in snapshot file stat", "path", snapshotFilePath, "err", err)
 			}
 
 			if o.UpdateSnapshot {
