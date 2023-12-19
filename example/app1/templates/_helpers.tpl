@@ -60,3 +60,15 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Generate certificates 
+*/}}
+{{- define "app1.gen-certs" -}}
+{{- $altNames := list ( printf "%s.%s.svc"  ( include "app1.fullname" . ) .Release.Namespace ) ( printf "%s.%s.svc.cluster.local"  ( include "app1.fullname" . ) .Release.Namespace ) -}}
+{{- $ca := genCA "app1-ca" 3650 -}}
+{{- $cert := genSignedCert ( include "app1.fullname" . ) nil $altNames 3650 $ca -}}
+caCert:     {{ $ca.Cert   | b64enc }}
+clientCert: {{ $cert.Cert | b64enc }}
+clientKey:  {{ $cert.Key  | b64enc }}
+{{- end }}
