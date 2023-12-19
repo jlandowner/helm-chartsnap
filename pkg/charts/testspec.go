@@ -13,7 +13,6 @@ type SnapshotValues struct {
 }
 
 type TestSpec struct {
-	Description   string         `yaml:"desc,omitempty"`
 	DynamicFields []ManifestPath `yaml:"dynamicFields,omitempty"`
 }
 
