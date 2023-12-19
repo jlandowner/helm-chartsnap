@@ -14,7 +14,11 @@ func LoadSnapshotConfig(file string) (SnapshotConfig, error) {
 	cfg := SnapshotConfig{}
 	f, err := os.Open(file)
 	if err != nil {
-		return cfg, nil
+		if os.IsNotExist(err) {
+			return cfg, nil // ignore not found
+		} else {
+			return cfg, fmt.Errorf("failed to open config file '%s': %w", file, err)
+		}
 	}
 	defer f.Close()
 

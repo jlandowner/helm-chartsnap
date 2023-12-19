@@ -224,7 +224,11 @@ func run(cmd *cobra.Command, args []string) error {
 				if f.Name() == o.ConfigFile {
 					cfg, err = charts.LoadSnapshotConfig(path.Join(o.ValuesFile, f.Name()))
 					if err != nil {
-						// err
+						if o.FailFast {
+							return fmt.Errorf("failed to load snapshot config: %w", err)
+						} else {
+							log.Error("warning: failed to load snapshot config", "path", path.Join(o.ValuesFile, f.Name()), "err", err)
+						}
 					}
 					continue
 				}
