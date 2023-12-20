@@ -1,7 +1,7 @@
 # helm plugin config file
 # Ref: https://helm.sh/docs/topics/plugins/
 name: chartsnap
-version: 0.0.9
+version: 0.1.0
 usage: Snapshot testing for Helm charts
 description: Snapshot testing for Helm charts
 command: "$HELM_PLUGIN_DIR/bin/chartsnap"
