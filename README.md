@@ -160,11 +160,12 @@ Examples:
 
 Flags:
   -c, --chart string          path to the chart directory. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'CHART'
+      --config-file string    config file name or path, which defines snapshot behavior e.g. dynamic fields (default ".chartsnap.yaml")
   -N, --ctx-lines int         number of lines to show in diff output. 0 for full output (default 3)
       --debug                 debug mode
       --failfast              fail once any test case failed
   -h, --help                  help for chartsnap
-      --namespace string      namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE' (default "default")
+  -n, --namespace string      namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE' (default "default")
   -o, --output-dir string     directory which is __snapshot__ directory is created. (default: values file directory if --values is set; chart directory if chart is local; else current directory)
       --parallelism int       test concurrency if taking multiple snapshots for a test value file directory. default is unlimited (default -1)
       --release-name string   release name. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'RELEASE_NAME' (default "chartsnap")
