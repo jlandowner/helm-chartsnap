@@ -54,7 +54,7 @@ There are existing Helm testing tools that support snapshot tests.
 - [helm-unittest](https://github.com/helm-unittest/helm-unittest), a popular unit test tool, it has an option to do [snapshot testing](https://github.com/helm-unittest/helm-unittest#snapshot-testing).
 - [terratest](https://terratest.gruntwork.io/), Automated tests for your infrastructure code. It can write tests as Go codes and it has the feature to test the output of Helm. [blog post](https://blog.gruntwork.io/automated-testing-for-kubernetes-and-helm-charts-using-terratest-a4ddc4e67344)
 
-> Helm offitial test tool [`ct`](https://github.com/helm/chart-testing) is not for unit tests or snapshot tests but for lint and integration test
+> The official Helm test tool [`ct`](https://github.com/helm/chart-testing) is not for unit tests or snapshot tests but for lint and integration test
 
 While they are valuable tools for testing Helm charts, it has certain limitations for snapshot testing.
 
