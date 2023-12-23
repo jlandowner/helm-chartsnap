@@ -61,6 +61,7 @@ jobs:
         id: helm-chartsnap-action
         with:
           chart:  oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric
+          values: example/remote/nginx-gateway-fabric.values.yaml
           additional_args: "--namespace nginx-gateway"
           update_snapshot: true
 
