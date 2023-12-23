@@ -11,8 +11,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx-admission
     webhooks:
         - admissionReviewVersions:
@@ -46,8 +46,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx-controller
         namespace: ingress-nginx
     spec:
@@ -67,8 +67,8 @@ SnapShot = """
                     app.kubernetes.io/managed-by: Helm
                     app.kubernetes.io/name: ingress-nginx
                     app.kubernetes.io/part-of: ingress-nginx
-                    app.kubernetes.io/version: 1.9.4
-                    helm.sh/chart: ingress-nginx-4.8.3
+                    app.kubernetes.io/version: 1.9.5
+                    helm.sh/chart: ingress-nginx-4.9.0
             spec:
                 containers:
                     - args:
@@ -92,7 +92,7 @@ SnapShot = """
                                 fieldPath: metadata.namespace
                         - name: LD_PRELOAD
                           value: /usr/local/lib/libmimalloc.so
-                      image: registry.k8s.io/ingress-nginx/controller:v1.9.4@sha256:5b161f051d017e55d358435f295f5e9a297e66158f136321d9b04520ec6c48a3
+                      image: registry.k8s.io/ingress-nginx/controller:v1.9.5@sha256:b3aba22b1da80e7acfc52b115cae1d4c687172cbf2b742d5b502419c25ff340e
                       imagePullPolicy: IfNotPresent
                       lifecycle:
                         preStop:
@@ -135,13 +135,17 @@ SnapShot = """
                             cpu: 100m
                             memory: 90Mi
                       securityContext:
-                        allowPrivilegeEscalation: true
+                        allowPrivilegeEscalation: false
                         capabilities:
                             add:
                                 - NET_BIND_SERVICE
                             drop:
                                 - ALL
+                        readOnlyRootFilesystem: false
+                        runAsNonRoot: true
                         runAsUser: 101
+                        seccompProfile:
+                            type: RuntimeDefault
                       volumeMounts:
                         - mountPath: /usr/local/certificates/
                           name: webhook-cert
@@ -168,8 +172,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx-admission-create
         namespace: ingress-nginx
     spec:
@@ -181,8 +185,8 @@ SnapShot = """
                     app.kubernetes.io/managed-by: Helm
                     app.kubernetes.io/name: ingress-nginx
                     app.kubernetes.io/part-of: ingress-nginx
-                    app.kubernetes.io/version: 1.9.4
-                    helm.sh/chart: ingress-nginx-4.8.3
+                    app.kubernetes.io/version: 1.9.5
+                    helm.sh/chart: ingress-nginx-4.9.0
                 name: chartsnap-ingress-nginx-admission-create
             spec:
                 containers:
@@ -201,13 +205,17 @@ SnapShot = """
                       name: create
                       securityContext:
                         allowPrivilegeEscalation: false
+                        capabilities:
+                            drop:
+                                - ALL
+                        readOnlyRootFilesystem: true
+                        runAsNonRoot: true
+                        runAsUser: 65532
+                        seccompProfile:
+                            type: RuntimeDefault
                 nodeSelector:
                     kubernetes.io/os: linux
                 restartPolicy: OnFailure
-                securityContext:
-                    fsGroup: 2000
-                    runAsNonRoot: true
-                    runAsUser: 2000
                 serviceAccountName: chartsnap-ingress-nginx-admission
 - object:
     apiVersion: batch/v1
@@ -222,8 +230,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx-admission-patch
         namespace: ingress-nginx
     spec:
@@ -235,8 +243,8 @@ SnapShot = """
                     app.kubernetes.io/managed-by: Helm
                     app.kubernetes.io/name: ingress-nginx
                     app.kubernetes.io/part-of: ingress-nginx
-                    app.kubernetes.io/version: 1.9.4
-                    helm.sh/chart: ingress-nginx-4.8.3
+                    app.kubernetes.io/version: 1.9.5
+                    helm.sh/chart: ingress-nginx-4.9.0
                 name: chartsnap-ingress-nginx-admission-patch
             spec:
                 containers:
@@ -257,13 +265,17 @@ SnapShot = """
                       name: patch
                       securityContext:
                         allowPrivilegeEscalation: false
+                        capabilities:
+                            drop:
+                                - ALL
+                        readOnlyRootFilesystem: true
+                        runAsNonRoot: true
+                        runAsUser: 65532
+                        seccompProfile:
+                            type: RuntimeDefault
                 nodeSelector:
                     kubernetes.io/os: linux
                 restartPolicy: OnFailure
-                securityContext:
-                    fsGroup: 2000
-                    runAsNonRoot: true
-                    runAsUser: 2000
                 serviceAccountName: chartsnap-ingress-nginx-admission
 - object:
     apiVersion: networking.k8s.io/v1
@@ -275,39 +287,11 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: nginx
     spec:
         controller: k8s.io/ingress-nginx
-- object:
-    apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
-    metadata:
-        annotations:
-            helm.sh/hook: pre-install,pre-upgrade,post-install,post-upgrade
-            helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
-        labels:
-            app.kubernetes.io/component: admission-webhook
-            app.kubernetes.io/instance: chartsnap
-            app.kubernetes.io/managed-by: Helm
-            app.kubernetes.io/name: ingress-nginx
-            app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
-        name: chartsnap-ingress-nginx-admission
-        namespace: ingress-nginx
-    spec:
-        egress:
-            - {}
-        podSelector:
-            matchLabels:
-                app.kubernetes.io/component: admission-webhook
-                app.kubernetes.io/instance: chartsnap
-                app.kubernetes.io/name: ingress-nginx
-        policyTypes:
-            - Ingress
-            - Egress
 - object:
     apiVersion: rbac.authorization.k8s.io/v1
     kind: ClusterRole
@@ -317,8 +301,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx
     rules:
         - apiGroups:
@@ -404,8 +388,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx-admission
     rules:
         - apiGroups:
@@ -424,8 +408,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx
     roleRef:
         apiGroup: rbac.authorization.k8s.io
@@ -448,8 +432,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx-admission
     roleRef:
         apiGroup: rbac.authorization.k8s.io
@@ -469,8 +453,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx
         namespace: ingress-nginx
     rules:
@@ -564,8 +548,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx-admission
         namespace: ingress-nginx
     rules:
@@ -586,8 +570,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx
         namespace: ingress-nginx
     roleRef:
@@ -611,8 +595,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx-admission
         namespace: ingress-nginx
     roleRef:
@@ -635,8 +619,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx-controller
         namespace: ingress-nginx
 - object:
@@ -650,8 +634,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx-controller
         namespace: ingress-nginx
     spec:
@@ -684,8 +668,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx-controller-admission
         namespace: ingress-nginx
     spec:
@@ -711,11 +695,14 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx-controller-internal
         namespace: ingress-nginx
     spec:
+        ipFamilies:
+            - IPv4
+        ipFamilyPolicy: SingleStack
         ports:
             - appProtocol: http
               name: http
@@ -743,8 +730,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx
         namespace: ingress-nginx
 - object:
@@ -760,8 +747,8 @@ SnapShot = """
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: ingress-nginx
             app.kubernetes.io/part-of: ingress-nginx
-            app.kubernetes.io/version: 1.9.4
-            helm.sh/chart: ingress-nginx-4.8.3
+            app.kubernetes.io/version: 1.9.5
+            helm.sh/chart: ingress-nginx-4.9.0
         name: chartsnap-ingress-nginx-admission
         namespace: ingress-nginx
 """
