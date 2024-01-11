@@ -196,6 +196,23 @@ dynamicFields:
       - /data/COOKIE_SESSION_NAME
 ```
 
+> NOTE:
+> In JSONPath, escaping the / character is documented in [RFC6901, section 3](https://datatracker.ietf.org/doc/html/rfc6901#section-3)
+> ```
+>    Because the characters '~' (%x7E) and '/' (%x2F) have special
+>    meanings in JSON Pointer, '~' needs to be encoded as '~0' and '/'
+>    needs to be encoded as '~1' when these characters appear in a
+>    reference token.
+> ```
+>
+> So if you handle a manifest like the following, you need to specify the json path as `/metadata/annotaions/checksum~1values`.
+> 
+> ```yaml
+> metadata:
+>   annotations:
+>     checksum/values: RANDOM_VALUES
+> ```
+
 If you have a test values file directory, place it as a `.chartsnap.yaml` file within that directory. It is a common behavior in all snapshot tests in the directory.
 
 For more examples, see [example/app1](example/app1).
@@ -233,23 +250,6 @@ testSpec:
 # Others can be any of your chart values.
 # ...
 ```
-
-> NOTE:
-> In JSON Patch, escaping the / character is documented in [RFC6901, section 3](https://datatracker.ietf.org/doc/html/rfc6901#section-3)
-> ```
->    Because the characters '~' (%x7E) and '/' (%x2F) have special
->    meanings in JSON Pointer, '~' needs to be encoded as '~0' and '/'
->    needs to be encoded as '~1' when these characters appear in a
->    reference token.
-> ```
->
-> So you need to specifiy the path `/metadata/annotaions/checksum~1values` for the below manifest.
-> 
-> ```yaml
-> metadata:
->   annotations:
->     checksum/values: RANDOM_VALUES
-> ```
 
 For more examples, see [example/remote](example/remote).
 
