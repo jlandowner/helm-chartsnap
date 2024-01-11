@@ -234,6 +234,23 @@ testSpec:
 # ...
 ```
 
+> NOTE:
+> In JSON Patch, escaping the / character is documented in [RFC6901, section 3](https://datatracker.ietf.org/doc/html/rfc6901#section-3)
+> ```
+>    Because the characters '~' (%x7E) and '/' (%x2F) have special
+>    meanings in JSON Pointer, '~' needs to be encoded as '~0' and '/'
+>    needs to be encoded as '~1' when these characters appear in a
+>    reference token.
+> ```
+>
+> So you need to specifiy the path `/metadata/annotaions/checksum~1values` for the below manifest.
+> 
+> ```yaml
+> metadata:
+>   annotations:
+>     checksum/values: RANDOM_VALUES
+> ```
+
 For more examples, see [example/remote](example/remote).
 
 ## Showcase & Users ✨
