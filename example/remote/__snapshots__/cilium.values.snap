@@ -52,7 +52,7 @@ SnapShot = """
                                 fieldPath: metadata.namespace
                         - name: CILIUM_CLUSTERMESH_CONFIG
                           value: /var/lib/cilium/clustermesh/
-                      image: quay.io/cilium/cilium:v1.14.5@sha256:d3b287029755b6a47dee01420e2ea469469f1b174a2089c10af7e5e9289ef05b
+                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
                       imagePullPolicy: IfNotPresent
                       lifecycle:
                         postStart:
@@ -74,10 +74,10 @@ SnapShot = """
                                       # dependencies on anything that is part of the startup script
                                       # itself, and can be safely run multiple times per node (e.g. in
                                       # case of a restart).
-                                      if [[ \"$(iptables-save | grep -c 'AWS-SNAT-CHAIN|AWS-CONNMARK-CHAIN')\" != \"0\" ]];
+                                      if [[ \"$(iptables-save | grep -E -c 'AWS-SNAT-CHAIN|AWS-CONNMARK-CHAIN')\" != \"0\" ]];
                                       then
                                           echo 'Deleting iptables rules created by the AWS CNI VPC plugin'
-                                          iptables-save | grep -v 'AWS-SNAT-CHAIN|AWS-CONNMARK-CHAIN' | iptables-restore
+                                          iptables-save | grep -E -v 'AWS-SNAT-CHAIN|AWS-CONNMARK-CHAIN' | iptables-restore
                                       fi
                                       echo 'Done!'
                         preStop:
@@ -185,7 +185,7 @@ SnapShot = """
                             fieldRef:
                                 apiVersion: v1
                                 fieldPath: metadata.namespace
-                      image: quay.io/cilium/cilium:v1.14.5@sha256:d3b287029755b6a47dee01420e2ea469469f1b174a2089c10af7e5e9289ef05b
+                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
                       imagePullPolicy: IfNotPresent
                       name: config
                       terminationMessagePolicy: FallbackToLogsOnError
@@ -204,7 +204,7 @@ SnapShot = """
                           value: /run/cilium/cgroupv2
                         - name: BIN_PATH
                           value: /opt/cni/bin
-                      image: quay.io/cilium/cilium:v1.14.5@sha256:d3b287029755b6a47dee01420e2ea469469f1b174a2089c10af7e5e9289ef05b
+                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
                       imagePullPolicy: IfNotPresent
                       name: mount-cgroup
                       securityContext:
@@ -234,7 +234,7 @@ SnapShot = """
                       env:
                         - name: BIN_PATH
                           value: /opt/cni/bin
-                      image: quay.io/cilium/cilium:v1.14.5@sha256:d3b287029755b6a47dee01420e2ea469469f1b174a2089c10af7e5e9289ef05b
+                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
                       imagePullPolicy: IfNotPresent
                       name: apply-sysctl-overwrites
                       securityContext:
@@ -260,7 +260,7 @@ SnapShot = """
                         - /bin/bash
                         - -c
                         - --
-                      image: quay.io/cilium/cilium:v1.14.5@sha256:d3b287029755b6a47dee01420e2ea469469f1b174a2089c10af7e5e9289ef05b
+                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
                       imagePullPolicy: IfNotPresent
                       name: mount-bpf-fs
                       securityContext:
@@ -285,7 +285,7 @@ SnapShot = """
                                 key: clean-cilium-bpf-state
                                 name: cilium-config
                                 optional: true
-                      image: quay.io/cilium/cilium:v1.14.5@sha256:d3b287029755b6a47dee01420e2ea469469f1b174a2089c10af7e5e9289ef05b
+                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
                       imagePullPolicy: IfNotPresent
                       name: clean-cilium-state
                       securityContext:
@@ -311,7 +311,7 @@ SnapShot = """
                           name: cilium-run
                     - command:
                         - /install-plugin.sh
-                      image: quay.io/cilium/cilium:v1.14.5@sha256:d3b287029755b6a47dee01420e2ea469469f1b174a2089c10af7e5e9289ef05b
+                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
                       imagePullPolicy: IfNotPresent
                       name: install-cni-binaries
                       resources:
@@ -495,7 +495,7 @@ SnapShot = """
                                 key: AWS_DEFAULT_REGION
                                 name: cilium-aws
                                 optional: true
-                      image: quay.io/cilium/operator-aws:v1.14.5@sha256:785ccf1267d0ed3ba9e4bd8166577cb4f9e4ce996af26b27c9d5c554a0d5b09a
+                      image: quay.io/cilium/operator-aws:v1.14.6@sha256:8ed8b5c82fdccfc857891fe9d13ebcbad227a411871d4fc4c1803a32d6ba8e08
                       imagePullPolicy: IfNotPresent
                       livenessProbe:
                         httpGet:
@@ -575,7 +575,7 @@ SnapShot = """
                         - serve
                       command:
                         - hubble-relay
-                      image: quay.io/cilium/hubble-relay:v1.14.5@sha256:dbef89f924a927043d02b40c18e417c1ea0e8f58b44523b80fef7e3652db24d4
+                      image: quay.io/cilium/hubble-relay:v1.14.6@sha256:adeb90adae481bb952211483f511afee40825707953ed7ac118902d3bc8dd37f
                       imagePullPolicy: IfNotPresent
                       livenessProbe:
                         tcpSocket:
@@ -1141,6 +1141,7 @@ SnapShot = """
         debug: \"false\"
         debug-verbose: \"\"
         disable-cnp-status-updates: \"true\"
+        dnsproxy-enable-transparent-mode: \"true\"
         ec2-api-endpoint: \"\"
         egress-gateway-reconciliation-trigger-interval: 1s
         egress-masquerade-interfaces: eth0
