@@ -2,6 +2,8 @@ module github.com/jlandowner/helm-chartsnap
 
 go 1.22
 
+toolchain go1.22.1
+
 require (
 	github.com/aryann/difflib v0.0.0-20210328193216-ff5ff6dc229b
 	github.com/evanphx/json-patch/v5 v5.9.0
