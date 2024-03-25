@@ -261,4 +261,6 @@ For more examples, see [example/remote](example/remote).
 | Example | Example of snapshotting charts in remote Helm repositories | [`example/remote`](./example/remote) |
 | [helm-chartsnap-action](https://github.com/jlandowner/helm-chartsnap-action) | GitHub action to use helm chartsnap in CI | https://github.com/jlandowner/helm-chartsnap-action |
 | [cosmo-workspace](https://github.com/cosmo-workspace/cosmo) | Open source WebIDE & DevEnvironment Platform on Kubernetes | https://github.com/cosmo-workspace/cosmo/tree/main/charts/cosmo/test |
+| [Kong](https://github.com/Kong/kong) | 🦍 The Cloud-Native API Gateway and AI Gateway. | https://github.com/Kong/charts |
+
 
