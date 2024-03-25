@@ -52,7 +52,12 @@ SnapShot = """
                                 fieldPath: metadata.namespace
                         - name: CILIUM_CLUSTERMESH_CONFIG
                           value: /var/lib/cilium/clustermesh/
-                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
+                        - name: GOMEMLIMIT
+                          valueFrom:
+                            resourceFieldRef:
+                                divisor: \"1\"
+                                resource: limits.memory
+                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
                       imagePullPolicy: IfNotPresent
                       lifecycle:
                         postStart:
@@ -141,6 +146,7 @@ SnapShot = """
                             path: /healthz
                             port: 9879
                             scheme: HTTP
+                        initialDelaySeconds: 5
                         periodSeconds: 2
                         successThreshold: 1
                       terminationMessagePolicy: FallbackToLogsOnError
@@ -172,7 +178,7 @@ SnapShot = """
                 hostNetwork: true
                 initContainers:
                     - command:
-                        - cilium
+                        - cilium-dbg
                         - build-config
                       env:
                         - name: K8S_NODE_NAME
@@ -185,7 +191,7 @@ SnapShot = """
                             fieldRef:
                                 apiVersion: v1
                                 fieldPath: metadata.namespace
-                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
+                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
                       imagePullPolicy: IfNotPresent
                       name: config
                       terminationMessagePolicy: FallbackToLogsOnError
@@ -204,7 +210,7 @@ SnapShot = """
                           value: /run/cilium/cgroupv2
                         - name: BIN_PATH
                           value: /opt/cni/bin
-                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
+                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
                       imagePullPolicy: IfNotPresent
                       name: mount-cgroup
                       securityContext:
@@ -234,7 +240,7 @@ SnapShot = """
                       env:
                         - name: BIN_PATH
                           value: /opt/cni/bin
-                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
+                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
                       imagePullPolicy: IfNotPresent
                       name: apply-sysctl-overwrites
                       securityContext:
@@ -260,7 +266,7 @@ SnapShot = """
                         - /bin/bash
                         - -c
                         - --
-                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
+                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
                       imagePullPolicy: IfNotPresent
                       name: mount-bpf-fs
                       securityContext:
@@ -285,7 +291,13 @@ SnapShot = """
                                 key: clean-cilium-bpf-state
                                 name: cilium-config
                                 optional: true
-                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
+                        - name: WRITE_CNI_CONF_WHEN_READY
+                          valueFrom:
+                            configMapKeyRef:
+                                key: write-cni-conf-when-ready
+                                name: cilium-config
+                                optional: true
+                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
                       imagePullPolicy: IfNotPresent
                       name: clean-cilium-state
                       securityContext:
@@ -311,7 +323,7 @@ SnapShot = """
                           name: cilium-run
                     - command:
                         - /install-plugin.sh
-                      image: quay.io/cilium/cilium:v1.14.6@sha256:37a49f1abb333279a9b802ee8a21c61cde9dd9138b5ac55f77bdfca733ba852a
+                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
                       imagePullPolicy: IfNotPresent
                       name: install-cni-binaries
                       resources:
@@ -439,7 +451,9 @@ SnapShot = """
             type: RollingUpdate
         template:
             metadata:
-                annotations: null
+                annotations:
+                    prometheus.io/port: \"9963\"
+                    prometheus.io/scrape: \"true\"
                 labels:
                     app.kubernetes.io/name: cilium-operator
                     app.kubernetes.io/part-of: cilium
@@ -495,7 +509,7 @@ SnapShot = """
                                 key: AWS_DEFAULT_REGION
                                 name: cilium-aws
                                 optional: true
-                      image: quay.io/cilium/operator-aws:v1.14.6@sha256:8ed8b5c82fdccfc857891fe9d13ebcbad227a411871d4fc4c1803a32d6ba8e08
+                      image: quay.io/cilium/operator-aws:v1.15.2@sha256:3f459999b753bfd8626f8effdf66720a996b2c15c70f4e418011d00de33552eb
                       imagePullPolicy: IfNotPresent
                       livenessProbe:
                         httpGet:
@@ -507,6 +521,11 @@ SnapShot = """
                         periodSeconds: 10
                         timeoutSeconds: 3
                       name: cilium-operator
+                      ports:
+                        - containerPort: 9963
+                          hostPort: 9963
+                          name: prometheus
+                          protocol: TCP
                       readinessProbe:
                         failureThreshold: 5
                         httpGet:
@@ -575,18 +594,20 @@ SnapShot = """
                         - serve
                       command:
                         - hubble-relay
-                      image: quay.io/cilium/hubble-relay:v1.14.6@sha256:adeb90adae481bb952211483f511afee40825707953ed7ac118902d3bc8dd37f
+                      image: quay.io/cilium/hubble-relay:v1.15.2@sha256:48480053930e884adaeb4141259ff1893a22eb59707906c6d38de2fe01916cb0
                       imagePullPolicy: IfNotPresent
                       livenessProbe:
-                        tcpSocket:
-                            port: grpc
+                        grpc:
+                            port: 4222
+                        timeoutSeconds: 3
                       name: hubble-relay
                       ports:
                         - containerPort: 4245
                           name: grpc
                       readinessProbe:
-                        tcpSocket:
-                            port: grpc
+                        grpc:
+                            port: 4222
+                        timeoutSeconds: 3
                       securityContext:
                         capabilities:
                             drop:
@@ -594,6 +615,12 @@ SnapShot = """
                         runAsGroup: 65532
                         runAsNonRoot: true
                         runAsUser: 65532
+                      startupProbe:
+                        failureThreshold: 20
+                        grpc:
+                            port: 4222
+                        periodSeconds: 3
+                        timeoutSeconds: 3
                       terminationMessagePolicy: FallbackToLogsOnError
                       volumeMounts:
                         - mountPath: /etc/hubble-relay
@@ -660,12 +687,20 @@ SnapShot = """
             spec:
                 automountServiceAccountToken: true
                 containers:
-                    - image: quay.io/cilium/hubble-ui:v0.12.1@sha256:9e5f81ee747866480ea1ac4630eb6975ff9227f9782b7c93919c081c33f38267
+                    - image: quay.io/cilium/hubble-ui:v0.13.0@sha256:7d663dc16538dd6e29061abd1047013a645e6e69c115e008bee9ea9fef9a6666
                       imagePullPolicy: IfNotPresent
+                      livenessProbe:
+                        httpGet:
+                            path: /healthz
+                            port: 8081
                       name: frontend
                       ports:
                         - containerPort: 8081
                           name: http
+                      readinessProbe:
+                        httpGet:
+                            path: /
+                            port: 8081
                       terminationMessagePolicy: FallbackToLogsOnError
                       volumeMounts:
                         - mountPath: /etc/nginx/conf.d/default.conf
@@ -678,7 +713,7 @@ SnapShot = """
                           value: \"8090\"
                         - name: FLOWS_API_ADDR
                           value: hubble-relay:80
-                      image: quay.io/cilium/hubble-ui-backend:v0.12.1@sha256:1f86f3400827a0451e6332262467f894eeb7caf0eb8779bd951e2caa9d027cbe
+                      image: quay.io/cilium/hubble-ui-backend:v0.13.0@sha256:1e7657d997c5a48253bb8dc91ecee75b63018d16ff5e5797e5af367336bc8803
                       imagePullPolicy: IfNotPresent
                       name: backend
                       ports:
@@ -747,6 +782,9 @@ SnapShot = """
           resources:
             - ciliumloadbalancerippools
             - ciliumbgppeeringpolicies
+            - ciliumbgpnodeconfigs
+            - ciliumbgpadvertisements
+            - ciliumbgppeerconfigs
             - ciliumclusterwideenvoyconfigs
             - ciliumclusterwidenetworkpolicies
             - ciliumegressgatewaypolicies
@@ -801,6 +839,7 @@ SnapShot = """
             - ciliumendpoints/status
             - ciliumendpoints
             - ciliuml2announcementpolicies/status
+            - ciliumbgpnodeconfigs/status
           verbs:
             - patch
 - object:
@@ -924,6 +963,9 @@ SnapShot = """
           resources:
             - ciliumendpointslices
             - ciliumenvoyconfigs
+            - ciliumbgppeerconfigs
+            - ciliumbgpadvertisements
+            - ciliumbgpnodeconfigs
           verbs:
             - create
             - update
@@ -946,6 +988,11 @@ SnapShot = """
           resourceNames:
             - ciliumloadbalancerippools.cilium.io
             - ciliumbgppeeringpolicies.cilium.io
+            - ciliumbgpclusterconfigs.cilium.io
+            - ciliumbgppeerconfigs.cilium.io
+            - ciliumbgpadvertisements.cilium.io
+            - ciliumbgpnodeconfigs.cilium.io
+            - ciliumbgpnodeconfigoverrides.cilium.io
             - ciliumclusterwideenvoyconfigs.cilium.io
             - ciliumclusterwidenetworkpolicies.cilium.io
             - ciliumegressgatewaypolicies.cilium.io
@@ -970,6 +1017,8 @@ SnapShot = """
           resources:
             - ciliumloadbalancerippools
             - ciliumpodippools
+            - ciliumbgpclusterconfigs
+            - ciliumbgpnodeconfigoverrides
           verbs:
             - get
             - list
@@ -1124,6 +1173,7 @@ SnapShot = """
         arping-refresh-period: 30s
         auto-create-cilium-node-resource: \"true\"
         auto-direct-node-routes: \"false\"
+        bpf-lb-acceleration: disabled
         bpf-lb-external-clusterip: \"false\"
         bpf-lb-map-max: \"65536\"
         bpf-lb-sock: \"false\"
@@ -1136,11 +1186,9 @@ SnapShot = """
         cluster-name: default
         cni-exclusive: \"true\"
         cni-log-file: /var/run/cilium/cilium-cni.log
-        cnp-node-status-gc-interval: 0s
         custom-cni-conf: \"false\"
         debug: \"false\"
         debug-verbose: \"\"
-        disable-cnp-status-updates: \"true\"
         dnsproxy-enable-transparent-mode: \"true\"
         ec2-api-endpoint: \"\"
         egress-gateway-reconciliation-trigger-interval: 1s
@@ -1151,6 +1199,7 @@ SnapShot = """
         enable-endpoint-health-checking: \"true\"
         enable-endpoint-routes: \"true\"
         enable-external-ips: \"false\"
+        enable-health-check-loadbalancer-ip: \"false\"
         enable-health-check-nodeport: \"true\"
         enable-health-checking: \"true\"
         enable-host-port: \"false\"
@@ -1166,6 +1215,8 @@ SnapShot = """
         enable-l2-neigh-discovery: \"true\"
         enable-l7-proxy: \"true\"
         enable-local-redirect-policy: \"false\"
+        enable-masquerade-to-route-source: \"false\"
+        enable-metrics: \"true\"
         enable-node-port: \"false\"
         enable-policy: default
         enable-remote-node-identity: \"true\"
@@ -1177,6 +1228,8 @@ SnapShot = """
         eni-tags: '{}'
         external-envoy-proxy: \"false\"
         hubble-disable-tls: \"false\"
+        hubble-export-file-max-backups: \"5\"
+        hubble-export-file-max-size-mb: \"10\"
         hubble-listen-address: :4244
         hubble-socket-path: /var/run/cilium/hubble.sock
         hubble-tls-cert-file: /var/lib/cilium/tls/hubble/server.crt
@@ -1192,6 +1245,7 @@ SnapShot = """
         k8s-client-qps: \"5\"
         kube-proxy-replacement: \"false\"
         kube-proxy-replacement-healthz-bind-address: \"\"
+        max-connected-clusters: \"255\"
         mesh-auth-enabled: \"true\"
         mesh-auth-gc-interval: 5m0s
         mesh-auth-queue-size: \"1024\"
@@ -1202,6 +1256,8 @@ SnapShot = """
         node-port-bind-protection: \"true\"
         nodes-gc-interval: 5m0s
         operator-api-serve-addr: 127.0.0.1:9234
+        operator-prometheus-serve-addr: :9963
+        policy-cidr-match-mode: \"\"
         preallocate-bpf-maps: \"false\"
         procfs: /host/proc
         proxy-connect-timeout: \"2\"
@@ -1210,6 +1266,7 @@ SnapShot = """
         proxy-prometheus-port: \"9964\"
         remove-cilium-node-taints: \"true\"
         routing-mode: native
+        service-no-backend-response: reject
         set-cilium-is-up-condition: \"true\"
         set-cilium-node-taints: \"true\"
         sidecar-istio-proxy-image: cilium/istio_proxy
@@ -1243,7 +1300,7 @@ SnapShot = """
 - object:
     apiVersion: v1
     data:
-        nginx.conf: \"server {\\n    listen       8081;\\n    listen       [::]:8081;\\n    server_name  localhost;\\n    root /app;\\n    index index.html;\\n    client_max_body_size 1G;\\n\\n    location / {\\n        proxy_set_header Host $host;\\n        proxy_set_header X-Real-IP $remote_addr;\\n\\n        # CORS\\n        add_header Access-Control-Allow-Methods \\\"GET, POST, PUT, HEAD, DELETE, OPTIONS\\\";\\n        add_header Access-Control-Allow-Origin *;\\n        add_header Access-Control-Max-Age 1728000;\\n        add_header Access-Control-Expose-Headers content-length,grpc-status,grpc-message;\\n        add_header Access-Control-Allow-Headers range,keep-alive,user-agent,cache-control,content-type,content-transfer-encoding,x-accept-content-transfer-encoding,x-accept-response-streaming,x-user-agent,x-grpc-web,grpc-timeout;\\n        if ($request_method = OPTIONS) {\\n            return 204;\\n        }\\n        # /CORS\\n\\n        location /api {\\n            proxy_http_version 1.1;\\n            proxy_pass_request_headers on;\\n            proxy_hide_header Access-Control-Allow-Origin;\\n            proxy_pass http://127.0.0.1:8090;\\n        }\\n        location / {\\n            # double `/index.html` is required here \\n            try_files $uri $uri/ /index.html /index.html;\\n        }\\n    }\\n}\"
+        nginx.conf: \"server {\\n    listen       8081;\\n    listen       [::]:8081;\\n    server_name  localhost;\\n    root /app;\\n    index index.html;\\n    client_max_body_size 1G;\\n\\n    location / {\\n        proxy_set_header Host $host;\\n        proxy_set_header X-Real-IP $remote_addr;\\n\\n        # CORS\\n        add_header Access-Control-Allow-Methods \\\"GET, POST, PUT, HEAD, DELETE, OPTIONS\\\";\\n        add_header Access-Control-Allow-Origin *;\\n        add_header Access-Control-Max-Age 1728000;\\n        add_header Access-Control-Expose-Headers content-length,grpc-status,grpc-message;\\n        add_header Access-Control-Allow-Headers range,keep-alive,user-agent,cache-control,content-type,content-transfer-encoding,x-accept-content-transfer-encoding,x-accept-response-streaming,x-user-agent,x-grpc-web,grpc-timeout;\\n        if ($request_method = OPTIONS) {\\n            return 204;\\n        }\\n        # /CORS\\n\\n        location /api {\\n            proxy_http_version 1.1;\\n            proxy_pass_request_headers on;\\n            proxy_hide_header Access-Control-Allow-Origin;\\n            proxy_pass http://127.0.0.1:8090;\\n        }\\n        location / {\\n            # double `/index.html` is required here \\n            try_files $uri $uri/ /index.html /index.html;\\n        }\\n\\n        # Liveness probe\\n        location /healthz {\\n            access_log off;\\n            add_header Content-Type text/plain;\\n            return 200 'ok';\\n        }\\n    }\\n}\"
     kind: ConfigMap
     metadata:
         name: hubble-ui-nginx
