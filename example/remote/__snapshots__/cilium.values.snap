@@ -57,7 +57,7 @@ SnapShot = """
                             resourceFieldRef:
                                 divisor: \"1\"
                                 resource: limits.memory
-                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
+                      image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
                       imagePullPolicy: IfNotPresent
                       lifecycle:
                         postStart:
@@ -191,7 +191,7 @@ SnapShot = """
                             fieldRef:
                                 apiVersion: v1
                                 fieldPath: metadata.namespace
-                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
+                      image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
                       imagePullPolicy: IfNotPresent
                       name: config
                       terminationMessagePolicy: FallbackToLogsOnError
@@ -210,7 +210,7 @@ SnapShot = """
                           value: /run/cilium/cgroupv2
                         - name: BIN_PATH
                           value: /opt/cni/bin
-                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
+                      image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
                       imagePullPolicy: IfNotPresent
                       name: mount-cgroup
                       securityContext:
@@ -240,7 +240,7 @@ SnapShot = """
                       env:
                         - name: BIN_PATH
                           value: /opt/cni/bin
-                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
+                      image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
                       imagePullPolicy: IfNotPresent
                       name: apply-sysctl-overwrites
                       securityContext:
@@ -266,7 +266,7 @@ SnapShot = """
                         - /bin/bash
                         - -c
                         - --
-                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
+                      image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
                       imagePullPolicy: IfNotPresent
                       name: mount-bpf-fs
                       securityContext:
@@ -297,7 +297,7 @@ SnapShot = """
                                 key: write-cni-conf-when-ready
                                 name: cilium-config
                                 optional: true
-                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
+                      image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
                       imagePullPolicy: IfNotPresent
                       name: clean-cilium-state
                       securityContext:
@@ -323,7 +323,7 @@ SnapShot = """
                           name: cilium-run
                     - command:
                         - /install-plugin.sh
-                      image: quay.io/cilium/cilium:v1.15.2@sha256:bfeb3f1034282444ae8c498dca94044df2b9c9c8e7ac678e0b43c849f0b31746
+                      image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
                       imagePullPolicy: IfNotPresent
                       name: install-cni-binaries
                       resources:
@@ -509,7 +509,7 @@ SnapShot = """
                                 key: AWS_DEFAULT_REGION
                                 name: cilium-aws
                                 optional: true
-                      image: quay.io/cilium/operator-aws:v1.15.2@sha256:3f459999b753bfd8626f8effdf66720a996b2c15c70f4e418011d00de33552eb
+                      image: quay.io/cilium/operator-aws:v1.15.3@sha256:2b05dc6b88037a5ce05e4030ef616b1f7be9e65083e35abd36a1b66953fd0b6a
                       imagePullPolicy: IfNotPresent
                       livenessProbe:
                         httpGet:
@@ -594,7 +594,7 @@ SnapShot = """
                         - serve
                       command:
                         - hubble-relay
-                      image: quay.io/cilium/hubble-relay:v1.15.2@sha256:48480053930e884adaeb4141259ff1893a22eb59707906c6d38de2fe01916cb0
+                      image: quay.io/cilium/hubble-relay:v1.15.3@sha256:b9c6431aa4f22242a5d0d750c621d9d04bdc25549e4fb1116bfec98dd87958a2
                       imagePullPolicy: IfNotPresent
                       livenessProbe:
                         grpc:
