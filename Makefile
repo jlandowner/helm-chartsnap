@@ -23,6 +23,8 @@ build: goreleaser
 test:
 	$(GO) test ./... -cover cover.out
 
+HELM_PLUGIN_PATH := $(shell helm env | grep HELM_PLUGINS | cut -d= -f2)
+
 .PHONY: integ-test
 integ-test: debug-plugin
 	-helm chartsnap --chart example/app1 $(ARGS)
@@ -36,7 +38,8 @@ update-versions:
 .PHONY: debug-plugin
 debug-plugin: build
 	-helm plugin install https://github.com/jlandowner/helm-chartsnap
-	cp ./dist/chartsnap_*/chartsnap ~/.local/share/helm/plugins/helm-chartsnap/bin/
+	cp ./dist/chartsnap_*/chartsnap $(HELM_PLUGIN_PATH)/helm-chartsnap/bin/
+	helm chartsnap --version
 
 .PHONY: snap-helm-template-help
 snap-helm-template-help:
