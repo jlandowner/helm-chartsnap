@@ -1,0 +1,27 @@
+['Helm when Execute should execute with expected args and env 1']
+SnapShot = """
+Arguments for helm: template aaa ccc --namespace=bbb --values=ddd
+Environment variables starting with HELM_:
+HELM_DEBUG=false
+"""
+
+['Helm when Execute with additional args should execute with expected args and env 1']
+SnapShot = """
+Arguments for helm: template chartsnap postgres --namespace=xxx --values=postgres.values.yaml --repo https://charts.bitnami.com/bitnami --skip-tests
+Environment variables starting with HELM_:
+HELM_DEBUG=false
+"""
+
+['Helm when Execute without namespace should execute with expected args and env 1']
+SnapShot = """
+Arguments for helm: template chartsnap charts/app1/ --values=charts/app1/test/test.values.yaml
+Environment variables starting with HELM_:
+HELM_DEBUG=false
+"""
+
+['Helm when Execute without values should execute with expected args and env 1']
+SnapShot = """
+Arguments for helm: template chartsnap charts/app1/ --namespace=default
+Environment variables starting with HELM_:
+HELM_DEBUG=false
+"""

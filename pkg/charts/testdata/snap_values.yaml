@@ -1,0 +1,10 @@
+testSpec:
+  dynamicFields:
+    - apiVersion: v1
+      kind: Secret
+      name: app1-cert
+      jsonPath:
+        - /data/tls.key
+        - /data/tls.crt
+        - /data/ca.crt
+      base64: true

@@ -1,0 +1,7 @@
+[json]
+SnapShot = """
+{
+  \"name\": \"John\",
+  \"age\": 30
+}
+"""

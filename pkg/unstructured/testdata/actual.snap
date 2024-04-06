@@ -59,6 +59,7 @@ metadata:
     helm.sh/chart: app1-0.1.0
   name: chartsnap-app1
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/instance: chartsnap
@@ -93,9 +94,10 @@ spec:
       securityContext: {}
       serviceAccountName: chartsnap-app1
 ---
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+  annotations:
+    cert-manager.io/cluster-issuer: nameOfClusterIssuer
   labels:
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/managed-by: Helm
@@ -103,20 +105,22 @@ metadata:
     app.kubernetes.io/version: 1.16.0
     helm.sh/chart: app1-0.1.0
   name: chartsnap-app1
-spec:
-  maxReplicas: 10
-  metrics:
-    - resource:
-        name: cpu
-        target:
-          averageUtilization: 65
-          type: Utilization
-      type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: chartsnap-app1
+  ingressClassName: nginx
+  rules:
+    - host: chart-example.local
+      http:
+        paths:
+          - backend:
+              service:
+                name: chartsnap-app1
+                port:
+                  number: 80
+            path: /
+            pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - chart-example.local
+      secretName: chart-example-tls
 ---
 apiVersion: v1
 kind: Pod

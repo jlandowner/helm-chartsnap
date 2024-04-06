@@ -1,3 +1,10 @@
+#!/bin/bash
+
+
+
+cat <<EOF
+this is warning message of helm
+---
 apiVersion: v1
 automountServiceAccountToken: true
 kind: ServiceAccount
@@ -12,9 +19,9 @@ metadata:
 ---
 apiVersion: v1
 data:
-  ca.crt: IyMjRFlOQU1JQ19GSUVMRCMjIw==
-  tls.crt: IyMjRFlOQU1JQ19GSUVMRCMjIw==
-  tls.key: IyMjRFlOQU1JQ19GSUVMRCMjIw==
+  ca.crt:  $(date +%s | base64)
+  tls.crt: $(date +%s | base64)
+  tls.key: $(date +%s | base64)
 kind: Secret
 metadata:
   labels:
@@ -139,3 +146,4 @@ spec:
       image: busybox
       name: wget
   restartPolicy: Never
+EOF

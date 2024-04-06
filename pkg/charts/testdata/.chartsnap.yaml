@@ -1,4 +1,3 @@
-# This file define common behavior of the chart snapshots in the test directory.
 dynamicFields:
   - apiVersion: v1
     kind: Secret

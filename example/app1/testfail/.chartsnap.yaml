@@ -7,3 +7,4 @@ dynamicFields:
       - /data/ca.crt
       - /data/tls.crt
       - /data/tls.key
+    base64: true

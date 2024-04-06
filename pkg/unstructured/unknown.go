@@ -24,9 +24,9 @@ type UnknownError struct {
 func (e *UnknownError) Error() string {
 	out, err := yaml.Marshal(e.Unstructured())
 	if err != nil {
-		return "xxx"
+		panic(err)
 	}
-	return fmt.Sprintf("WARN: failed to recognize a resource. snapshot as Unknown: \n---\n%s\n---", out)
+	return fmt.Sprintf("WARN: failed to recognize a resource in stdout/stderr of helm template command output. snapshot it as Unknown: \n---\n%s\n---", out)
 }
 
 func (e *UnknownError) Unstructured() *metaV1.Unstructured {

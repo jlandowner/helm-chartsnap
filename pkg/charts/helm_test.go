@@ -1,62 +1,74 @@
 package charts
 
 import (
-	"reflect"
-	"testing"
+	"context"
+
+	. "github.com/jlandowner/helm-chartsnap/pkg/snap/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
-func TestHelmTemplateCmdOptions_Args(t *testing.T) {
-	type fields struct {
-		HelmPath       string
-		ReleaseName    string
-		Namespace      string
-		Chart          string
-		ValuesFile     string
-		AdditionalArgs []string
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   []string
-	}{
-		{
-			name: "default",
-			fields: fields{
-				HelmPath:    "helm",
+var _ = Describe("Helm", func() {
+	Context("when Execute", func() {
+		It("should execute with expected args and env", func() {
+			o := &HelmTemplateCmdOptions{
+				HelmPath:    "./testdata/helm_cmd.bash",
+				ReleaseName: "aaa",
+				Namespace:   "bbb",
+				Chart:       "ccc",
+				ValuesFile:  "ddd",
+			}
+
+			out, err := o.Execute(context.Background())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(out).To(MatchSnapShot())
+		})
+	})
+
+	Context("when Execute without namespace", func() {
+		It("should execute with expected args and env", func() {
+			o := &HelmTemplateCmdOptions{
+				HelmPath:    "./testdata/helm_cmd.bash",
+				ReleaseName: "chartsnap",
+				Chart:       "charts/app1/",
+				ValuesFile:  "charts/app1/test/test.values.yaml",
+			}
+
+			out, err := o.Execute(context.Background())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(out).To(MatchSnapShot())
+		})
+	})
+
+	Context("when Execute without values", func() {
+		It("should execute with expected args and env", func() {
+			o := &HelmTemplateCmdOptions{
+				HelmPath:    "./testdata/helm_cmd.bash",
 				ReleaseName: "chartsnap",
 				Namespace:   "default",
 				Chart:       "charts/app1/",
-				ValuesFile:  "charts/app1/test/test.values.yaml",
-			},
-			want: []string{"template", "chartsnap", "charts/app1/", "--namespace=default", "--values=charts/app1/test/test.values.yaml"},
-		},
-		{
-			name: "additional args",
-			fields: fields{
-				HelmPath:       "helm",
+			}
+
+			out, err := o.Execute(context.Background())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(out).To(MatchSnapShot())
+		})
+	})
+
+	Context("when Execute with additional args", func() {
+		It("should execute with expected args and env", func() {
+			o := &HelmTemplateCmdOptions{
+				HelmPath:       "./testdata/helm_cmd.bash",
 				ReleaseName:    "chartsnap",
 				Namespace:      "xxx",
 				Chart:          "postgres",
 				ValuesFile:     "postgres.values.yaml",
 				AdditionalArgs: []string{"--repo", "https://charts.bitnami.com/bitnami", "--skip-tests"},
-			},
-			want: []string{"template", "chartsnap", "postgres", "--namespace=xxx", "--values=postgres.values.yaml", "--repo", "https://charts.bitnami.com/bitnami", "--skip-tests"},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			o := &HelmTemplateCmdOptions{
-				HelmPath:       tt.fields.HelmPath,
-				ReleaseName:    tt.fields.ReleaseName,
-				Namespace:      tt.fields.Namespace,
-				Chart:          tt.fields.Chart,
-				ValuesFile:     tt.fields.ValuesFile,
-				AdditionalArgs: tt.fields.AdditionalArgs,
 			}
-			got := o.Args()
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("HelmTemplateCmdOptions.Args() = %v, want %v", got, tt.want)
-			}
+
+			out, err := o.Execute(context.Background())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(out).To(MatchSnapShot())
 		})
-	}
-}
+	})
+})
