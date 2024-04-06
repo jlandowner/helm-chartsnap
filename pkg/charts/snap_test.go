@@ -1,10 +1,105 @@
 package charts
 
 import (
+	"context"
 	"testing"
+
+	. "github.com/jlandowner/helm-chartsnap/pkg/snap/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
-func TestSnapshotID(t *testing.T) {
+var _ = Describe("Snap", func() {
+	Context("snapshot matched", func() {
+		It("should return success response", func() {
+			ss := &ChartSnapshotter{
+				HelmTemplateCmdOptions: HelmTemplateCmdOptions{
+					HelmPath:    "./testdata/helm_stub.bash",
+					ReleaseName: "aaa",
+					Namespace:   "bbb",
+					Chart:       "ccc",
+					ValuesFile:  "./testdata/snap_values.yaml",
+				},
+				SnapshotConfig: SnapshotConfig{
+					DynamicFields: []ManifestPath{
+						{
+							APIVersion: "v1",
+							Kind:       "Service",
+							Name:       "chartsnap-app1",
+							JSONPath: []string{
+								"/spec/type",
+							},
+						},
+					},
+				},
+				SnapshotFile:     "__snapshots__/helm_stub_snap.yaml",
+				SnapshotVersion:  "",
+				DiffContextLineN: 3,
+			}
+			res, err := ss.Snap(context.Background())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(res.Match).To(BeTrue())
+			Expect(res.FailureMessage).To(MatchSnapShot())
+		})
+	})
+
+	Context("snapshot is v1", func() {
+		It("should return success response", func() {
+			ss := &ChartSnapshotter{
+				HelmTemplateCmdOptions: HelmTemplateCmdOptions{
+					HelmPath:    "./testdata/helm_stub.bash",
+					ReleaseName: "aaa",
+					Namespace:   "bbb",
+					Chart:       "ccc",
+					ValuesFile:  "./testdata/snap_values.yaml",
+				},
+				SnapshotConfig: SnapshotConfig{
+					DynamicFields: []ManifestPath{
+						{
+							APIVersion: "v1",
+							Kind:       "Service",
+							Name:       "chartsnap-app1",
+							JSONPath: []string{
+								"/spec/type",
+							},
+						},
+					},
+				},
+				SnapshotFile:     "__snapshots__/helm_stub_snap_v1.toml",
+				SnapshotVersion:  "v1",
+				DiffContextLineN: 3,
+			}
+			res, err := ss.Snap(context.Background())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(res.Match).To(BeTrue())
+			Expect(res.FailureMessage).To(MatchSnapShot())
+		})
+	})
+
+	Context("snapshot not matched", func() {
+		It("should return unmatched response", func() {
+			ss := &ChartSnapshotter{
+				HelmTemplateCmdOptions: HelmTemplateCmdOptions{
+					HelmPath:    "./testdata/helm_stub.bash",
+					ReleaseName: "aaa",
+					Namespace:   "bbb",
+					Chart:       "ccc",
+					ValuesFile:  "./testdata/snap_values.yaml",
+				},
+				SnapshotFile:     "__snapshots__/helm_stub_snap_unmatch.yaml",
+				SnapshotVersion:  "",
+				DiffContextLineN: 3,
+			}
+			res, err := ss.Snap(context.Background())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(res.Match).To(BeFalse())
+			Expect(res.FailureMessage).To(MatchSnapShot())
+		})
+	})
+
+})
+
+func TestSnapshotFileName(t *testing.T) {
 	type args struct {
 		valuesFile string
 	}
@@ -37,8 +132,8 @@ func TestSnapshotID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SnapshotID(tt.args.valuesFile); got != tt.want {
-				t.Errorf("SnapshotID() = %v, want %v", got, tt.want)
+			if got := SnapshotFileName(tt.args.valuesFile); got != tt.want {
+				t.Errorf("SnapshotFileName() = %v, want %v", got, tt.want)
 			}
 		})
 	}

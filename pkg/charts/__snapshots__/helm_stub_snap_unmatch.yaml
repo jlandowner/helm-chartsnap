@@ -1,3 +1,8 @@
+apiVersion: helm-chartsnap.jlandowner.dev/v1alpha1
+kind: Unknown
+raw: |
+  this is warning message of helm
+---
 apiVersion: v1
 automountServiceAccountToken: true
 kind: ServiceAccount
@@ -6,7 +11,7 @@ metadata:
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: app1
-    app.kubernetes.io/version: 1.16.0
+    app.kubernetes.io/version: 1.15.0
     helm.sh/chart: app1-0.1.0
   name: chartsnap-app1
 ---
@@ -21,7 +26,7 @@ metadata:
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: app1
-    app.kubernetes.io/version: 1.16.0
+    app.kubernetes.io/version: 1.15.0
     helm.sh/chart: app1-0.1.0
   name: app1-cert
   namespace: default
@@ -34,7 +39,7 @@ metadata:
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: app1
-    app.kubernetes.io/version: 1.16.0
+    app.kubernetes.io/version: 1.15.0
     helm.sh/chart: app1-0.1.0
   name: chartsnap-app1
 spec:
@@ -55,7 +60,7 @@ metadata:
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: app1
-    app.kubernetes.io/version: 1.16.0
+    app.kubernetes.io/version: 1.15.0
     helm.sh/chart: app1-0.1.0
   name: chartsnap-app1
 spec:
@@ -69,11 +74,11 @@ spec:
         app.kubernetes.io/instance: chartsnap
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: app1
-        app.kubernetes.io/version: 1.16.0
+        app.kubernetes.io/version: 1.15.0
         helm.sh/chart: app1-0.1.0
     spec:
       containers:
-        - image: nginx:1.16.0
+        - image: nginx:1.15.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -100,7 +105,7 @@ metadata:
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: app1
-    app.kubernetes.io/version: 1.16.0
+    app.kubernetes.io/version: 1.15.0
     helm.sh/chart: app1-0.1.0
   name: chartsnap-app1
 spec:
@@ -127,7 +132,7 @@ metadata:
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: app1
-    app.kubernetes.io/version: 1.16.0
+    app.kubernetes.io/version: 1.15.0
     helm.sh/chart: app1-0.1.0
   name: chartsnap-app1-test-connection
 spec:

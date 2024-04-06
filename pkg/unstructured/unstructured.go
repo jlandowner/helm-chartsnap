@@ -1,30 +1,48 @@
 package unstructured
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"regexp"
-	"sort"
 	"strings"
 
 	jsonpatch "github.com/evanphx/json-patch/v5"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/apimachinery/pkg/runtime/serializer/yaml"
-	yamlv3 "sigs.k8s.io/yaml/goyaml.v3"
+	yamlUtil "k8s.io/apimachinery/pkg/runtime/serializer/yaml"
+	yaml "sigs.k8s.io/yaml/goyaml.v3"
 )
 
+var logger *slog.Logger
+
+func SetLogger(slogr *slog.Logger) {
+	logger = slogr
+}
+
+func log() *slog.Logger {
+	if logger == nil {
+		logger = slog.Default()
+	}
+	return logger
+}
+
 func Encode(arr []metaV1.Unstructured) ([]byte, error) {
-	sort.SliceStable(arr, func(i, j int) bool {
-		if arr[i].GetAPIVersion() != arr[j].GetAPIVersion() {
-			return arr[i].GetAPIVersion() < arr[j].GetAPIVersion()
+	var buf bytes.Buffer
+	enc := yaml.NewEncoder(&buf)
+	enc.SetIndent(2)
+
+	for _, d := range arr {
+		if err := enc.Encode(d.Object); err != nil {
+			return nil, fmt.Errorf("failed to encode unstructured to YAML: %w", err)
 		}
-		if arr[i].GetKind() != arr[j].GetKind() {
-			return arr[i].GetKind() < arr[j].GetKind()
-		}
-		return arr[i].GetName() < arr[j].GetName()
-	})
-	return yamlv3.Marshal(arr)
+	}
+	if err := enc.Close(); err != nil {
+		return nil, fmt.Errorf("failed to close encoder: %w", err)
+	}
+
+	return buf.Bytes(), nil
 }
 
 func Decode(source string) ([]metaV1.Unstructured, []error) {
@@ -90,7 +108,7 @@ func StringToUnstructured(data string) (*schema.GroupVersionKind, *metaV1.Unstru
 
 func BytesToUnstructured(data []byte) (*schema.GroupVersionKind, *metaV1.Unstructured, error) {
 	obj := &metaV1.Unstructured{}
-	dec := yaml.NewDecodingSerializer(metaV1.UnstructuredJSONScheme)
+	dec := yamlUtil.NewDecodingSerializer(metaV1.UnstructuredJSONScheme)
 	_, gvk, err := dec.Decode([]byte(data), nil, obj)
 	if err != nil {
 		return nil, nil, err

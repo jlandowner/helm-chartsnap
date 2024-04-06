@@ -10,9 +10,11 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/jlandowner/helm-chartsnap/pkg/charts"
 	"github.com/spf13/cobra"
 	"golang.org/x/sync/errgroup"
+
+	"github.com/jlandowner/helm-chartsnap/pkg/charts"
+	"github.com/jlandowner/helm-chartsnap/pkg/snap"
 )
 
 var (
@@ -35,6 +37,7 @@ type option struct {
 	FailFast         bool
 	Parallelism      int
 	ConfigFile       string
+	LegacySnapshot   bool
 
 	// Below properties are the same as helm global options
 	// They are passed to the plugin as environment variables
@@ -167,6 +170,7 @@ MIT 2023 jlandowner/helm-chartsnap
 	if err := rootCmd.MarkPersistentFlagFilename("config-file"); err != nil {
 		panic(err)
 	}
+	rootCmd.PersistentFlags().BoolVar(&o.LegacySnapshot, "legacy-snapshot", false, "use toml-based legacy snapshot format")
 
 	if err := rootCmd.Execute(); err != nil {
 		slog.New(slogHandler()).Error(err.Error())
@@ -193,6 +197,19 @@ func prerun(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+func loadSnapshotConfig(file string, cfg *charts.SnapshotConfig) error {
+	err := charts.LoadSnapshotConfig(file, cfg)
+	if err != nil && !os.IsNotExist(err) {
+		if o.FailFast {
+			return fmt.Errorf("failed to load snapshot config: %w", err)
+		} else {
+			log.Error("WARNING: failed to load snapshot config", "path", file, "err", err)
+		}
+	}
+	log.Debug("snapshot config", "cfg", cfg)
+	return nil
+}
+
 func run(cmd *cobra.Command, args []string) error {
 	log = slog.New(slogHandler())
 	log.Debug("options", printOptions(*o)...)
@@ -206,13 +223,24 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	var cfg charts.SnapshotConfig
+	if _, err := os.Stat(o.ConfigFile); err == nil {
+		if err := loadSnapshotConfig(o.ConfigFile, &cfg); err != nil {
+			return err
+		}
+	}
 
 	if o.ValuesFile == "" {
 		values = []string{""}
 	} else {
-		if s, err := os.Stat(o.ValuesFile); os.IsNotExist(err) {
-			return fmt.Errorf("values file '%s' not found", o.ValuesFile)
-		} else if s.IsDir() {
+		stat, err := os.Stat(o.ValuesFile)
+		if err != nil {
+			if os.IsNotExist(err) {
+				return fmt.Errorf("values file '%s' not found", o.ValuesFile)
+			}
+			return fmt.Errorf("failed to stat values file %s: %w", o.ValuesFile, err)
+		}
+
+		if stat.IsDir() {
 			// get all values files in the directory
 			files, err := os.ReadDir(o.ValuesFile)
 			if err != nil {
@@ -222,13 +250,8 @@ func run(cmd *cobra.Command, args []string) error {
 			for _, f := range files {
 				// pick config file in a test values directory
 				if f.Name() == o.ConfigFile {
-					cfg, err = charts.LoadSnapshotConfig(path.Join(o.ValuesFile, f.Name()))
-					if err != nil {
-						if o.FailFast {
-							return fmt.Errorf("failed to load snapshot config: %w", err)
-						} else {
-							log.Error("warning: failed to load snapshot config", "path", path.Join(o.ValuesFile, f.Name()), "err", err)
-						}
+					if err = loadSnapshotConfig(path.Join(o.ValuesFile, f.Name()), &cfg); err != nil {
+						return err
 					}
 					continue
 				}
@@ -240,6 +263,10 @@ func run(cmd *cobra.Command, args []string) error {
 			}
 		} else {
 			values = []string{o.ValuesFile}
+			// load snapshot config in the same directory as the values file
+			if err := loadSnapshotConfig(path.Join(path.Dir(o.ValuesFile), o.ConfigFile), &cfg); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -284,26 +311,37 @@ func run(cmd *cobra.Command, args []string) error {
 			}
 
 			if o.UpdateSnapshot {
-				err := os.Remove(snapshotFilePath)
+				// v1 format is multi snapshot format with encoding legacy formatted yaml
+				if snap.IsMultiSnapshots(snapshotFilePath) && !o.LegacySnapshot {
+					log.Info("WARNING: snapshot is updated to a latest format. if you want to keep a legacy format, please run with --legacy-snapshot flag", "path", snapshotFilePath)
+				}
+				err := snap.RemoveFile(snapshotFilePath)
 				if err != nil && !os.IsNotExist(err) {
 					return fmt.Errorf("failed to replace snapshot file: %w", err)
 				}
 			}
 
-			opts := charts.ChartSnapOptions{
+			var version string
+			// use v1 snapshot format if legacy snapshot format is enabled
+			if o.LegacySnapshot {
+				version = charts.SnapshotVersionV1
+			}
+
+			snapshotter := charts.ChartSnapshotter{
 				HelmTemplateCmdOptions: ht,
 				SnapshotConfig:         cfg,
 				SnapshotFile:           snapshotFilePath,
+				SnapshotVersion:        version,
 				DiffContextLineN:       o.DiffContextLineN,
 			}
-			matched, failureMessage, err := charts.Snap(ctx, opts)
+			result, err := snapshotter.Snap(ctx)
 			if err != nil {
 				bannerPrintln("FAIL", fmt.Sprintf("chart=%s values=%s err=%v", ht.Chart, ht.ValuesFile, err), color.FgRed, color.BgRed)
 				return fmt.Errorf("failed to get snapshot chart=%s values=%s: %w", ht.Chart, ht.ValuesFile, err)
 			}
-			if !matched {
+			if !result.Match {
 				bannerPrintln("FAIL", fmt.Sprintf("Snapshot does not match chart=%s values=%s", ht.Chart, ht.ValuesFile), color.FgRed, color.BgRed)
-				fmt.Println(failureMessage)
+				fmt.Println(result.FailureMessage)
 				return fmt.Errorf("snapshot does not match chart=%s values=%s", ht.Chart, ht.ValuesFile)
 			}
 			bannerPrintln("PASS", fmt.Sprintf("Snapshot %s chart=%s values=%s", o.OK(), ht.Chart, ht.ValuesFile), color.FgGreen, color.BgGreen)

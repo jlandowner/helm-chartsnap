@@ -23,7 +23,7 @@ func execute(cmd ...string) string {
 }
 
 func snapshot(id, data string) {
-	s := snap.SnapShotMatcher("helm-template.snap", id)
+	s := snap.SnapshotMatcher("helm-template.snap", snap.WithSnapshotID(id))
 	match, err := s.Match(data)
 
 	if err != nil {

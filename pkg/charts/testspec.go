@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"encoding/base64"
 	"fmt"
 	"os"
 
@@ -10,23 +11,18 @@ import (
 	unst "github.com/jlandowner/helm-chartsnap/pkg/unstructured"
 )
 
-func LoadSnapshotConfig(file string) (SnapshotConfig, error) {
-	cfg := SnapshotConfig{}
-	f, err := os.Open(file)
+func LoadSnapshotConfig[T SnapshotValues | SnapshotConfig](filePath string, out *T) error {
+	f, err := os.Open(filePath)
 	if err != nil {
-		if os.IsNotExist(err) {
-			return cfg, nil // ignore not found
-		} else {
-			return cfg, fmt.Errorf("failed to open config file '%s': %w", file, err)
-		}
+		return fmt.Errorf("failed to open file '%s': %w", filePath, err)
 	}
 	defer f.Close()
 
-	err = yaml.NewDecoder(f).Decode(&cfg)
+	err = yaml.NewDecoder(f).Decode(out)
 	if err != nil {
-		return cfg, fmt.Errorf("failed to decode config file '%s': %w", file, err)
+		return fmt.Errorf("failed to decode file '%s': %w", filePath, err)
 	}
-	return cfg, nil
+	return nil
 }
 
 type SnapshotValues struct {
@@ -42,7 +38,12 @@ type ManifestPath struct {
 	APIVersion string   `yaml:"apiVersion,omitempty"`
 	Name       string   `yaml:"name,omitempty"`
 	JSONPath   []string `yaml:"jsonPath,omitempty"`
+	Base64     bool     `yaml:"base64,omitempty"`
 }
+
+const DynamicValue = "###DYNAMIC_FIELD###"
+
+var Base64DynamicValue = base64.StdEncoding.EncodeToString([]byte(DynamicValue))
 
 func (t *SnapshotConfig) ApplyFixedValue(manifests []metaV1.Unstructured) error {
 	for _, v := range t.DynamicFields {
@@ -51,7 +52,13 @@ func (t *SnapshotConfig) ApplyFixedValue(manifests []metaV1.Unstructured) error 
 				v.Kind == obj.GetKind() &&
 				v.Name == obj.GetName() {
 				for _, p := range v.JSONPath {
-					newObj, err := unst.Replace(manifests[i], p, "###DYNAMIC_FIELD###")
+					var value string
+					if v.Base64 {
+						value = Base64DynamicValue
+					} else {
+						value = DynamicValue
+					}
+					newObj, err := unst.Replace(manifests[i], p, value)
 					if err != nil {
 						return fmt.Errorf("failed to replace json path: %w", err)
 					}
@@ -63,8 +70,10 @@ func (t *SnapshotConfig) ApplyFixedValue(manifests []metaV1.Unstructured) error 
 	return nil
 }
 
+// Merge merges the snapshot configs into the current snapshot config
+// The current snapshot config has higher priority than the given snapshot config
 func (t *SnapshotConfig) Merge(cfg SnapshotConfig) {
-	// dynamic fields
-	// It doesn't matter if the same field is replaced with a fixed value several times, so just append and not consider duplication.
-	t.DynamicFields = append(t.DynamicFields, cfg.DynamicFields...)
+	// For DynamicFields, it doesn't matter if the same field is replaced with a fixed value several times
+	// But the current snapshot config has higher priority than the given snapshot config
+	t.DynamicFields = append(cfg.DynamicFields, t.DynamicFields...)
 }

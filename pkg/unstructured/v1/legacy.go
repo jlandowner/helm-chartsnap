@@ -1,36 +1,29 @@
-package snap
+package unstructured
 
 import (
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/aryann/difflib"
 	"github.com/fatih/color"
-	gomegatypes "github.com/onsi/gomega/types"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-
-	unstructutils "github.com/jlandowner/helm-chartsnap/pkg/unstructured"
+	yaml "sigs.k8s.io/yaml/goyaml.v3"
 )
 
-func UnstructuredSnapShotMatcher(snapFile string, snapId string, diffOpts ...DiffOptions) *snapShotMatcher {
-	o := mergeDiffOpts(diffOpts)
-
-	return &snapShotMatcher{
-		snapFilePath: snapFile,
-		snapId:       snapId,
-		fs:           cacheFs,
-		diffFunc:     UnstructuredSnapshotDiff,
-		diffOptions:  o,
-	}
-}
-
-func UnstructuredMatch(matcher gomegatypes.GomegaMatcher, manifests []metaV1.Unstructured) (success bool, err error) {
-	res, err := unstructutils.Encode(manifests)
-	if err != nil {
-		return false, fmt.Errorf("failed to encode manifests: %w", err)
-	}
-	return matcher.Match(string(res))
+// Encode encoding legacy formatted yaml
+func Encode(arr []metaV1.Unstructured) ([]byte, error) {
+	sort.SliceStable(arr, func(i, j int) bool {
+		if arr[i].GetAPIVersion() != arr[j].GetAPIVersion() {
+			return arr[i].GetAPIVersion() < arr[j].GetAPIVersion()
+		}
+		if arr[i].GetKind() != arr[j].GetKind() {
+			return arr[i].GetKind() < arr[j].GetKind()
+		}
+		return arr[i].GetName() < arr[j].GetName()
+	})
+	return yaml.Marshal(arr)
 }
 
 // extract kind value
@@ -63,7 +56,11 @@ func findName(diffs []difflib.DiffRecord) string {
 	return ""
 }
 
-func UnstructuredSnapshotDiff(x, y string, o DiffOptions) string {
+type DiffOptions struct {
+	ContextLineN int
+}
+
+func (o *DiffOptions) Diff(x, y string) string {
 	divExp := regexp.MustCompile(`^  - object:$`)
 	diffs := difflib.Diff(strings.Split(x, "\n"), strings.Split(y, "\n"))
 
@@ -75,7 +72,7 @@ func UnstructuredSnapshotDiff(x, y string, o DiffOptions) string {
 	)
 
 	for i, v := range diffs {
-		if o.ContextLineN() < 1 {
+		if o.ContextLineN < 1 {
 			// all records
 			sb.WriteString(diffString(v))
 			continue
@@ -84,7 +81,6 @@ func UnstructuredSnapshotDiff(x, y string, o DiffOptions) string {
 		if divExp.Match([]byte(v.String())) {
 			isDiffSequence = false
 			currentKind, currentName = findKind(diffs[i:]), findName(diffs[i:])
-			log().Debug("div match", "kind", currentKind, "name", currentName, "index", i)
 		}
 
 		if v.Delta != difflib.Common {
@@ -93,10 +89,10 @@ func UnstructuredSnapshotDiff(x, y string, o DiffOptions) string {
 			// if first diff, add a header and previous lines
 			if i > 0 && diffs[i-1].Delta == difflib.Common {
 				// header
-				sb.WriteString(color.New(color.FgCyan).Sprintf("--- kind=%s name=%s line=%d\n", currentKind, currentName, i))
+				sb.WriteString(color.New(color.FgCyan).Sprintf("@@ KIND=%s NAME=%s LINE=%d\n", currentKind, currentName, i))
 
 				// previous lines
-				for j := intInRange(0, len(diffs), i-o.DiffContextLineN); j < i; j++ {
+				for j := intInRange(0, len(diffs), i-o.ContextLineN); j < i; j++ {
 					sb.WriteString(fmt.Sprintf("%s\n", diffs[j]))
 				}
 			}
@@ -107,7 +103,7 @@ func UnstructuredSnapshotDiff(x, y string, o DiffOptions) string {
 				isDiffSequence = false
 
 				// subsequent lines
-				for j := i; j < intInRange(0, len(diffs), i+o.DiffContextLineN); j++ {
+				for j := i; j < intInRange(0, len(diffs), i+o.ContextLineN); j++ {
 					sb.WriteString(fmt.Sprintf("%s\n", diffs[j]))
 				}
 				// divider
@@ -116,4 +112,25 @@ func UnstructuredSnapshotDiff(x, y string, o DiffOptions) string {
 		}
 	}
 	return sb.String()
+}
+
+func intInRange(min, max, v int) int {
+	if v >= min && v <= max {
+		return v
+	} else if v < min {
+		return min
+	} else {
+		return max
+	}
+}
+
+func diffString(d difflib.DiffRecord) string {
+	switch d.Delta {
+	case difflib.LeftOnly:
+		return color.New(color.FgRed).Sprintf("%s\n", d)
+	case difflib.RightOnly:
+		return color.New(color.FgGreen).Sprintf("%s\n", d)
+	default:
+		return fmt.Sprintf("%s\n", d)
+	}
 }

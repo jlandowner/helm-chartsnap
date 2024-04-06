@@ -1,3 +1,8 @@
+apiVersion: helm-chartsnap.jlandowner.dev/v1alpha1
+kind: Unknown
+raw: |
+  this is warning message of helm
+---
 apiVersion: v1
 automountServiceAccountToken: true
 kind: ServiceAccount
@@ -46,7 +51,7 @@ spec:
   selector:
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/name: app1
-  type: ClusterIP
+  type: '###DYNAMIC_FIELD###'
 ---
 apiVersion: apps/v1
 kind: Deployment

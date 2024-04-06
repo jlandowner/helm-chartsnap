@@ -41,16 +41,15 @@ func TestEncode(t *testing.T) {
 					},
 				},
 			},
-			want: `- object:
-    apiVersion: v1
-    kind: Pod
-    metadata:
-        name: pod1
-- object:
-    apiVersion: v1
-    kind: Service
-    metadata:
-        name: service1
+			want: `apiVersion: v1
+kind: Pod
+metadata:
+  name: pod1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service1
 `,
 		},
 	}

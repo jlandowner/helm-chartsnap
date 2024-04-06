@@ -1,0 +1,94 @@
+['Snap snapshot is v1 should return success response 1']
+SnapShot = """
+
+"""
+
+['Snap snapshot matched should return success response 1']
+SnapShot = """
+
+"""
+
+['Snap snapshot not matched should return unmatched response 1']
+SnapShot = """
+@@ KIND=ServiceAccount NAME=chartsnap-app1 LINE=14
+      app.kubernetes.io/instance: chartsnap
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: app1
+-     app.kubernetes.io/version: 1.15.0
++     app.kubernetes.io/version: 1.16.0
+      helm.sh/chart: app1-0.1.0
+    name: chartsnap-app1
+  ---
+
+@@ KIND=Secret NAME=app1-cert LINE=29
+      app.kubernetes.io/instance: chartsnap
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: app1
+-     app.kubernetes.io/version: 1.15.0
++     app.kubernetes.io/version: 1.16.0
+      helm.sh/chart: app1-0.1.0
+    name: app1-cert
+    namespace: default
+
+@@ KIND=Service NAME=chartsnap-app1 LINE=42
+      app.kubernetes.io/instance: chartsnap
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: app1
+-     app.kubernetes.io/version: 1.15.0
++     app.kubernetes.io/version: 1.16.0
+      helm.sh/chart: app1-0.1.0
+    name: chartsnap-app1
+  spec:
+
+@@ KIND=Deployment NAME=chartsnap-app1 LINE=63
+      app.kubernetes.io/instance: chartsnap
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: app1
+-     app.kubernetes.io/version: 1.15.0
++     app.kubernetes.io/version: 1.16.0
+      helm.sh/chart: app1-0.1.0
+    name: chartsnap-app1
+  spec:
+
+@@ KIND=Deployment NAME=chartsnap-app1 LINE=77
+          app.kubernetes.io/instance: chartsnap
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: app1
+-         app.kubernetes.io/version: 1.15.0
++         app.kubernetes.io/version: 1.16.0
+          helm.sh/chart: app1-0.1.0
+      spec:
+        containers:
+
+@@ KIND=Deployment NAME=chartsnap-app1 LINE=81
+          helm.sh/chart: app1-0.1.0
+      spec:
+        containers:
+-         - image: nginx:1.15.0
++         - image: nginx:1.16.0
+            imagePullPolicy: IfNotPresent
+            livenessProbe:
+              httpGet:
+
+@@ KIND=HorizontalPodAutoscaler NAME=chartsnap-app1 LINE=108
+      app.kubernetes.io/instance: chartsnap
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: app1
+-     app.kubernetes.io/version: 1.15.0
++     app.kubernetes.io/version: 1.16.0
+      helm.sh/chart: app1-0.1.0
+    name: chartsnap-app1
+  spec:
+
+@@ KIND=Pod NAME=chartsnap-app1-test-connection LINE=135
+      app.kubernetes.io/instance: chartsnap
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: app1
+-     app.kubernetes.io/version: 1.15.0
++     app.kubernetes.io/version: 1.16.0
+      helm.sh/chart: app1-0.1.0
+    name: chartsnap-app1-test-connection
+  spec:
+
+
+"""
