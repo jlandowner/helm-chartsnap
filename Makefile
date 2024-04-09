@@ -1,6 +1,6 @@
 all: build
 
-GO ?= go1.22.1
+GO ?= go1.22.2
 
 go:
 	-go install golang.org/dl/$(GO)@latest
