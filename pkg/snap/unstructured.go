@@ -84,7 +84,7 @@ func UnstructuredSnapshotDiff(x, y string, o DiffOptions) string {
 		if divExp.Match([]byte(v.String())) {
 			isDiffSequence = false
 			currentKind, currentName = findKind(diffs[i:]), findName(diffs[i:])
-			Log().Debug("div match", "kind", currentKind, "name", currentName, "index", i)
+			log().Debug("div match", "kind", currentKind, "name", currentName, "index", i)
 		}
 
 		if v.Delta != difflib.Common {
