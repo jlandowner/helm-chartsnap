@@ -46,6 +46,6 @@ install-dev-bin: build
 	cp ./dist/chartsnap_*/chartsnap $(HELM_PLUGIN_PATH)/helm-chartsnap/bin/
 	helm chartsnap --version
 
-.PHONY: snap-helm-template-help
-snap-helm-template-help:
+.PHONY: helm-template-help-snapshot
+helm-template-help-snapshot:
 	cd hack/helm-template-help-snapshot; $(GO) run main.go
