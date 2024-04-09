@@ -74,6 +74,7 @@ Global Flags:
       --kube-token string               bearer token used for authentication
       --kubeconfig string               path to the kubeconfig file
   -n, --namespace string                namespace scope for this request
+      --qps float32                     queries per second used when communicating with the Kubernetes API, not including bursting
       --registry-config string          path to the registry config file (default \"/home/coder/.config/helm/registry/config.json\")
       --repository-cache string         path to the file containing cached repository indexes (default \"/home/coder/.cache/helm/repository\")
       --repository-config string        path to the file containing repository names and URLs (default \"/home/coder/.config/helm/repositories.yaml\")
@@ -81,5 +82,5 @@ Global Flags:
 
 [helm-version]
 SnapShot = """
-version.BuildInfo{Version:\"v3.13.1\", GitCommit:\"3547a4b5bf5edb5478ce352e18858d8a552a4110\", GitTreeState:\"clean\", GoVersion:\"go1.20.8\"}
+version.BuildInfo{Version:\"v3.14.3\", GitCommit:\"f03cc04caaa8f6d7c3e67cf918929150cf6f3f12\", GitTreeState:\"clean\", GoVersion:\"go1.22.1\"}
 """
