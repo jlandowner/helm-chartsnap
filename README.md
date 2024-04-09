@@ -194,6 +194,7 @@ dynamicFields:
       - /data/COOKIE_BLOCKKEY
       - /data/COOKIE_HASHKEY
       - /data/COOKIE_SESSION_NAME
+    base64: true
 ```
 
 > NOTE:
@@ -232,13 +233,15 @@ testSpec:
       jsonPath:
         - /data/ca.crt
         - /data/ca.key
+      base64: true
     - apiVersion: v1
       kind: Secret
       name: hubble-server-certs
       jsonPath:
         - /data/ca.crt
         - /data/tls.crt
-        - /data/tls.
+        - /data/tls.key
+      base64: true
     - apiVersion: v1
       kind: Secret
       name: hubble-relay-client-certs
@@ -246,6 +249,7 @@ testSpec:
         - /data/ca.crt
         - /data/tls.crt
         - /data/tls.key
+      base64: true
 
 # Others can be any of your chart values.
 # ...
