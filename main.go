@@ -263,9 +263,13 @@ func run(cmd *cobra.Command, args []string) error {
 			}
 		} else {
 			values = []string{o.ValuesFile}
-			// load snapshot config in the same directory as the values file
-			if err := loadSnapshotConfig(path.Join(path.Dir(o.ValuesFile), o.ConfigFile), &cfg); err != nil {
-				return err
+
+			// load .chartsnap config in the base directory if exist
+			dirCfg := path.Join(path.Dir(o.ValuesFile), o.ConfigFile)
+			if _, err := os.Stat(dirCfg); err == nil {
+				if err := loadSnapshotConfig(dirCfg, &cfg); err != nil {
+					return err
+				}
 			}
 		}
 	}
