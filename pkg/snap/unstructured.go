@@ -8,7 +8,7 @@ import (
 	"github.com/aryann/difflib"
 	"github.com/fatih/color"
 	gomegatypes "github.com/onsi/gomega/types"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
 	unstructutils "github.com/jlandowner/helm-chartsnap/pkg/unstructured"
 )
@@ -25,7 +25,7 @@ func UnstructuredSnapShotMatcher(snapFile string, snapId string, diffOpts ...Dif
 	}
 }
 
-func UnstructuredMatch(matcher gomegatypes.GomegaMatcher, manifests []unstructured.Unstructured) (success bool, err error) {
+func UnstructuredMatch(matcher gomegatypes.GomegaMatcher, manifests []metaV1.Unstructured) (success bool, err error) {
 	res, err := unstructutils.Encode(manifests)
 	if err != nil {
 		return false, fmt.Errorf("failed to encode manifests: %w", err)

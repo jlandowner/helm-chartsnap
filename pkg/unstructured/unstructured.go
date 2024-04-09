@@ -8,13 +8,13 @@ import (
 	"strings"
 
 	jsonpatch "github.com/evanphx/json-patch/v5"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/runtime/serializer/yaml"
 	yamlv3 "sigs.k8s.io/yaml/goyaml.v3"
 )
 
-func Encode(arr []unstructured.Unstructured) ([]byte, error) {
+func Encode(arr []metaV1.Unstructured) ([]byte, error) {
 	sort.SliceStable(arr, func(i, j int) bool {
 		if arr[i].GetAPIVersion() != arr[j].GetAPIVersion() {
 			return arr[i].GetAPIVersion() < arr[j].GetAPIVersion()
@@ -27,9 +27,9 @@ func Encode(arr []unstructured.Unstructured) ([]byte, error) {
 	return yamlv3.Marshal(arr)
 }
 
-func Decode(source string) ([]unstructured.Unstructured, []error) {
+func Decode(source string) ([]metaV1.Unstructured, []error) {
 	splitString := regexp.MustCompile(`(?m)^---$`).Split(source, -1)
-	resources := make([]unstructured.Unstructured, 0, len(splitString))
+	resources := make([]metaV1.Unstructured, 0, len(splitString))
 
 	var errs []error = make([]error, 0)
 	for _, v := range splitString {
@@ -61,7 +61,7 @@ func Decode(source string) ([]unstructured.Unstructured, []error) {
 	return resources, errs
 }
 
-func Replace(obj unstructured.Unstructured, key, value string) (*unstructured.Unstructured, error) {
+func Replace(obj metaV1.Unstructured, key, value string) (*metaV1.Unstructured, error) {
 	str_patch := fmt.Sprintf(`[{"op": "replace", "path": "%s", "value": "%s"}]`, key, value)
 	bytes_obj, err := UnstructuredToJSONBytes(obj.DeepCopy())
 	if err != nil {
@@ -84,13 +84,13 @@ func Replace(obj unstructured.Unstructured, key, value string) (*unstructured.Un
 	return patchedObj, err
 }
 
-func StringToUnstructured(data string) (*schema.GroupVersionKind, *unstructured.Unstructured, error) {
+func StringToUnstructured(data string) (*schema.GroupVersionKind, *metaV1.Unstructured, error) {
 	return BytesToUnstructured([]byte(data))
 }
 
-func BytesToUnstructured(data []byte) (*schema.GroupVersionKind, *unstructured.Unstructured, error) {
-	obj := &unstructured.Unstructured{}
-	dec := yaml.NewDecodingSerializer(unstructured.UnstructuredJSONScheme)
+func BytesToUnstructured(data []byte) (*schema.GroupVersionKind, *metaV1.Unstructured, error) {
+	obj := &metaV1.Unstructured{}
+	dec := yaml.NewDecodingSerializer(metaV1.UnstructuredJSONScheme)
 	_, gvk, err := dec.Decode([]byte(data), nil, obj)
 	if err != nil {
 		return nil, nil, err
@@ -98,6 +98,6 @@ func BytesToUnstructured(data []byte) (*schema.GroupVersionKind, *unstructured.U
 	return gvk, obj, nil
 }
 
-func UnstructuredToJSONBytes(obj *unstructured.Unstructured) ([]byte, error) {
+func UnstructuredToJSONBytes(obj *metaV1.Unstructured) ([]byte, error) {
 	return json.Marshal(obj)
 }

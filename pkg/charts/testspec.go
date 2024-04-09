@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	yaml "sigs.k8s.io/yaml/goyaml.v3"
 
-	unstructuredutil "github.com/jlandowner/helm-chartsnap/pkg/unstructured"
+	unst "github.com/jlandowner/helm-chartsnap/pkg/unstructured"
 )
 
 func LoadSnapshotConfig(file string) (SnapshotConfig, error) {
@@ -44,14 +44,14 @@ type ManifestPath struct {
 	JSONPath   []string `yaml:"jsonPath,omitempty"`
 }
 
-func (t *SnapshotConfig) ApplyFixedValue(manifests []unstructured.Unstructured) error {
+func (t *SnapshotConfig) ApplyFixedValue(manifests []metaV1.Unstructured) error {
 	for _, v := range t.DynamicFields {
 		for i, obj := range manifests {
 			if v.APIVersion == obj.GetAPIVersion() &&
 				v.Kind == obj.GetKind() &&
 				v.Name == obj.GetName() {
 				for _, p := range v.JSONPath {
-					newObj, err := unstructuredutil.Replace(manifests[i], p, "###DYNAMIC_FIELD###")
+					newObj, err := unst.Replace(manifests[i], p, "###DYNAMIC_FIELD###")
 					if err != nil {
 						return fmt.Errorf("failed to replace json path: %w", err)
 					}
