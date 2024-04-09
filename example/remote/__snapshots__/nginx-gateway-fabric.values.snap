@@ -1,9 +1,3 @@
-apiVersion: helm-chartsnap.jlandowner.dev/v1alpha1
-kind: Unknown
-raw: |
-  Pulled: ghcr.io/nginxinc/charts/nginx-gateway-fabric:1.2.0
-  Digest: sha256:dcb4647c4c37f8e2d1ada4bd9ae16221344eabbdf21018550d4e0a74e43ce67a
----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
