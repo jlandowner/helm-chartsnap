@@ -5,7 +5,6 @@ import (
 
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	yaml "sigs.k8s.io/yaml/goyaml.v3"
 )
 
 var (
@@ -22,11 +21,7 @@ type UnknownError struct {
 }
 
 func (e *UnknownError) Error() string {
-	out, err := yaml.Marshal(e.Unstructured())
-	if err != nil {
-		panic(err)
-	}
-	return fmt.Sprintf("WARN: failed to recognize a resource in stdout/stderr of helm template command output. snapshot it as Unknown: \n---\n%s\n---", out)
+	return fmt.Sprintf("WARN: failed to recognize a resource in stdout/stderr of helm template command output. snapshot it as Unknown: \n---\n%s\n---", e.Raw)
 }
 
 func (e *UnknownError) Unstructured() *metaV1.Unstructured {

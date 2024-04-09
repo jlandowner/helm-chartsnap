@@ -264,12 +264,7 @@ SnapShot = """
 SnapShot = """
 WARN: failed to recognize a resource in stdout/stderr of helm template command output. snapshot it as Unknown: 
 ---
-object:
-    apiVersion: helm-chartsnap.jlandowner.dev/v1alpha1
-    kind: Unknown
-    raw: |-
-        some: raw data
-        raw:
-          data: here
-
+some: raw data
+raw:
+  data: here
 ---"""
