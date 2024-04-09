@@ -34,7 +34,7 @@ func (o *HelmTemplateCmdOptions) Args() []string {
 
 func (o *HelmTemplateCmdOptions) Execute(ctx context.Context) ([]byte, error) {
 	args := o.Args()
-	Log().DebugContext(ctx, "executing 'helm template' command", "args", args, "additionalArgs", o.AdditionalArgs)
+	log().DebugContext(ctx, "executing 'helm template' command", "args", args, "additionalArgs", o.AdditionalArgs)
 
 	// helm template should not be executed in debug mode because YAML parser fails.
 	os.Setenv("HELM_DEBUG", "false")

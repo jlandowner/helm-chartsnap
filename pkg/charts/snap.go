@@ -13,17 +13,17 @@ import (
 	yaml "sigs.k8s.io/yaml/goyaml.v3"
 )
 
-var log *slog.Logger
+var logger *slog.Logger
 
 func SetLogger(slogr *slog.Logger) {
-	log = slogr
+	logger = slogr
 }
 
-func Log() *slog.Logger {
-	if log == nil {
-		log = slog.Default()
+func log() *slog.Logger {
+	if logger == nil {
+		logger = slog.Default()
 	}
-	return log
+	return logger
 }
 
 type ChartSnapOptions struct {
@@ -51,18 +51,18 @@ func Snap(ctx context.Context, o ChartSnapOptions) (match bool, failureMessage s
 	// merge snapshot config file and config in snapshot values file
 	sv.TestSpec.Merge(o.SnapshotConfig)
 
-	Log().Debug("test spec from values file", "spec", sv.TestSpec)
+	log().Debug("test spec from values file", "spec", sv.TestSpec)
 
 	out, err := o.HelmTemplateCmdOptions.Execute(ctx)
 	if err != nil {
 		return match, "", fmt.Errorf("'helm template' command failed: %w: %s", err, out)
 	}
-	Log().Debug("helm template output", "output", string(out))
+	log().Debug("helm template output", "output", string(out))
 
 	manifests, decodeErrs := unstructured.Decode(string(out))
 	if len(decodeErrs) > 0 {
 		for _, err := range decodeErrs {
-			Log().Info("loading helm output is done with warning")
+			log().Info("loading helm output is done with warning")
 			fmt.Println(err)
 		}
 	}
@@ -71,7 +71,7 @@ func Snap(ctx context.Context, o ChartSnapOptions) (match bool, failureMessage s
 		return match, "", fmt.Errorf("failed to replace json path: %w", err)
 	}
 
-	snap.SetLogger(Log())
+	snap.SetLogger(log())
 	s := snap.UnstructuredSnapShotMatcher(
 		o.SnapshotFile,
 		SnapshotID(o.HelmTemplateCmdOptions.ValuesFile),
