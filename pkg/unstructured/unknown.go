@@ -3,9 +3,9 @@ package unstructured
 import (
 	"fmt"
 
-	"gopkg.in/yaml.v3"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	yaml "sigs.k8s.io/yaml/goyaml.v3"
 )
 
 var (

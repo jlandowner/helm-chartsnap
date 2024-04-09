@@ -8,10 +8,10 @@ import (
 	"strings"
 
 	jsonpatch "github.com/evanphx/json-patch/v5"
-	yamlv3 "gopkg.in/yaml.v3"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/runtime/serializer/yaml"
+	yamlv3 "sigs.k8s.io/yaml/goyaml.v3"
 )
 
 func Encode(arr []unstructured.Unstructured) ([]byte, error) {

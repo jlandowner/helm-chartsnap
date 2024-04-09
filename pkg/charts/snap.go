@@ -10,7 +10,7 @@ import (
 
 	"github.com/jlandowner/helm-chartsnap/pkg/snap"
 	"github.com/jlandowner/helm-chartsnap/pkg/unstructured"
-	"gopkg.in/yaml.v3"
+	yaml "sigs.k8s.io/yaml/goyaml.v3"
 )
 
 var log *slog.Logger

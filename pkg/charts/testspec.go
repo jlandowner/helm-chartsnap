@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"gopkg.in/yaml.v3"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	yaml "sigs.k8s.io/yaml/goyaml.v3"
 
 	unstructuredutil "github.com/jlandowner/helm-chartsnap/pkg/unstructured"
 )
