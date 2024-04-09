@@ -26,17 +26,22 @@ test:
 HELM_PLUGIN_PATH := $(shell helm env | grep HELM_PLUGINS | cut -d= -f2)
 
 .PHONY: integ-test
-integ-test: debug-plugin
-	-helm chartsnap --chart example/app1 $(ARGS)
-	-helm chartsnap --chart example/app1 -f example/app1/test/test_ingress_enabled.yaml $(ARGS)
-	-helm chartsnap --chart example/app1 -f example/app1/test/ $(ARGS)
+integ-test: install-dev-bin
+	helm chartsnap --chart example/app1 -f example/app1/test/test_ingress_enabled.yaml --namespace default $(ARGS)
+	helm chartsnap --chart example/app1 -f example/app1/test/ --namespace default $(ARGS)
+
+.PHONY: integ-test-fail
+integ-test-fail: install-dev-bin
+	-helm chartsnap --chart example/app1 --namespace default $(ARGS)
+	-helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/test_ingress_enabled.yaml $(ARGS)
+	-helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/ $(ARGS)
 
 .PHONY: update-versions
 update-versions:
 	sed -i.bk 's/version: .*/version: $(VERSION)/' plugin.yaml
 
-.PHONY: debug-plugin
-debug-plugin: build
+.PHONY: install-dev-bin
+install-dev-bin: build
 	-helm plugin install https://github.com/jlandowner/helm-chartsnap
 	cp ./dist/chartsnap_*/chartsnap $(HELM_PLUGIN_PATH)/helm-chartsnap/bin/
 	helm chartsnap --version
