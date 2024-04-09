@@ -67,7 +67,7 @@ jobs:
 
   local:
     runs-on: ubuntu-latest
-    name: Do snapshot cilium and create PR if snapshot changed
+    name: Do snapshot for local chart if snapshot changed
     permissions:
       contents: write
       pull-requests: write
@@ -81,6 +81,24 @@ jobs:
         with:
           chart:  example/app1
           values: example/app1/test/
+          update_snapshot: true
+
+  local-fail:
+    runs-on: ubuntu-latest
+    name: Do snapshot for local unmathced chart
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update Snapshot
+        uses: jlandowner/helm-chartsnap-action@v1
+        id: helm-chartsnap-action
+        with:
+          chart:  example/app1
+          values: example/app1/testfail/
         continue-on-error: true
 
       - name: OK if snapshot is changed
