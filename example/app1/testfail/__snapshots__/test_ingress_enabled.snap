@@ -27,7 +27,7 @@ SnapShot = """
                     helm.sh/chart: app1-0.1.0
             spec:
                 containers:
-                    - image: nginx:1.16.0
+                    - image: nginx:1.15.0
                       imagePullPolicy: IfNotPresent
                       livenessProbe:
                         httpGet:
@@ -71,7 +71,7 @@ SnapShot = """
                             port:
                                 number: 80
                       path: /
-                      pathType: ImplementationSpecific
+                      pathType: Prefix
         tls:
             - hosts:
                 - chart-example.local
@@ -113,7 +113,7 @@ SnapShot = """
             app.kubernetes.io/version: 1.16.0
             helm.sh/chart: app1-0.1.0
         name: app1-cert
-        namespace: default
+        namespace: code-server
     type: kubernetes.io/tls
 - object:
     apiVersion: v1

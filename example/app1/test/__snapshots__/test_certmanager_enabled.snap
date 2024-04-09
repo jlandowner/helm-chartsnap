@@ -57,11 +57,11 @@ SnapShot = """
             app.kubernetes.io/version: 1.16.0
             helm.sh/chart: app1-0.1.0
         name: app1-cert
-        namespace: code-server
+        namespace: default
     spec:
         dnsNames:
-            - chartsnap-app1.code-server.svc
-            - chartsnap-app1.code-server.svc.cluster.local
+            - chartsnap-app1.default.svc
+            - chartsnap-app1.default.svc.cluster.local
         issuerRef:
             kind: Issuer
             name: nameOfClusterIssuer
