@@ -9,9 +9,9 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/jlandowner/helm-chartsnap/pkg/snap"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
-	unstructuredutil "github.com/jlandowner/helm-chartsnap/pkg/unstructured"
+	unst "github.com/jlandowner/helm-chartsnap/pkg/unstructured"
 )
 
 func TestSnapshot(t *testing.T) {
@@ -20,7 +20,7 @@ func TestSnapshot(t *testing.T) {
 }
 
 var _ = Describe("ApplyDynamicFields", func() {
-	load := func(filePath string) []unstructured.Unstructured {
+	load := func(filePath string) []metaV1.Unstructured {
 		f, err := os.Open(filePath)
 		Expect(err).NotTo(HaveOccurred())
 		defer f.Close()
@@ -28,7 +28,7 @@ var _ = Describe("ApplyDynamicFields", func() {
 		buf, err := io.ReadAll(f)
 		Expect(err).NotTo(HaveOccurred())
 
-		manifests, errs := unstructuredutil.Decode(string(buf))
+		manifests, errs := unst.Decode(string(buf))
 		Expect(len(errs)).To(BeZero())
 
 		return manifests

@@ -3,7 +3,7 @@ package unstructured
 import (
 	"fmt"
 
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	yaml "sigs.k8s.io/yaml/goyaml.v3"
 )
@@ -29,8 +29,8 @@ func (e *UnknownError) Error() string {
 	return fmt.Sprintf("WARN: failed to recognize a resource. snapshot as Unknown: \n---\n%s\n---", out)
 }
 
-func (e *UnknownError) Unstructured() *unstructured.Unstructured {
-	return &unstructured.Unstructured{
+func (e *UnknownError) Unstructured() *metaV1.Unstructured {
+	return &metaV1.Unstructured{
 		Object: map[string]interface{}{
 			"apiVersion": GroupVersion.String(),
 			"kind":       "Unknown",

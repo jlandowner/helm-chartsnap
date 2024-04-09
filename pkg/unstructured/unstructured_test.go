@@ -4,12 +4,12 @@ import (
 	"reflect"
 	"testing"
 
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
 func TestEncode(t *testing.T) {
 	type args struct {
-		arr []unstructured.Unstructured
+		arr []metaV1.Unstructured
 	}
 	tests := []struct {
 		name    string
@@ -20,7 +20,7 @@ func TestEncode(t *testing.T) {
 		{
 			name: "ok",
 			args: args{
-				arr: []unstructured.Unstructured{
+				arr: []metaV1.Unstructured{
 					{
 						Object: map[string]interface{}{
 							"apiVersion": "v1",
@@ -75,7 +75,7 @@ func TestDecode(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    []unstructured.Unstructured
+		want    []metaV1.Unstructured
 		wantErr bool
 	}{
 		{
@@ -93,7 +93,7 @@ metadata:
    name: service1
 `,
 			},
-			want: []unstructured.Unstructured{
+			want: []metaV1.Unstructured{
 				{
 					Object: map[string]interface{}{
 						"apiVersion": "v1",
@@ -134,20 +134,20 @@ metadata:
 
 func TestReplace(t *testing.T) {
 	type args struct {
-		obj   unstructured.Unstructured
+		obj   metaV1.Unstructured
 		key   string
 		value string
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *unstructured.Unstructured
+		want    *metaV1.Unstructured
 		wantErr bool
 	}{
 		{
 			name: "ok",
 			args: args{
-				obj: unstructured.Unstructured{
+				obj: metaV1.Unstructured{
 					Object: map[string]interface{}{
 						"apiVersion": "v1",
 						"kind":       "Pod",
@@ -159,7 +159,7 @@ func TestReplace(t *testing.T) {
 				key:   "/metadata/name",
 				value: "pod2",
 			},
-			want: &unstructured.Unstructured{
+			want: &metaV1.Unstructured{
 				Object: map[string]interface{}{
 					"apiVersion": "v1",
 					"kind":       "Pod",
