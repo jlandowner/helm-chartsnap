@@ -736,7 +736,7 @@ spec:
                 resourceFieldRef:
                   divisor: "1"
                   resource: limits.memory
-          image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
+          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
           imagePullPolicy: IfNotPresent
           lifecycle:
             postStart:
@@ -870,7 +870,7 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.namespace
-          image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
+          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
           imagePullPolicy: IfNotPresent
           name: config
           terminationMessagePolicy: FallbackToLogsOnError
@@ -889,7 +889,7 @@ spec:
               value: /run/cilium/cgroupv2
             - name: BIN_PATH
               value: /opt/cni/bin
-          image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
+          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
           imagePullPolicy: IfNotPresent
           name: mount-cgroup
           securityContext:
@@ -919,7 +919,7 @@ spec:
           env:
             - name: BIN_PATH
               value: /opt/cni/bin
-          image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
+          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
           imagePullPolicy: IfNotPresent
           name: apply-sysctl-overwrites
           securityContext:
@@ -945,7 +945,7 @@ spec:
             - /bin/bash
             - -c
             - --
-          image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
+          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
           imagePullPolicy: IfNotPresent
           name: mount-bpf-fs
           securityContext:
@@ -976,7 +976,7 @@ spec:
                   key: write-cni-conf-when-ready
                   name: cilium-config
                   optional: true
-          image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
+          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
           imagePullPolicy: IfNotPresent
           name: clean-cilium-state
           securityContext:
@@ -1002,7 +1002,7 @@ spec:
               name: cilium-run
         - command:
             - /install-plugin.sh
-          image: quay.io/cilium/cilium:v1.15.3@sha256:da74ab61d1bc665c1c088dff41d5be388d252ca5800f30c7d88844e6b5e440b0
+          image: quay.io/cilium/cilium:v1.15.4@sha256:b760a4831f5aab71c711f7537a107b751d0d0ce90dd32d8b358df3c5da385426
           imagePullPolicy: IfNotPresent
           name: install-cni-binaries
           resources:
@@ -1188,7 +1188,7 @@ spec:
                   key: AWS_DEFAULT_REGION
                   name: cilium-aws
                   optional: true
-          image: quay.io/cilium/operator-aws:v1.15.3@sha256:2b05dc6b88037a5ce05e4030ef616b1f7be9e65083e35abd36a1b66953fd0b6a
+          image: quay.io/cilium/operator-aws:v1.15.4@sha256:8675486ce8938333390c37302af162ebd12aaebc08eeeaf383bfb73128143fa9
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -1273,7 +1273,7 @@ spec:
             - serve
           command:
             - hubble-relay
-          image: quay.io/cilium/hubble-relay:v1.15.3@sha256:b9c6431aa4f22242a5d0d750c621d9d04bdc25549e4fb1116bfec98dd87958a2
+          image: quay.io/cilium/hubble-relay:v1.15.4@sha256:03ad857feaf52f1b4774c29614f42a50b370680eb7d0bfbc1ae065df84b1070a
           imagePullPolicy: IfNotPresent
           livenessProbe:
             grpc:
