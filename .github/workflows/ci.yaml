@@ -1,114 +1,40 @@
 name: CI
 
 on:
-  push:
+  pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  ingress-nginx:
+  unittest:
     runs-on: ubuntu-latest
-    name: Do snapshot ingress-nginx and create PR if snapshot changed
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Update Snapshot
-        uses: jlandowner/helm-chartsnap-action@v1
-        id: helm-chartsnap-action
+      - name: Setup Go
+        uses: actions/setup-go@v4
         with:
-          chart:  ingress-nginx
-          repo:   https://kubernetes.github.io/ingress-nginx
-          values: example/remote/ingress-nginx.values.yaml
-          additional_args: "--namespace ingress-nginx --skip-tests"
-          update_snapshot: true
+          go-version-file: go.mod
+      - run: go version
 
-  cilium:
-    runs-on: ubuntu-latest
-    name: Do snapshot cilium and create PR if snapshot changed
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Update Snapshot
-        uses: jlandowner/helm-chartsnap-action@v1
-        id: helm-chartsnap-action
-        with:
-          chart:  cilium
-          repo:   https://helm.cilium.io
-          values: example/remote/cilium.values.yaml
-          additional_args: "--namespace kube-system"
-          update_snapshot: true
-
-  nginx-gateway-fabric:
-    runs-on: ubuntu-latest
-    name: Do snapshot nginx-gateway-fabric and create PR if snapshot changed
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Update Snapshot
-        uses: jlandowner/helm-chartsnap-action@v1
-        id: helm-chartsnap-action
-        with:
-          chart:  oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric
-          values: example/remote/nginx-gateway-fabric.values.yaml
-          additional_args: "--namespace nginx-gateway"
-          update_snapshot: true
-
-  local:
-    runs-on: ubuntu-latest
-    name: Do snapshot for local chart if snapshot changed
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Update Snapshot
-        uses: jlandowner/helm-chartsnap-action@v1
-        id: helm-chartsnap-action
-        with:
-          chart:  example/app1
-          values: example/app1/test/
-          update_snapshot: true
-
-  local-fail:
-    runs-on: ubuntu-latest
-    name: Do snapshot for local unmathced chart
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Update Snapshot
-        uses: jlandowner/helm-chartsnap-action@v1
-        id: helm-chartsnap-action
-        with:
-          chart:  example/app1
-          values: example/app1/testfail/
-        continue-on-error: true
-
-      - name: OK if snapshot is changed
-        if: steps.helm-chartsnap-action.outcome == 'failure'
-        shell: bash
+      - name: Unittest
         run: |
-          echo "snapshot changed"
+          make test GO=go
 
-      - name: Fail if snapshot is not changed
-        if: steps.helm-chartsnap-action.outcome == 'success'
-        shell: bash
+  integ-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+      - run: go version
+
+      - name: Integration test
         run: |
-          echo "snapshot not changed"; exit 1
+          make integ-test GO=go
