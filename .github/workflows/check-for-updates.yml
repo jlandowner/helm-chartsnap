@@ -1,0 +1,65 @@
+name: Check for updates of remote charts
+
+on:
+  schedule:
+    - cron: "0 0 * * 5" # every Friday at 00:00
+
+jobs:
+  ingress-nginx:
+    runs-on: ubuntu-latest
+    name: Do snapshot ingress-nginx and create PR if snapshot changed
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update Snapshot
+        uses: jlandowner/helm-chartsnap-action@v1
+        id: helm-chartsnap-action
+        with:
+          chart:  ingress-nginx
+          repo:   https://kubernetes.github.io/ingress-nginx
+          values: example/remote/ingress-nginx.values.yaml
+          additional_args: "--namespace ingress-nginx --skip-tests"
+          update_snapshot: true
+
+  cilium:
+    runs-on: ubuntu-latest
+    name: Do snapshot cilium and create PR if snapshot changed
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update Snapshot
+        uses: jlandowner/helm-chartsnap-action@v1
+        id: helm-chartsnap-action
+        with:
+          chart:  cilium
+          repo:   https://helm.cilium.io
+          values: example/remote/cilium.values.yaml
+          additional_args: "--namespace kube-system"
+          update_snapshot: true
+
+  nginx-gateway-fabric:
+    runs-on: ubuntu-latest
+    name: Do snapshot nginx-gateway-fabric and create PR if snapshot changed
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update Snapshot
+        uses: jlandowner/helm-chartsnap-action@v1
+        id: helm-chartsnap-action
+        with:
+          chart:  oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric
+          values: example/remote/nginx-gateway-fabric.values.yaml
+          additional_args: "--namespace nginx-gateway"
+          update_snapshot: true
