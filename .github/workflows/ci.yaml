@@ -48,7 +48,3 @@ jobs:
       - name: Integration test kong
         run: |
           make integ-test-kong
-
-      - name: Helm output diff
-        run: |
-          make helm-template-diff GO=go
