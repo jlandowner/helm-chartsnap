@@ -1,8 +1,7 @@
 module github.com/jlandowner/helm-chartsnap
 
 go 1.22
-
-toolchain go1.22.1
+toolchain go1.22.2
 
 require (
 	github.com/aryann/difflib v0.0.0-20210328193216-ff5ff6dc229b
@@ -15,7 +14,7 @@ require (
 	github.com/spf13/afero v1.11.0
 	github.com/spf13/cobra v1.8.0
 	golang.org/x/sync v0.7.0
-	k8s.io/apimachinery v0.29.3
+	k8s.io/apimachinery v0.30.0
 	sigs.k8s.io/controller-runtime v0.17.3
 	sigs.k8s.io/kustomize/kyaml v0.17.0
 	sigs.k8s.io/yaml v1.4.0
