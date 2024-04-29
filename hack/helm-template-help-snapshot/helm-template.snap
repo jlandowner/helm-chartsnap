@@ -29,7 +29,7 @@ Flags:
       --insecure-skip-tls-verify                   skip tls certificate checks for the chart download
       --is-upgrade                                 set .Release.IsUpgrade instead of .Release.IsInstall
       --key-file string                            identify HTTPS client using this SSL key file
-      --keyring string                             location of public keys used for verification (default \"/home/coder/.gnupg/pubring.gpg\")
+      --keyring string                             location of public keys used for verification (default \"###HOME_DIR###/.gnupg/pubring.gpg\")
       --kube-version string                        Kubernetes version used for Capabilities.KubeVersion
   -l, --labels stringToString                      Labels that would be added to release metadata. Should be divided by comma. (default [])
       --name-template string                       specify template used to name the release
@@ -75,9 +75,9 @@ Global Flags:
       --kubeconfig string               path to the kubeconfig file
   -n, --namespace string                namespace scope for this request
       --qps float32                     queries per second used when communicating with the Kubernetes API, not including bursting
-      --registry-config string          path to the registry config file (default \"/home/coder/.config/helm/registry/config.json\")
-      --repository-cache string         path to the file containing cached repository indexes (default \"/home/coder/.cache/helm/repository\")
-      --repository-config string        path to the file containing repository names and URLs (default \"/home/coder/.config/helm/repositories.yaml\")
+      --registry-config string          path to the registry config file (default \"###HELM_REGISTRY_CONFIG###\")
+      --repository-cache string         path to the file containing cached repository indexes (default \"###HELM_REPOSITORY_CACHE###\")
+      --repository-config string        path to the file containing repository names and URLs (default \"###HELM_REPOSITORY_CONFIG###\")
 """
 
 [helm-version]
