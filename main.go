@@ -8,6 +8,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -25,6 +26,7 @@ var (
 	o       = &option{}
 	log     *slog.Logger
 	values  []string
+	mutex   = &sync.Mutex{}
 )
 
 type option struct {
@@ -328,15 +330,15 @@ func run(cmd *cobra.Command, args []string) error {
 			}
 			result, err := snapshotter.Snap(ctx)
 			if err != nil {
-				bannerPrintln("FAIL", fmt.Sprintf("chart=%s values=%s err=%v format=%s", ht.Chart, ht.ValuesFile, snapshotter.SnapshotVersion, err), color.FgRed, color.BgRed)
+				bannerPrintln("FAIL", fmt.Sprintf("chart=%s values=%s err=%v snapshot_version=%s", ht.Chart, ht.ValuesFile, snapshotter.SnapshotVersion, err), color.FgRed, color.BgRed)
 				return fmt.Errorf("failed to get snapshot chart=%s values=%s: %w", ht.Chart, ht.ValuesFile, err)
 			}
 			if !result.Match {
-				bannerPrintln("FAIL", fmt.Sprintf("Snapshot does not match chart=%s values=%s format=%s", ht.Chart, ht.ValuesFile, snapshotter.SnapshotVersion), color.FgRed, color.BgRed)
+				bannerPrintln("FAIL", fmt.Sprintf("Snapshot does not match chart=%s values=%s snapshot_version=%s", ht.Chart, ht.ValuesFile, snapshotter.SnapshotVersion), color.FgRed, color.BgRed)
 				fmt.Println(result.FailureMessage)
 				return fmt.Errorf("snapshot does not match chart=%s values=%s", ht.Chart, ht.ValuesFile)
 			}
-			bannerPrintln("PASS", fmt.Sprintf("Snapshot %s chart=%s values=%s format=%s", o.OK(), ht.Chart, ht.ValuesFile, snapshotter.SnapshotVersion), color.FgGreen, color.BgGreen)
+			bannerPrintln("PASS", fmt.Sprintf("Snapshot %s chart=%s values=%s snapshot_version=%s", o.OK(), ht.Chart, ht.ValuesFile, snapshotter.SnapshotVersion), color.FgGreen, color.BgGreen)
 			return nil
 		})
 	}
@@ -350,6 +352,8 @@ func run(cmd *cobra.Command, args []string) error {
 }
 
 func bannerPrintln(banner string, message string, fgColor color.Attribute, bgColor color.Attribute) {
+	mutex.Lock()
+	defer mutex.Unlock()
 	color.New(color.FgWhite, bgColor).Printf(" %s ", banner)
 	color.New(fgColor).Printf(" %s\n", message)
 }
