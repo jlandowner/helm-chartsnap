@@ -21,7 +21,9 @@ build: goreleaser
 
 .PHONY: test
 test:
-	$(GO) test ./... -cover cover.out
+	$(GO) test -race -coverprofile=coverage.txt -covermode=atomic `go list ./... | grep -v /hack`
+	$(GO) tool cover -func=coverage.txt -o=coverage.out
+	tail -1 coverage.out | awk '{gsub("%",""); print $$3}'
 
 HELM_PLUGIN_PATH := $(shell helm env | grep HELM_PLUGINS | cut -d= -f2)
 
