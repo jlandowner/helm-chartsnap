@@ -219,7 +219,7 @@ If you have a test values file directory, place it as a `.chartsnap.yaml` file w
 
 For more examples, see [example/app1](example/app1).
 
-Alternatively, you can directly add it as a property in the test values file directly.
+Alternatively, you can directly add the config in the test values file as a `testSpec` property.
 In this case, you don't need to prepare `.chartsnap.yaml`. It is for taking snapshots of remote or third-party charts with your single values file.
 
 Your values file can be like this:
