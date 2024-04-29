@@ -16,9 +16,10 @@ import (
 )
 
 const (
-	SnapshotVersionV1 = "v1"
-	SnapshotVersionV2 = "v2"
-	SnapshotVersionV3 = "v3"
+	SnapshotVersionV1     = "v1"
+	SnapshotVersionV2     = "v2"
+	SnapshotVersionV3     = "v3"
+	SnapshotVersionLatest = SnapshotVersionV3
 )
 
 var logger *slog.Logger
@@ -67,7 +68,7 @@ func (o *ChartSnapshotter) getVersionFromSnapshotFile() string {
 	s, err := snap.ReadFile(o.SnapshotFile)
 	if err != nil {
 		log().Debug("failed to read snapshot file", "path", o.SnapshotFile, "err", err)
-		return ""
+		return SnapshotVersionLatest
 	}
 	split := strings.Split(string(s), "\n")
 	return v1alpha1.ParseHeader(split[0]).SnapshotVersion
@@ -122,6 +123,8 @@ func (o *ChartSnapshotter) Snap(ctx context.Context) (result *SnapshotResult, er
 	}
 
 	// take snapshot
+	log().Debug("taking snapshot", "version", o.SnapshotVersion, "path", o.SnapshotFile)
+
 	switch o.SnapshotVersion {
 	case SnapshotVersionV1:
 		log().Info("WARNING: legacy format snapshot. it will be deprecated in the future version. please update the snapshots to the latest format", "path", o.SnapshotFile)
@@ -131,8 +134,8 @@ func (o *ChartSnapshotter) Snap(ctx context.Context) (result *SnapshotResult, er
 	case SnapshotVersionV3:
 		return o.snapV3(sv.TestSpec, out)
 	default:
-		log().Error("unsupported snapshot version. fallback to latest", "version", o.SnapshotVersion)
-		o.SnapshotVersion = SnapshotVersionV3 // latest
+		log().Error("unsupported snapshot version. use latest", "version", o.SnapshotVersion, "latest", SnapshotVersionLatest)
+		o.SnapshotVersion = SnapshotVersionLatest
 		return o.snapV3(sv.TestSpec, out)
 	}
 }

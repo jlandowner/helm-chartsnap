@@ -182,7 +182,7 @@ MIT 2023 jlandowner/helm-chartsnap
 		panic(err)
 	}
 	rootCmd.PersistentFlags().BoolVar(&o.LegacySnapshot, "legacy-snapshot", false, "use toml-based legacy snapshot format")
-	rootCmd.PersistentFlags().StringVar(&o.SnapshotVersion, "snapshot-version", "", "use a specific snapshot version. v1, v2, v3 are supported. (default: latest)")
+	rootCmd.PersistentFlags().StringVar(&o.SnapshotVersion, "snapshot-version", "", "use a specific snapshot format version. v1, v2, v3 are supported. (default: latest)")
 
 	if err := rootCmd.Execute(); err != nil {
 		slog.New(slogHandler()).Error(err.Error())
@@ -226,6 +226,7 @@ func run(cmd *cobra.Command, args []string) error {
 	log = slog.New(slogHandler())
 	log.Debug("options", printOptions(*o)...)
 	log.Debug("args", "args", args)
+	charts.SetLogger(log)
 
 	for _, v := range os.Environ() {
 		if strings.HasPrefix(v, "HELM_") {
@@ -306,7 +307,6 @@ func run(cmd *cobra.Command, args []string) error {
 			ValuesFile:     v,
 			AdditionalArgs: args,
 		}
-		charts.SetLogger(log)
 		bannerPrintln("RUNS",
 			fmt.Sprintf("Snapshot testing chart=%s values=%s", ht.Chart, ht.ValuesFile), 0, color.BgBlue)
 		eg.Go(func() error {
@@ -328,15 +328,15 @@ func run(cmd *cobra.Command, args []string) error {
 			}
 			result, err := snapshotter.Snap(ctx)
 			if err != nil {
-				bannerPrintln("FAIL", fmt.Sprintf("chart=%s values=%s err=%v", ht.Chart, ht.ValuesFile, err), color.FgRed, color.BgRed)
+				bannerPrintln("FAIL", fmt.Sprintf("chart=%s values=%s err=%v format=%s", ht.Chart, ht.ValuesFile, snapshotter.SnapshotVersion, err), color.FgRed, color.BgRed)
 				return fmt.Errorf("failed to get snapshot chart=%s values=%s: %w", ht.Chart, ht.ValuesFile, err)
 			}
 			if !result.Match {
-				bannerPrintln("FAIL", fmt.Sprintf("Snapshot does not match chart=%s values=%s", ht.Chart, ht.ValuesFile), color.FgRed, color.BgRed)
+				bannerPrintln("FAIL", fmt.Sprintf("Snapshot does not match chart=%s values=%s format=%s", ht.Chart, ht.ValuesFile, snapshotter.SnapshotVersion), color.FgRed, color.BgRed)
 				fmt.Println(result.FailureMessage)
 				return fmt.Errorf("snapshot does not match chart=%s values=%s", ht.Chart, ht.ValuesFile)
 			}
-			bannerPrintln("PASS", fmt.Sprintf("Snapshot %s chart=%s values=%s", o.OK(), ht.Chart, ht.ValuesFile), color.FgGreen, color.BgGreen)
+			bannerPrintln("PASS", fmt.Sprintf("Snapshot %s chart=%s values=%s format=%s", o.OK(), ht.Chart, ht.ValuesFile, snapshotter.SnapshotVersion), color.FgGreen, color.BgGreen)
 			return nil
 		})
 	}
