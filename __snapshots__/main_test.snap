@@ -1,0 +1,18 @@
+['rootCmd fail including dynamic outputs should fail 1']
+SnapShot = 'snapshot does not match chart=example/app1 values='
+
+['rootCmd fail invalid flag should fail 1']
+SnapShot = 'unknown flag: --invalid'
+
+['rootCmd fail required flag is not set should fail 1']
+SnapShot = 'required flag(s) "chart" not set'
+
+['rootCmd fail snapshot is different should fail 1']
+SnapShot = 'snapshot does not match chart=example/app1 values=example/app1/testfail/test_ingress_enabled.yaml'
+
+['rootCmd fail values directory contains not matched snapshots should fail 1']
+SnapShot = 'snapshot does not match chart=example/app1 values=example/app1/testfail/test_ingress_enabled.yaml'
+
+['rootCmd fail values file not found should fail 1']
+SnapShot = """
+values file 'example/app1/test/notfound.yaml' not found"""

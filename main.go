@@ -23,10 +23,10 @@ var (
 	version = "snapshot"
 	commit  = "snapshot"
 	date    = "snapshot"
-	o       = &option{}
-	log     *slog.Logger
-	values  []string
 	mutex   = &sync.Mutex{}
+	o       *option
+	rootCmd *cobra.Command
+	log     *slog.Logger
 )
 
 type option struct {
@@ -89,8 +89,13 @@ func (o *option) snapshotVersion() string {
 	}
 }
 
-func main() {
-	rootCmd := &cobra.Command{
+func init() {
+	initRootCmd()
+}
+
+func initRootCmd() {
+	o = &option{}
+	rootCmd = &cobra.Command{
 		Use:   "chartsnap -c CHART",
 		Short: "Snapshot testing tool for Helm charts",
 		Long: `
@@ -156,7 +161,6 @@ MIT 2023 jlandowner/helm-chartsnap
   NO_COLOR=1 chartsnap -c YOUR_CHART`,
 		Version: fmt.Sprintf("version=%s commit=%s date=%s", version, commit, date),
 		RunE:    run,
-		PreRunE: prerun,
 	}
 	rootCmd.SilenceUsage = true
 	rootCmd.SilenceErrors = true
@@ -185,7 +189,9 @@ MIT 2023 jlandowner/helm-chartsnap
 	}
 	rootCmd.PersistentFlags().BoolVar(&o.LegacySnapshot, "legacy-snapshot", false, "use toml-based legacy snapshot format")
 	rootCmd.PersistentFlags().StringVar(&o.SnapshotVersion, "snapshot-version", "", "use a specific snapshot format version. v1, v2, v3 are supported. (default: latest)")
+}
 
+func main() {
 	if err := rootCmd.Execute(); err != nil {
 		slog.New(slogHandler()).Error(err.Error())
 		os.Exit(1)
@@ -201,14 +207,6 @@ func slogHandler() slog.Handler {
 			return slog.LevelInfo
 		}(),
 	})
-}
-
-func prerun(cmd *cobra.Command, args []string) error {
-	if o.Chart == "" {
-		// show help message when executed without any args (meaning required --chart flag is not set)
-		return cmd.Help()
-	}
-	return nil
 }
 
 func loadSnapshotConfig(file string, cfg *v1alpha1.SnapshotConfig) error {
@@ -244,9 +242,8 @@ func run(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	if o.ValuesFile == "" {
-		values = []string{""}
-	} else {
+	values := []string{""}
+	if o.ValuesFile != "" {
 		stat, err := os.Stat(o.ValuesFile)
 		if err != nil {
 			if os.IsNotExist(err) {

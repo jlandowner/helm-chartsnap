@@ -41,6 +41,15 @@ var _ = Describe("TestSpec", func() {
 				Expect(err.Error()).To(MatchSnapShot())
 			})
 		})
+
+		Context("when loading not found", func() {
+			It("should not load config", func() {
+				var v SnapshotValues
+				err := FromFile("testdata/notfound.yaml", &v)
+				Expect(err).Should(HaveOccurred())
+				Expect(err.Error()).To(MatchSnapShot())
+			})
+		})
 	})
 
 	var _ = Describe("Merge", func() {

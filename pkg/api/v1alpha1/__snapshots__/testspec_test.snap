@@ -21,6 +21,10 @@ SnapShot = """
 SnapShot = """
 failed to decode file 'testdata/testspec_values_invalid.yaml': yaml: line 10: could not find expected ':'"""
 
+['TestSpec FromFile when loading not found should not load config 1']
+SnapShot = """
+failed to open file 'testdata/notfound.yaml': open testdata/notfound.yaml: no such file or directory"""
+
 ['TestSpec FromFile when values.yaml has testSpec should load config 1']
 SnapShot = """
 {
