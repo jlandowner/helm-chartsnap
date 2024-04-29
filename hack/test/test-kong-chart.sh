@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Update submodule to the latest commit
-git submodule update --init --recursive
+git submodule update --remote --merge
 
 # Loop through each directory in charts/charts and run helm dependency update
 for dir in charts/charts/*; do
