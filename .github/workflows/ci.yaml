@@ -41,4 +41,4 @@ jobs:
 
       - name: Helm output diff
         run: |
-          make helm-template-diff
+          make helm-template-diff GO=go
