@@ -10,7 +10,7 @@ require (
 	github.com/fatih/color v1.16.0
 	github.com/google/go-cmp v0.6.0
 	github.com/onsi/ginkgo/v2 v2.17.2
-	github.com/onsi/gomega v1.33.0
+	github.com/onsi/gomega v1.33.1
 	github.com/pelletier/go-toml/v2 v2.2.1
 	github.com/spf13/afero v1.11.0
 	github.com/spf13/cobra v1.8.0
