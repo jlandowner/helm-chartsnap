@@ -98,7 +98,7 @@ github.com/jlandowner/helm-chartsnap/pkg/yaml/diff.go:173:			printHeader			100.0
 github.com/jlandowner/helm-chartsnap/pkg/yaml/diff.go:177:			findNextKind			80.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/diff.go:187:			findNextName			87.5%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:19:			SetLogger			100.0%
-github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:23:			log				100.0%
+github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:23:			log				66.7%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:30:			Encode				100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:37:			Decode				80.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:54:			decode				100.0%
@@ -106,4 +106,4 @@ github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:63:			ApplyFixedValueToDyn
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:81:			convertInvalidYAMLToUnknown	100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:97:			convertScalerNodeToUnknownNode	100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:112:			Replace				100.0%
-total:										(statements)			86.6%
+total:										(statements)			86.4%
