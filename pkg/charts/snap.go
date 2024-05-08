@@ -43,6 +43,7 @@ type ChartSnapshotter struct {
 	DiffContextLineN       int
 	UpdateSnapshot         bool
 	HeaderVersion          string
+	FailHelmError          bool
 }
 
 type SnapshotResult struct {
@@ -97,7 +98,11 @@ func (o *ChartSnapshotter) Snap(ctx context.Context) (result *SnapshotResult, er
 	// execute helm template command
 	out, err := o.HelmTemplateCmdOptions.Execute(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("'helm template' command failed: %w: %s", err, out)
+		if o.FailHelmError {
+			return nil, fmt.Errorf("'helm template' command failed: %w: %s", err, out)
+		} else {
+			log().Debug("helm template command failed", "err", err, "output", string(out))
+		}
 	}
 	log().Debug("helm template output", "output", string(out), "path", o.SnapshotFile)
 

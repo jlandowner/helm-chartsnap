@@ -41,6 +41,7 @@ type option struct {
 	ConfigFile       string
 	LegacySnapshot   bool // deprecated
 	SnapshotVersion  string
+	FailHelmError    bool
 
 	// Below properties are the same as helm global options
 	// They are passed to the plugin as environment variables
@@ -190,6 +191,7 @@ MIT 2023 jlandowner/helm-chartsnap
 	rootCmd.PersistentFlags().BoolVar(&o.LegacySnapshot, "legacy-snapshot", false, "use toml-based legacy snapshot format")
 	rootCmd.PersistentFlags().MarkDeprecated("legacy-snapshot", "use --snapshot-version=v1 instead")
 	rootCmd.PersistentFlags().StringVar(&o.SnapshotVersion, "snapshot-version", "", "use a specific snapshot format version. v1, v2, v3 are supported. (default: latest)")
+	rootCmd.PersistentFlags().BoolVar(&o.FailHelmError, "fail-helm-error", false, "fail if 'helm template' command failed")
 }
 
 func main() {
@@ -325,6 +327,7 @@ func run(cmd *cobra.Command, args []string) error {
 				DiffContextLineN:       o.DiffContextLineN,
 				UpdateSnapshot:         o.UpdateSnapshot,
 				HeaderVersion:          version,
+				FailHelmError:          o.FailHelmError,
 			}
 			result, err := snapshotter.Snap(ctx)
 			if err != nil {
