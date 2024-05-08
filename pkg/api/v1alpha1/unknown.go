@@ -23,7 +23,7 @@ type UnknownError struct {
 }
 
 func (e *UnknownError) Error() string {
-	return fmt.Sprintf("WARN: failed to recognize a resource in stdout/stderr of helm template command output. snapshot it as Unknown: \n---\n%s\n---", e.Raw)
+	return fmt.Sprintf("failed to recognize a resource in stdout/stderr of helm template command output. snapshot it as Unknown: \n---\n%s\n---", e.Raw)
 }
 
 func (e *UnknownError) Unstructured() *metaV1.Unstructured {

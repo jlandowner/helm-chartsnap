@@ -87,7 +87,7 @@ func convertInvalidYAMLToUnknown(bs []byte) []byte {
 			docs = append(docs, v)
 		} else {
 			unknown := v1alpha1.NewUnknownError(v)
-			log().Info(unknown.Error())
+			log().Warn(unknown.Error())
 			docs = append(docs, unknown.MustString())
 		}
 	}
@@ -99,7 +99,7 @@ func convertScalerNodeToUnknownNode(docs []*yaml.RNode) error {
 		if v.IsStringValue() {
 			vv := v.YNode().Value
 			unknown := v1alpha1.NewUnknownError(vv)
-			log().Info(unknown.Error())
+			log().Warn(unknown.Error())
 			docs[i] = yaml.NewRNode(unknown.Node())
 			docs[i].ShouldKeep = true
 		}

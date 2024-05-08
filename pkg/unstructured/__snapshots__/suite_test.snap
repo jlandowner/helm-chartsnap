@@ -416,7 +416,7 @@ SnapShot = """
 
 ['Unknown OK report unknown as warning 1']
 SnapShot = """
-WARN: failed to recognize a resource in stdout/stderr of helm template command output. snapshot it as Unknown: 
+failed to recognize a resource in stdout/stderr of helm template command output. snapshot it as Unknown: 
 ---
 some: raw data
 raw:

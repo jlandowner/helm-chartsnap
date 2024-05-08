@@ -41,7 +41,7 @@ func TestUnknownError_Error(t *testing.T) {
 			fields: fields{
 				Raw: "some raw data",
 			},
-			want: "WARN: failed to recognize a resource in stdout/stderr of helm template command output. snapshot it as Unknown: \n---\nsome raw data\n---",
+			want: "failed to recognize a resource in stdout/stderr of helm template command output. snapshot it as Unknown: \n---\nsome raw data\n---",
 		},
 	}
 	for _, tt := range tests {

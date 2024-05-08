@@ -127,7 +127,7 @@ func (o *ChartSnapshotter) Snap(ctx context.Context) (result *SnapshotResult, er
 
 	switch o.SnapshotVersion {
 	case SnapshotVersionV1:
-		log().Info("WARNING: legacy format snapshot. it will be deprecated in the future version. please update the snapshots to the latest format", "path", o.SnapshotFile)
+		log().Warn("legacy format snapshot. it will be deprecated in the future version. please update the snapshots to the latest format", "path", o.SnapshotFile)
 		return o.snapV1(sv.TestSpec, out)
 	case SnapshotVersionV2:
 		return o.snapV2(sv.TestSpec, out)
@@ -145,7 +145,7 @@ func (o *ChartSnapshotter) snapV1(cfg v1alpha1.SnapshotConfig, data []byte) (res
 	manifests, decodeErrs := unstV2.Decode(string(data))
 	if len(decodeErrs) > 0 {
 		for _, err := range decodeErrs {
-			log().Info("WARNING: loading helm output is done with warning")
+			log().Warn("loading helm output is done with error")
 			fmt.Println(err)
 		}
 	}
@@ -182,7 +182,7 @@ func (o *ChartSnapshotter) snapV2(cfg v1alpha1.SnapshotConfig, data []byte) (res
 	manifests, decodeErrs := unstV2.Decode(string(data))
 	if len(decodeErrs) > 0 {
 		for _, err := range decodeErrs {
-			log().Info("WARNING: loading helm output is done with warning")
+			log().Warn("loading helm output is done with error")
 			fmt.Println(err)
 		}
 	}
