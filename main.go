@@ -39,7 +39,7 @@ type option struct {
 	FailFast         bool
 	Parallelism      int
 	ConfigFile       string
-	LegacySnapshot   bool
+	LegacySnapshot   bool // deprecated
 	SnapshotVersion  string
 
 	// Below properties are the same as helm global options
@@ -188,6 +188,7 @@ MIT 2023 jlandowner/helm-chartsnap
 		panic(err)
 	}
 	rootCmd.PersistentFlags().BoolVar(&o.LegacySnapshot, "legacy-snapshot", false, "use toml-based legacy snapshot format")
+	rootCmd.PersistentFlags().MarkDeprecated("legacy-snapshot", "use --snapshot-version=v1 instead")
 	rootCmd.PersistentFlags().StringVar(&o.SnapshotVersion, "snapshot-version", "", "use a specific snapshot format version. v1, v2, v3 are supported. (default: latest)")
 }
 
@@ -215,7 +216,7 @@ func loadSnapshotConfig(file string, cfg *v1alpha1.SnapshotConfig) error {
 		if o.FailFast {
 			return fmt.Errorf("failed to load snapshot config: %w", err)
 		} else {
-			log.Error("WARNING: failed to load snapshot config", "path", file, "err", err)
+			log.Warn("failed to load snapshot config", "path", file, "err", err)
 		}
 	}
 	log.Debug("snapshot config", "cfg", cfg)
