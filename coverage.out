@@ -4,13 +4,13 @@ github.com/jlandowner/helm-chartsnap/main.go:67:				HelmBin				75.0%
 github.com/jlandowner/helm-chartsnap/main.go:75:				OK				66.7%
 github.com/jlandowner/helm-chartsnap/main.go:83:				snapshotVersion			66.7%
 github.com/jlandowner/helm-chartsnap/main.go:92:				init				100.0%
-github.com/jlandowner/helm-chartsnap/main.go:96:				initRootCmd			84.0%
-github.com/jlandowner/helm-chartsnap/main.go:194:				main				0.0%
-github.com/jlandowner/helm-chartsnap/main.go:201:				slogHandler			100.0%
-github.com/jlandowner/helm-chartsnap/main.go:212:				loadSnapshotConfig		57.1%
-github.com/jlandowner/helm-chartsnap/main.go:225:				run				86.2%
-github.com/jlandowner/helm-chartsnap/main.go:351:				bannerPrintln			100.0%
-github.com/jlandowner/helm-chartsnap/main.go:358:				printOptions			100.0%
+github.com/jlandowner/helm-chartsnap/main.go:96:				initRootCmd			84.6%
+github.com/jlandowner/helm-chartsnap/main.go:195:				main				0.0%
+github.com/jlandowner/helm-chartsnap/main.go:202:				slogHandler			100.0%
+github.com/jlandowner/helm-chartsnap/main.go:213:				loadSnapshotConfig		57.1%
+github.com/jlandowner/helm-chartsnap/main.go:226:				run				86.2%
+github.com/jlandowner/helm-chartsnap/main.go:352:				bannerPrintln			100.0%
+github.com/jlandowner/helm-chartsnap/main.go:359:				printOptions			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:13:		ToString			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:17:		ParseHeader			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:11:		FromFile			100.0%
@@ -106,4 +106,4 @@ github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:63:			ApplyFixedValueToDyn
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:81:			convertInvalidYAMLToUnknown	100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:97:			convertScalerNodeToUnknownNode	100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:112:			Replace				100.0%
-total:										(statements)			86.3%
+total:										(statements)			86.4%
