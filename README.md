@@ -147,10 +147,10 @@ Examples:
   # Snapshot remote chart in Helm repository:
   chartsnap -c CHART_NAME -f YOUR_VALUES_FILE -- --repo HELM_REPO_URL
 
-  # Snapshot [`ingress-nginx`](https://kubernetes.github.io/ingress-nginx/) helm chart for a specific version with your value file:
+  # Snapshot ingress-nginx (https://kubernetes.github.io/ingress-nginx/) helm chart for a specific version with your value file:
   chartsnap -c ingress-nginx -f YOUR_VALUES_FILE -- --repo https://kubernetes.github.io/ingress-nginx --namespace kube-system --version 4.8.3
 
-  # Snapshot [`cilium`](https://cilium.io) helm chart with default value and set flags:
+  # Snapshot cilium (https://cilium.io) helm chart with default value and set flags:
   chartsnap -c cilium -- --repo https://helm.cilium.io --namespace kube-system --set hubble.relay.enabled=true --set hubble.ui.enabled=true
 
   # Snapshot charts in OCI registry
@@ -160,19 +160,21 @@ Examples:
   NO_COLOR=1 chartsnap -c YOUR_CHART
 
 Flags:
-  -c, --chart string          path to the chart directory. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'CHART'
-      --config-file string    config file name or path, which defines snapshot behavior e.g. dynamic fields (default ".chartsnap.yaml")
-  -N, --ctx-lines int         number of lines to show in diff output. 0 for full output (default 3)
-      --debug                 debug mode
-      --failfast              fail once any test case failed
-  -h, --help                  help for chartsnap
-  -n, --namespace string      namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE' (default "default")
-  -o, --output-dir string     directory which is __snapshot__ directory is created. (default: values file directory if --values is set; chart directory if chart is local; else current directory)
-      --parallelism int       test concurrency if taking multiple snapshots for a test value file directory. default is unlimited (default -1)
-      --release-name string   release name. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'RELEASE_NAME' (default "chartsnap")
-  -u, --update-snapshot       update snapshot mode
-  -f, --values string         path to a test values file or directory. if the directory is set, all test files are tested. if empty, default values are used. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'VALUES'
-  -v, --version               version for chartsnap
+  -c, --chart string              path to the chart directory. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'CHART'
+      --config-file string        config file name or path, which defines snapshot behavior e.g. dynamic fields (default ".chartsnap.yaml")
+  -N, --ctx-lines int             number of lines to show in diff output. 0 for full output (default 3)
+      --debug                     debug mode
+      --fail-helm-error           fail if 'helm template' command failed
+      --failfast                  fail once any test case failed
+  -h, --help                      help for chartsnap
+  -n, --namespace string          namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE' (default "default")
+  -o, --output-dir string         directory which is __snapshot__ directory is created. (default: values file directory if --values is set; chart directory if chart is local; else current directory)
+      --parallelism int           test concurrency if taking multiple snapshots for a test value file directory. default is unlimited (default -1)
+      --release-name string       release name. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'RELEASE_NAME' (default "chartsnap")
+      --snapshot-version string   use a specific snapshot format version. v1, v2, v3 are supported. (default: latest)
+  -u, --update-snapshot           update snapshot mode
+  -f, --values string             path to a test values file or directory. if the directory is set, all test files are tested. if empty, default values are used. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'VALUES'
+  -v, --version                   version for chartsnap
 
 ```
 

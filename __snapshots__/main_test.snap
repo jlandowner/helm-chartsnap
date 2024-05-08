@@ -1,3 +1,56 @@
+['rootCmd --help should show help 1']
+SnapShot = """
+Usage:
+  chartsnap -c CHART [flags]
+
+Examples:
+
+  # Snapshot with default values:
+  chartsnap -c YOUR_CHART
+  
+  # Update snapshot files:
+  chartsnap -c YOUR_CHART -u
+
+  # Snapshot with test case values:
+  chartsnap -c YOUR_CHART -f YOUR_TEST_VALUES_FILE
+  
+  # Snapshot all test cases:
+  chartsnap -c YOUR_CHART -f YOUR_TEST_VALUES_FILES_DIRECTOY
+  
+  # Set additional args or flags for the 'helm template' command:
+  chartsnap -c YOUR_CHART -f YOUR_TEST_VALUES_FILE -- --skip-tests
+
+  # Snapshot remote chart in Helm repository:
+  chartsnap -c CHART_NAME -f YOUR_VALUES_FILE -- --repo HELM_REPO_URL
+
+  # Snapshot ingress-nginx (https://kubernetes.github.io/ingress-nginx/) helm chart for a specific version with your value file:
+  chartsnap -c ingress-nginx -f YOUR_VALUES_FILE -- --repo https://kubernetes.github.io/ingress-nginx --namespace kube-system --version 4.8.3
+
+  # Snapshot cilium (https://cilium.io) helm chart with default value and set flags:
+  chartsnap -c cilium -- --repo https://helm.cilium.io --namespace kube-system --set hubble.relay.enabled=true --set hubble.ui.enabled=true
+
+  # Snapshot charts in OCI registry
+  chartsnap -c oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric -n nginx-gateway
+
+  # Output with no colors:
+  NO_COLOR=1 chartsnap -c YOUR_CHART
+
+Flags:
+  -c, --chart string              path to the chart directory. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'CHART'
+      --config-file string        config file name or path, which defines snapshot behavior e.g. dynamic fields (default \".chartsnap.yaml\")
+  -N, --ctx-lines int             number of lines to show in diff output. 0 for full output (default 3)
+      --debug                     debug mode
+      --fail-helm-error           fail if 'helm template' command failed
+      --failfast                  fail once any test case failed
+  -n, --namespace string          namespace. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES --namespace NAMESPACE' as 'NAMESPACE' (default \"default\")
+  -o, --output-dir string         directory which is __snapshot__ directory is created. (default: values file directory if --values is set; chart directory if chart is local; else current directory)
+      --parallelism int           test concurrency if taking multiple snapshots for a test value file directory. default is unlimited (default -1)
+      --release-name string       release name. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'RELEASE_NAME' (default \"chartsnap\")
+      --snapshot-version string   use a specific snapshot format version. v1, v2, v3 are supported. (default: latest)
+  -u, --update-snapshot           update snapshot mode
+  -f, --values string             path to a test values file or directory. if the directory is set, all test files are tested. if empty, default values are used. this flag is passed to 'helm template RELEASE_NAME CHART --values VALUES' as 'VALUES'
+"""
+
 ['rootCmd fail including dynamic outputs should fail 1']
 SnapShot = 'snapshot does not match chart=example/app1 values='
 
@@ -6,6 +59,13 @@ SnapShot = 'unknown flag: --invalid'
 
 ['rootCmd fail required flag is not set should fail 1']
 SnapShot = 'required flag(s) "chart" not set'
+
+['rootCmd fail snapshot helm error with --fail-helm-error should fail 1']
+SnapShot = """
+failed to get snapshot chart=example/app3 values=: 'helm template' command failed: exit status 1: Error: execution error at (app3/templates/secret.yaml:8:13): apiKey is required
+
+Use --debug flag to render out invalid YAML
+"""
 
 ['rootCmd fail snapshot is different should fail 1']
 SnapShot = 'snapshot does not match chart=example/app1 values=example/app1/testfail/test_ingress_enabled.yaml'

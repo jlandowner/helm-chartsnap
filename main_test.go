@@ -67,6 +67,14 @@ var _ = Describe("rootCmd", func() {
 			})
 		})
 
+		Context("snapshot helm error", func() {
+			It("should pass", func() {
+				rootCmd.SetArgs([]string{"--chart", "example/app3", "--namespace", "default"})
+				err := rootCmd.Execute()
+				Expect(err).ShouldNot(HaveOccurred())
+			})
+		})
+
 		Context("snapshot empty chart with no config file", func() {
 			It("should pass", func() {
 				rootCmd.SetArgs([]string{"--chart", "example/app2", "--namespace", "default", "--config-file", "notfound"})
@@ -123,6 +131,15 @@ var _ = Describe("rootCmd", func() {
 			})
 		})
 
+		Context("snapshot helm error with --fail-helm-error", func() {
+			It("should fail", func() {
+				rootCmd.SetArgs([]string{"--chart", "example/app3", "--namespace", "default", "--fail-helm-error"})
+				err := rootCmd.Execute()
+				Expect(err).To(HaveOccurred())
+				Ω(err.Error()).To(MatchSnapShot())
+			})
+		})
+
 		Context("required flag is not set", func() {
 			It("should fail", func() {
 				rootCmd.SetArgs([]string{})
@@ -139,6 +156,14 @@ var _ = Describe("rootCmd", func() {
 				Expect(err).To(HaveOccurred())
 				Ω(err.Error()).To(MatchSnapShot())
 			})
+		})
+	})
+
+	Context("--help", func() {
+		It("should show help", func() {
+			rootCmd.SetArgs([]string{"--help"})
+			help := rootCmd.UsageString()
+			Ω(help).To(MatchSnapShot())
 		})
 	})
 })

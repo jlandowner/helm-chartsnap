@@ -1,0 +1,11 @@
+# chartsnap: snapshot_version=v3
+---
+# Source: app3/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: key-secret
+  namespace: default
+type: kubernetes.io/tls
+data:
+  apiKey: xxxxxxx

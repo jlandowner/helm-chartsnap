@@ -1,0 +1,8 @@
+# chartsnap: snapshot_version=v3
+---
+apiVersion: helm-chartsnap.jlandowner.dev/v1alpha1
+kind: Unknown
+raw: |
+  Error: execution error at (app3/templates/secret.yaml:8:13): apiKey is required
+
+  Use --debug flag to render out invalid YAML
