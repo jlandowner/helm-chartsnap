@@ -8,8 +8,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx
   namespace: ingress-nginx
 ---
@@ -24,8 +24,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx-controller
   namespace: ingress-nginx
 ---
@@ -37,8 +37,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx
 rules:
   - apiGroups:
@@ -120,8 +120,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -141,8 +141,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx
   namespace: ingress-nginx
 rules:
@@ -233,8 +233,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx
   namespace: ingress-nginx
 roleRef:
@@ -257,8 +257,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx-controller-internal
   namespace: ingress-nginx
 spec:
@@ -291,8 +291,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx-controller-admission
   namespace: ingress-nginx
 spec:
@@ -317,8 +317,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx-controller
   namespace: ingress-nginx
 spec:
@@ -351,8 +351,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx-controller
   namespace: ingress-nginx
 spec:
@@ -372,8 +372,8 @@ spec:
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: ingress-nginx
         app.kubernetes.io/part-of: ingress-nginx
-        app.kubernetes.io/version: 1.10.1
-        helm.sh/chart: ingress-nginx-4.10.1
+        app.kubernetes.io/version: 1.11.1
+        helm.sh/chart: ingress-nginx-4.11.1
     spec:
       containers:
         - args:
@@ -398,7 +398,7 @@ spec:
                   fieldPath: metadata.namespace
             - name: LD_PRELOAD
               value: /usr/local/lib/libmimalloc.so
-          image: registry.k8s.io/ingress-nginx/controller:v1.10.1@sha256:e24f39d3eed6bcc239a56f20098878845f62baa34b9f2be2fd2c38ce9fb0f29e
+          image: registry.k8s.io/ingress-nginx/controller:v1.11.1@sha256:e6439a12b52076965928e83b7b56aae6731231677b01e81818bce7fa5c60161a
           imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
@@ -475,8 +475,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: nginx
 spec:
   controller: k8s.io/ingress-nginx
@@ -491,8 +491,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx-admission
 webhooks:
   - admissionReviewVersions:
@@ -518,6 +518,7 @@ webhooks:
     sideEffects: None
 ---
 apiVersion: v1
+automountServiceAccountToken: true
 kind: ServiceAccount
 metadata:
   annotations:
@@ -529,8 +530,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx-admission
   namespace: ingress-nginx
 ---
@@ -546,8 +547,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx-admission
 rules:
   - apiGroups:
@@ -570,8 +571,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx-admission
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -594,8 +595,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx-admission
   namespace: ingress-nginx
 rules:
@@ -619,8 +620,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx-admission
   namespace: ingress-nginx
 roleRef:
@@ -644,8 +645,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx-admission-create
   namespace: ingress-nginx
 spec:
@@ -657,8 +658,8 @@ spec:
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: ingress-nginx
         app.kubernetes.io/part-of: ingress-nginx
-        app.kubernetes.io/version: 1.10.1
-        helm.sh/chart: ingress-nginx-4.10.1
+        app.kubernetes.io/version: 1.11.1
+        helm.sh/chart: ingress-nginx-4.11.1
       name: chartsnap-ingress-nginx-admission-create
     spec:
       containers:
@@ -702,8 +703,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
-    app.kubernetes.io/version: 1.10.1
-    helm.sh/chart: ingress-nginx-4.10.1
+    app.kubernetes.io/version: 1.11.1
+    helm.sh/chart: ingress-nginx-4.11.1
   name: chartsnap-ingress-nginx-admission-patch
   namespace: ingress-nginx
 spec:
@@ -715,8 +716,8 @@ spec:
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: ingress-nginx
         app.kubernetes.io/part-of: ingress-nginx
-        app.kubernetes.io/version: 1.10.1
-        helm.sh/chart: ingress-nginx-4.10.1
+        app.kubernetes.io/version: 1.11.1
+        helm.sh/chart: ingress-nginx-4.11.1
       name: chartsnap-ingress-nginx-admission-patch
     spec:
       containers:
