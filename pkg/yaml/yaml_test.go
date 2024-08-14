@@ -2,7 +2,6 @@ package yaml
 
 import (
 	"io"
-	"log/slog"
 	"os"
 	"testing"
 
@@ -22,8 +21,6 @@ func TestYAML(t *testing.T) {
 
 var _ = Describe("Decode & Encode", func() {
 	It("should success", func() {
-		SetLogger(slog.Default())
-
 		// Decode
 		manifests := load("testdata/input.yaml")
 
@@ -34,8 +31,6 @@ var _ = Describe("Decode & Encode", func() {
 	})
 
 	It("should success with converting invalid YAML format", func() {
-		SetLogger(slog.Default())
-
 		// Decode
 		manifests := load("testdata/input2.yaml")
 
@@ -46,8 +41,6 @@ var _ = Describe("Decode & Encode", func() {
 	})
 
 	It("should success with converting ScalerNode", func() {
-		SetLogger(slog.Default())
-
 		// Decode
 		manifests := load("testdata/input3.yaml")
 
