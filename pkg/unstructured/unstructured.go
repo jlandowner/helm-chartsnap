@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"regexp"
 	"strings"
+	"sync"
 
 	jsonpatch "github.com/evanphx/json-patch/v5"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -17,13 +18,20 @@ import (
 	"github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1"
 )
 
-var logger *slog.Logger
+var (
+	logger *slog.Logger
+	mutex  sync.Mutex
+)
 
 func SetLogger(slogr *slog.Logger) {
+	mutex.Lock()
+	defer mutex.Unlock()
 	logger = slogr
 }
 
 func log() *slog.Logger {
+	mutex.Lock()
+	defer mutex.Unlock()
 	if logger == nil {
 		logger = slog.Default()
 	}

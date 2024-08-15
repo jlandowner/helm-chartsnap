@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"regexp"
 	"strings"
+	"sync"
 
 	"sigs.k8s.io/kustomize/kyaml/kio"
 	"sigs.k8s.io/kustomize/kyaml/yaml"
@@ -14,13 +15,20 @@ import (
 	"github.com/jlandowner/helm-chartsnap/pkg/jsonpatch"
 )
 
-var logger *slog.Logger
+var (
+	logger *slog.Logger
+	mutex  sync.Mutex
+)
 
 func SetLogger(slogr *slog.Logger) {
+	mutex.Lock()
+	defer mutex.Unlock()
 	logger = slogr
 }
 
 func log() *slog.Logger {
+	mutex.Lock()
+	defer mutex.Unlock()
 	if logger == nil {
 		logger = slog.Default()
 	}

@@ -6,19 +6,27 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"sync"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/pelletier/go-toml/v2"
 	"github.com/spf13/afero"
 )
 
-var logger *slog.Logger
+var (
+	logger *slog.Logger
+	mutex  sync.Mutex
+)
 
 func SetLogger(slogr *slog.Logger) {
+	mutex.Lock()
+	defer mutex.Unlock()
 	logger = slogr
 }
 
 func log() *slog.Logger {
+	mutex.Lock()
+	defer mutex.Unlock()
 	if logger == nil {
 		logger = slog.Default()
 	}

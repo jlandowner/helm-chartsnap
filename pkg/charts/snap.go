@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"sync"
 
 	"github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1"
 	"github.com/jlandowner/helm-chartsnap/pkg/snap"
@@ -22,13 +23,20 @@ const (
 	SnapshotVersionLatest = SnapshotVersionV3
 )
 
-var logger *slog.Logger
+var (
+	logger *slog.Logger
+	mutex  sync.Mutex
+)
 
 func SetLogger(slogr *slog.Logger) {
+	mutex.Lock()
+	defer mutex.Unlock()
 	logger = slogr
 }
 
 func log() *slog.Logger {
+	mutex.Lock()
+	defer mutex.Unlock()
 	if logger == nil {
 		logger = slog.Default()
 	}
