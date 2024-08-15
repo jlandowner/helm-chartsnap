@@ -75,4 +75,4 @@ SnapShot = 'snapshot does not match chart=example/app1 values=example/app1/testf
 
 ['rootCmd fail values file not found should fail 1']
 SnapShot = """
-values file 'example/app1/test/notfound.yaml' not found"""
+values file 'example/app1/test_latest/notfound.yaml' not found"""
