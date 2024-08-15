@@ -21,7 +21,7 @@ var _ = Describe("rootCmd", func() {
 	Context("success", func() {
 		Context("snapshot local chart with single values file", func() {
 			It("should pass", func() {
-				rootCmd.SetArgs([]string{"--chart", "example/app1", "-f", "example/app1/test/test_ingress_enabled.yaml", "--namespace", "default"})
+				rootCmd.SetArgs([]string{"--chart", "example/app1", "-f", "example/app1/test_latest/test_ingress_enabled.yaml", "--namespace", "default"})
 				err := rootCmd.Execute()
 				Expect(err).ShouldNot(HaveOccurred())
 			})
@@ -29,7 +29,7 @@ var _ = Describe("rootCmd", func() {
 
 		Context("snapshot local chart with values directory", func() {
 			It("should pass", func() {
-				rootCmd.SetArgs([]string{"--chart", "example/app1", "-f", "example/app1/test/", "--namespace", "default"})
+				rootCmd.SetArgs([]string{"--chart", "example/app1", "-f", "example/app1/test_latest/", "--namespace", "default"})
 				err := rootCmd.Execute()
 				Expect(err).ShouldNot(HaveOccurred())
 			})
@@ -124,7 +124,7 @@ var _ = Describe("rootCmd", func() {
 
 		Context("values file not found", func() {
 			It("should fail", func() {
-				rootCmd.SetArgs([]string{"--chart", "example/app1", "-f", "example/app1/test/notfound.yaml", "--namespace", "default"})
+				rootCmd.SetArgs([]string{"--chart", "example/app1", "-f", "example/app1/test_latest/notfound.yaml", "--namespace", "default"})
 				err := rootCmd.Execute()
 				Expect(err).To(HaveOccurred())
 				Ω(err.Error()).To(MatchSnapShot())
@@ -151,7 +151,7 @@ var _ = Describe("rootCmd", func() {
 
 		Context("invalid flag", func() {
 			It("should fail", func() {
-				rootCmd.SetArgs([]string{"--chart", "example/app1", "-f", "example/app1/test/test_ingress_enabled.yaml", "--namespace", "default", "--invalid"})
+				rootCmd.SetArgs([]string{"--chart", "example/app1", "-f", "example/app1/test_latest/test_ingress_enabled.yaml", "--namespace", "default", "--invalid"})
 				err := rootCmd.Execute()
 				Expect(err).To(HaveOccurred())
 				Ω(err.Error()).To(MatchSnapShot())

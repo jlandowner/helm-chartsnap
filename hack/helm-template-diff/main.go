@@ -20,16 +20,16 @@ func main() {
 			helm: "helm template chartsnap ../../example/app1 -n default",
 		},
 		{
-			snap: "../../example/app1/test/__snapshots__/test_ingress_enabled.snap",
-			helm: "helm template chartsnap ../../example/app1 -f ../../example/app1/test/test_ingress_enabled.yaml -n default",
+			snap: "../../example/app1/test_latest/__snapshots__/test_ingress_enabled.snap",
+			helm: "helm template chartsnap ../../example/app1 -f ../../example/app1/test_latest/test_ingress_enabled.yaml -n default",
 		},
 		{
-			snap: "../../example/app1/test/__snapshots__/test_hpa_enabled.snap",
-			helm: "helm template chartsnap ../../example/app1 -f ../../example/app1/test/test_hpa_enabled.yaml -n default",
+			snap: "../../example/app1/test_latest/__snapshots__/test_hpa_enabled.snap",
+			helm: "helm template chartsnap ../../example/app1 -f ../../example/app1/test_latest/test_hpa_enabled.yaml -n default",
 		},
 		{
-			snap: "../../example/app1/test/__snapshots__/test_certmanager_enabled.snap",
-			helm: "helm template chartsnap ../../example/app1 -f ../../example/app1/test/test_certmanager_enabled.yaml -n default",
+			snap: "../../example/app1/test_latest/__snapshots__/test_certmanager_enabled.snap",
+			helm: "helm template chartsnap ../../example/app1 -f ../../example/app1/test_latest/test_certmanager_enabled.yaml -n default",
 		},
 		{
 			snap: "../../example/remote/__snapshots__/nginx-gateway-fabric.values.snap",
