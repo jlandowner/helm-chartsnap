@@ -2,6 +2,8 @@
 ---
 apiVersion: helm-chartsnap.jlandowner.dev/v1alpha1
 kind: Unknown
+metadata:
+  name: helm-output
 raw: |
   Error: execution error at (app3/templates/secret.yaml:8:13): apiKey is required
 
