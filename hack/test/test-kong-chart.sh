@@ -7,7 +7,7 @@ git submodule update --init --recursive --remote --merge
 for dir in charts/charts/*; do
     if [ -d "$dir" ]; then
         cd "$dir"
-        helm dependency update
+        helm dependency build
         cd -
     fi
 done
