@@ -1,13 +1,11 @@
 all: build
 
-GO ?= go1.22.2
+GO_VERSION ?= $(shell grep '^go ' go.mod | awk '{print $$2}')
+GO ?= go$(GO_VERSION)
 
 go:
-	-go install golang.org/dl/$(GO)@latest
-	$(GO) download
-	rm -f $$(dirname $$(which $(GO)))/go
-	ln -s $$(which $(GO)) $$(dirname $$(which $(GO)))/go
-	go version
+	-go install golang.org/dl/go$(GO_VERSION)@latest
+	go$(GO_VERSION) download
 
 helm:
 	curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
@@ -21,7 +19,7 @@ build: goreleaser
 
 .PHONY: test
 test:
-	$(GO) test -race -coverprofile=coverage.txt -covermode=atomic `go list ./... | grep -v /hack`
+	$(GO) test -race -coverprofile=coverage.txt -covermode=atomic `$(GO) list ./... | grep -v /hack`
 	$(GO) tool cover -func=coverage.txt -o=coverage.out
 	tail -1 coverage.out | awk '{gsub("%",""); print $$3}'
 
