@@ -109,7 +109,7 @@ func (o *ChartSnapshotter) Snap(ctx context.Context) (result *SnapshotResult, er
 		if o.FailHelmError {
 			return nil, fmt.Errorf("'helm template' command failed: %w: %s", err, out)
 		} else {
-			log().Debug("helm template command failed", "err", err, "output", string(out))
+			log().Error("helm command failed but snapshot it anyway. use --fail-helm-error if you want error exit code", "err", err, "output", string(out))
 		}
 	}
 	log().Debug("helm template output", "output", string(out), "path", o.SnapshotFile)
