@@ -11,6 +11,7 @@ import (
 	"sync"
 
 	"github.com/fatih/color"
+	"github.com/m-mizutani/clog"
 	"github.com/spf13/cobra"
 	"golang.org/x/sync/errgroup"
 
@@ -202,14 +203,16 @@ func main() {
 }
 
 func slogHandler() slog.Handler {
-	return slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-		Level: func() slog.Leveler {
+	return clog.New(
+		clog.WithColor(true),
+		clog.WithSource(true),
+		clog.WithLevel(func() slog.Leveler {
 			if o.Debug() {
 				return slog.LevelDebug
 			}
 			return slog.LevelInfo
-		}(),
-	})
+		}()),
+	)
 }
 
 func loadSnapshotConfig(file string, cfg *v1alpha1.SnapshotConfig) error {
