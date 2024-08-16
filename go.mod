@@ -9,6 +9,7 @@ require (
 	github.com/evanphx/json-patch/v5 v5.9.0
 	github.com/fatih/color v1.16.0
 	github.com/google/go-cmp v0.6.0
+	github.com/m-mizutani/clog v0.0.7
 	github.com/onsi/ginkgo/v2 v2.17.3
 	github.com/onsi/gomega v1.33.1
 	github.com/pelletier/go-toml/v2 v2.2.2
@@ -40,7 +41,6 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/k0kubun/pp/v3 v3.2.0 // indirect
-	github.com/m-mizutani/clog v0.0.7 // indirect
 	github.com/m-mizutani/goerr v0.1.11 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
