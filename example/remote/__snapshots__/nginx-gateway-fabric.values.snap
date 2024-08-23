@@ -1,32 +1,32 @@
 # chartsnap: snapshot_version=v3
 ---
-Pulled: ghcr.io/nginxinc/charts/nginx-gateway-fabric:1.3.0
-Digest: sha256:6b193e388ba2c4374eb6e70e4a94f9815dc4cea032eeee5edd03f75af50de5e9
+Pulled: ghcr.io/nginxinc/charts/nginx-gateway-fabric:1.4.0
+Digest: sha256:9bbd1a2fcbfd5407ad6be39f796f582e6263512f1f3a8969b427d39063cc6fee
 ---
-# Source: nginx-gateway-fabric/templates/rbac.yaml
+# Source: nginx-gateway-fabric/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: chartsnap-nginx-gateway-fabric
   namespace: nginx-gateway
   labels:
+    helm.sh/chart: nginx-gateway-fabric-1.4.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.3.0"
+    app.kubernetes.io/version: "1.4.0"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: nginx-gateway-fabric-1.3.0
 ---
-# Source: nginx-gateway-fabric/templates/rbac.yaml
+# Source: nginx-gateway-fabric/templates/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: chartsnap-nginx-gateway-fabric
   labels:
+    helm.sh/chart: nginx-gateway-fabric-1.4.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.3.0"
+    app.kubernetes.io/version: "1.4.0"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: nginx-gateway-fabric-1.3.0
 rules:
 - apiGroups:
   - ""
@@ -131,17 +131,17 @@ rules:
   - list
   - watch
 ---
-# Source: nginx-gateway-fabric/templates/rbac.yaml
+# Source: nginx-gateway-fabric/templates/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: chartsnap-nginx-gateway-fabric
   labels:
+    helm.sh/chart: nginx-gateway-fabric-1.4.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.3.0"
+    app.kubernetes.io/version: "1.4.0"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: nginx-gateway-fabric-1.3.0
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -158,11 +158,11 @@ metadata:
   name: chartsnap-nginx-gateway-fabric
   namespace: nginx-gateway
   labels:
+    helm.sh/chart: nginx-gateway-fabric-1.4.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.3.0"
+    app.kubernetes.io/version: "1.4.0"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: nginx-gateway-fabric-1.3.0
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: internal
 spec:
@@ -188,11 +188,11 @@ metadata:
   name: chartsnap-nginx-gateway-fabric
   namespace: nginx-gateway
   labels:
+    helm.sh/chart: nginx-gateway-fabric-1.4.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.3.0"
+    app.kubernetes.io/version: "1.4.0"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: nginx-gateway-fabric-1.3.0
 spec:
   replicas: 1
   selector:
@@ -231,7 +231,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        image: ghcr.io/nginxinc/nginx-gateway-fabric:1.3.0
+        image: ghcr.io/nginxinc/nginx-gateway-fabric:1.4.0
         imagePullPolicy: IfNotPresent
         name: nginx-gateway
         ports:
@@ -246,6 +246,8 @@ spec:
           initialDelaySeconds: 3
           periodSeconds: 1
         securityContext:
+          seccompProfile:
+            type: RuntimeDefault
           allowPrivilegeEscalation: false
           capabilities:
             add:
@@ -258,6 +260,8 @@ spec:
         volumeMounts:
         - name: nginx-conf
           mountPath: /etc/nginx/conf.d
+        - name: nginx-stream-conf
+          mountPath: /etc/nginx/stream-conf.d
         - name: module-includes
           mountPath: /etc/nginx/module-includes
         - name: nginx-secrets
@@ -266,7 +270,7 @@ spec:
           mountPath: /var/run/nginx
         - name: nginx-includes
           mountPath: /etc/nginx/includes
-      - image: ghcr.io/nginxinc/nginx-gateway-fabric/nginx:1.3.0
+      - image: ghcr.io/nginxinc/nginx-gateway-fabric/nginx:1.4.0
         imagePullPolicy: IfNotPresent
         name: nginx
         ports:
@@ -275,6 +279,8 @@ spec:
         - containerPort: 443
           name: https
         securityContext:
+          seccompProfile:
+            type: RuntimeDefault
           capabilities:
             add:
             - NET_BIND_SERVICE
@@ -286,6 +292,8 @@ spec:
         volumeMounts:
         - name: nginx-conf
           mountPath: /etc/nginx/conf.d
+        - name: nginx-stream-conf
+          mountPath: /etc/nginx/stream-conf.d
         - name: module-includes
           mountPath: /etc/nginx/module-includes
         - name: nginx-secrets
@@ -294,8 +302,6 @@ spec:
           mountPath: /var/run/nginx
         - name: nginx-cache
           mountPath: /var/cache/nginx
-        - name: nginx-lib
-          mountPath: /var/lib/nginx
         - name: nginx-includes
           mountPath: /etc/nginx/includes
       terminationGracePeriodSeconds: 30
@@ -307,6 +313,8 @@ spec:
       volumes:
       - name: nginx-conf
         emptyDir: {}
+      - name: nginx-stream-conf
+        emptyDir: {}
       - name: module-includes
         emptyDir: {}
       - name: nginx-secrets
@@ -314,8 +322,6 @@ spec:
       - name: nginx-run
         emptyDir: {}
       - name: nginx-cache
-        emptyDir: {}
-      - name: nginx-lib
         emptyDir: {}
       - name: nginx-includes
         emptyDir: {}
@@ -326,11 +332,11 @@ kind: GatewayClass
 metadata:
   name: nginx
   labels:
+    helm.sh/chart: nginx-gateway-fabric-1.4.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.3.0"
+    app.kubernetes.io/version: "1.4.0"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: nginx-gateway-fabric-1.3.0
 spec:
   controllerName: gateway.nginx.org/nginx-gateway-controller
 ---
@@ -341,11 +347,11 @@ metadata:
   name: chartsnap-config
   namespace: nginx-gateway
   labels:
+    helm.sh/chart: nginx-gateway-fabric-1.4.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.3.0"
+    app.kubernetes.io/version: "1.4.0"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: nginx-gateway-fabric-1.3.0
 spec:
   logging:
     level: info
