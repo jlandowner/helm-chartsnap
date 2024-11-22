@@ -1,7 +1,7 @@
 # chartsnap: snapshot_version=v3
 ---
-Pulled: ghcr.io/nginxinc/charts/nginx-gateway-fabric:1.4.0
-Digest: sha256:9bbd1a2fcbfd5407ad6be39f796f582e6263512f1f3a8969b427d39063cc6fee
+Pulled: ghcr.io/nginxinc/charts/nginx-gateway-fabric:1.5.0
+Digest: sha256:eb0e858b87d3a64f3ef5b02beea1f03bae1d3c2674aeeee3c301aeed5783d0b2
 ---
 # Source: nginx-gateway-fabric/templates/serviceaccount.yaml
 apiVersion: v1
@@ -10,11 +10,27 @@ metadata:
   name: chartsnap-nginx-gateway-fabric
   namespace: nginx-gateway
   labels:
-    helm.sh/chart: nginx-gateway-fabric-1.4.0
+    helm.sh/chart: nginx-gateway-fabric-1.5.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.4.0"
+    app.kubernetes.io/version: "1.5.0"
     app.kubernetes.io/managed-by: Helm
+---
+# Source: nginx-gateway-fabric/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-includes-bootstrap
+  namespace: nginx-gateway
+  labels:
+    helm.sh/chart: nginx-gateway-fabric-1.5.0
+    app.kubernetes.io/name: nginx-gateway-fabric
+    app.kubernetes.io/instance: chartsnap
+    app.kubernetes.io/version: "1.5.0"
+    app.kubernetes.io/managed-by: Helm
+data:
+  main.conf: |
+    error_log stderr info;
 ---
 # Source: nginx-gateway-fabric/templates/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -22,10 +38,10 @@ kind: ClusterRole
 metadata:
   name: chartsnap-nginx-gateway-fabric
   labels:
-    helm.sh/chart: nginx-gateway-fabric-1.4.0
+    helm.sh/chart: nginx-gateway-fabric-1.5.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.4.0"
+    app.kubernetes.io/version: "1.5.0"
     app.kubernetes.io/managed-by: Helm
 rules:
 - apiGroups:
@@ -137,10 +153,10 @@ kind: ClusterRoleBinding
 metadata:
   name: chartsnap-nginx-gateway-fabric
   labels:
-    helm.sh/chart: nginx-gateway-fabric-1.4.0
+    helm.sh/chart: nginx-gateway-fabric-1.5.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.4.0"
+    app.kubernetes.io/version: "1.5.0"
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -158,10 +174,10 @@ metadata:
   name: chartsnap-nginx-gateway-fabric
   namespace: nginx-gateway
   labels:
-    helm.sh/chart: nginx-gateway-fabric-1.4.0
+    helm.sh/chart: nginx-gateway-fabric-1.5.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.4.0"
+    app.kubernetes.io/version: "1.5.0"
     app.kubernetes.io/managed-by: Helm
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: internal
@@ -188,10 +204,10 @@ metadata:
   name: chartsnap-nginx-gateway-fabric
   namespace: nginx-gateway
   labels:
-    helm.sh/chart: nginx-gateway-fabric-1.4.0
+    helm.sh/chart: nginx-gateway-fabric-1.5.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.4.0"
+    app.kubernetes.io/version: "1.5.0"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -208,6 +224,33 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9113"
     spec:
+      initContainers:
+      - name: copy-nginx-config
+        image: ghcr.io/nginxinc/nginx-gateway-fabric:1.5.0
+        imagePullPolicy: IfNotPresent
+        command:
+        - /usr/bin/gateway
+        - copy
+        - --source
+        - /includes/main.conf
+        - --destination
+        - /etc/nginx/main-includes
+        securityContext:
+          seccompProfile:
+            type: RuntimeDefault
+          capabilities:
+            add:
+            - KILL # Set because the binary has CAP_KILL for the main controller process. Not used by init.
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsUser: 102
+          runAsGroup: 1001
+        volumeMounts:
+        - name: nginx-includes-bootstrap
+          mountPath: /includes
+        - name: nginx-main-includes
+          mountPath: /etc/nginx/main-includes
       containers:
       - args:
         - static-mode
@@ -231,7 +274,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        image: ghcr.io/nginxinc/nginx-gateway-fabric:1.4.0
+        image: ghcr.io/nginxinc/nginx-gateway-fabric:1.5.0
         imagePullPolicy: IfNotPresent
         name: nginx-gateway
         ports:
@@ -262,15 +305,15 @@ spec:
           mountPath: /etc/nginx/conf.d
         - name: nginx-stream-conf
           mountPath: /etc/nginx/stream-conf.d
-        - name: module-includes
-          mountPath: /etc/nginx/module-includes
+        - name: nginx-main-includes
+          mountPath: /etc/nginx/main-includes
         - name: nginx-secrets
           mountPath: /etc/nginx/secrets
         - name: nginx-run
           mountPath: /var/run/nginx
         - name: nginx-includes
           mountPath: /etc/nginx/includes
-      - image: ghcr.io/nginxinc/nginx-gateway-fabric/nginx:1.4.0
+      - image: ghcr.io/nginxinc/nginx-gateway-fabric/nginx:1.5.0
         imagePullPolicy: IfNotPresent
         name: nginx
         ports:
@@ -294,8 +337,8 @@ spec:
           mountPath: /etc/nginx/conf.d
         - name: nginx-stream-conf
           mountPath: /etc/nginx/stream-conf.d
-        - name: module-includes
-          mountPath: /etc/nginx/module-includes
+        - name: nginx-main-includes
+          mountPath: /etc/nginx/main-includes
         - name: nginx-secrets
           mountPath: /etc/nginx/secrets
         - name: nginx-run
@@ -315,7 +358,7 @@ spec:
         emptyDir: {}
       - name: nginx-stream-conf
         emptyDir: {}
-      - name: module-includes
+      - name: nginx-main-includes
         emptyDir: {}
       - name: nginx-secrets
         emptyDir: {}
@@ -325,6 +368,9 @@ spec:
         emptyDir: {}
       - name: nginx-includes
         emptyDir: {}
+      - name: nginx-includes-bootstrap
+        configMap:
+          name: nginx-includes-bootstrap
 ---
 # Source: nginx-gateway-fabric/templates/gatewayclass.yaml
 apiVersion: gateway.networking.k8s.io/v1
@@ -332,10 +378,10 @@ kind: GatewayClass
 metadata:
   name: nginx
   labels:
-    helm.sh/chart: nginx-gateway-fabric-1.4.0
+    helm.sh/chart: nginx-gateway-fabric-1.5.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.4.0"
+    app.kubernetes.io/version: "1.5.0"
     app.kubernetes.io/managed-by: Helm
 spec:
   controllerName: gateway.nginx.org/nginx-gateway-controller
@@ -347,10 +393,10 @@ metadata:
   name: chartsnap-config
   namespace: nginx-gateway
   labels:
-    helm.sh/chart: nginx-gateway-fabric-1.4.0
+    helm.sh/chart: nginx-gateway-fabric-1.5.0
     app.kubernetes.io/name: nginx-gateway-fabric
     app.kubernetes.io/instance: chartsnap
-    app.kubernetes.io/version: "1.4.0"
+    app.kubernetes.io/version: "1.5.0"
     app.kubernetes.io/managed-by: Helm
 spec:
   logging:
