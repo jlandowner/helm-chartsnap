@@ -250,6 +250,8 @@ spec:
 SnapShot = """
 apiVersion: helm-chartsnap.jlandowner.dev/v1alpha1
 kind: Unknown
+metadata:
+  name: helm-output
 raw: |-
   xxxxxxxxxxxxx
 ---
@@ -379,6 +381,8 @@ spec:
 SnapShot = """
 apiVersion: helm-chartsnap.jlandowner.dev/v1alpha1
 kind: Unknown
+metadata:
+  name: helm-output
 raw: \"WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /devops/helm/deployCache/ffa49176-4f97-11ea-8974-ca049e4892c0_1672194886753413765/ins_14/bi/1.0.20/config\\nWARNING: Kubernetes configuration file is world-readable. This is insecure. Location: /devops/helm/deployCache/ffa49176-4f97-11ea-8974-ca049e4892c0_1672194886753413765/ins_14/bi/1.0.20/config\\nW1228 02:34:48.144924    8736 warnings.go:70] autoscaling/v2beta2 HorizontalPodAutoscaler is deprecated in v1.23+, unavailable in v1.26+; use autoscaling/v2 HorizontalPodAutoscaler\\nW1228 02:34:48.149614    8736 warnings.go:70] autoscaling/v2beta2 HorizontalPodAutoscaler is deprecated in v1.23+, unavailable in v1.26+; use autoscaling/v2 HorizontalPodAutoscaler\\nW1228 02:34:48.235054    8736 warnings.go:70] autoscaling/v2beta2 HorizontalPodAutoscaler is deprecated in v1.23+, unavailable in v1.26+; use autoscaling/v2 HorizontalPodAutoscaler\\nW1228 02:34:48.235390    8736 warnings.go:70] autoscaling/v2beta2 HorizontalPodAutoscaler is deprecated in v1.23+, unavailable in v1.26+; use autoscaling/v2 HorizontalPodAutoscaler  \\n\"
 ---
 # Source: app1/templates/serviceaccount.yaml
