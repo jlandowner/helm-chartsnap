@@ -8,7 +8,7 @@ import (
 	yaml "sigs.k8s.io/yaml/goyaml.v3"
 )
 
-func TestUnknownError_Unstructured(t *testing.T) {
+func TestUnknown_Unstructured(t *testing.T) {
 	raw := "some raw data"
 	err := NewUnknownError(raw)
 
@@ -17,7 +17,10 @@ func TestUnknownError_Unstructured(t *testing.T) {
 		Object: map[string]interface{}{
 			"apiVersion": "helm-chartsnap.jlandowner.dev/v1alpha1",
 			"kind":       "Unknown",
-			"raw":        "some raw data",
+			"metadata": map[string]interface{}{
+				"name": "helm-output",
+			},
+			"raw": "some raw data",
 		},
 	}
 
@@ -27,7 +30,7 @@ func TestUnknownError_Unstructured(t *testing.T) {
 
 }
 
-func TestUnknownError_Error(t *testing.T) {
+func TestUnknown_Error(t *testing.T) {
 	type fields struct {
 		Raw string
 	}
@@ -37,7 +40,7 @@ func TestUnknownError_Error(t *testing.T) {
 		want   string
 	}{
 		{
-			name: "Test UnknownError Error",
+			name: "Test Unknown Error",
 			fields: fields{
 				Raw: "some raw data",
 			},
@@ -46,17 +49,17 @@ func TestUnknownError_Error(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			e := &UnknownError{
+			e := &Unknown{
 				Raw: tt.fields.Raw,
 			}
 			if got := e.Error(); got != tt.want {
-				t.Errorf("UnknownError.Error() = %v, want %v", got, tt.want)
+				t.Errorf("Unknown.Error() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestUnknownError_Node(t *testing.T) {
+func TestUnknown_Node(t *testing.T) {
 	type fields struct {
 		Raw string
 	}
@@ -66,7 +69,7 @@ func TestUnknownError_Node(t *testing.T) {
 		want   *yaml.Node
 	}{
 		{
-			name: "Test UnknownError Node",
+			name: "Test Unknown Node",
 			fields: fields{
 				Raw: `some raw
 data
@@ -78,6 +81,11 @@ data
 					{Kind: yaml.ScalarNode, Value: "helm-chartsnap.jlandowner.dev/v1alpha1"},
 					{Kind: yaml.ScalarNode, Value: "kind"},
 					{Kind: yaml.ScalarNode, Value: "Unknown"},
+					{Kind: yaml.ScalarNode, Value: "metadata"},
+					{Kind: yaml.MappingNode, Content: []*yaml.Node{
+						{Kind: yaml.ScalarNode, Value: "name"},
+						{Kind: yaml.ScalarNode, Value: "helm-output"},
+					}},
 					{Kind: yaml.ScalarNode, Value: "raw"},
 					{Kind: yaml.ScalarNode, Value: "some raw\ndata\n", Style: yaml.LiteralStyle},
 				},
@@ -86,17 +94,17 @@ data
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			e := &UnknownError{
+			e := &Unknown{
 				Raw: tt.fields.Raw,
 			}
 			if got := e.Node(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("UnknownError.Node() = %v, want %v", got, tt.want)
+				t.Errorf("Unknown.Node() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestUnknownError_MustString(t *testing.T) {
+func TestUnknown_MustString(t *testing.T) {
 	type fields struct {
 		Raw string
 	}
@@ -106,7 +114,7 @@ func TestUnknownError_MustString(t *testing.T) {
 		want   string
 	}{
 		{
-			name: "Test UnknownError String",
+			name: "Test Unknown String",
 			fields: fields{
 				Raw: `some raw
 data
@@ -114,6 +122,8 @@ data
 			},
 			want: `apiVersion: helm-chartsnap.jlandowner.dev/v1alpha1
 kind: Unknown
+metadata:
+  name: helm-output
 raw: |
   some raw
   data
@@ -122,12 +132,12 @@ raw: |
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			e := &UnknownError{
+			e := &Unknown{
 				Raw: tt.fields.Raw,
 			}
 			got := e.MustString()
 			if got != tt.want {
-				t.Errorf("UnknownError.String() = %v, want %v", got, tt.want)
+				t.Errorf("Unknown.String() = %v, want %v", got, tt.want)
 			}
 		})
 	}

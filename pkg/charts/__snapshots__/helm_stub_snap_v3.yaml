@@ -2,6 +2,8 @@
 ---
 apiVersion: helm-chartsnap.jlandowner.dev/v1alpha1
 kind: Unknown
+metadata:
+  name: helm-output
 raw: |-
   this is warning message of helm
 ---
