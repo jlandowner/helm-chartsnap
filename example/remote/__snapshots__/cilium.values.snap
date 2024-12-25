@@ -346,6 +346,30 @@ data:
                           }
                         }
                       ],
+                      "internal_address_config": {
+                        "cidr_ranges": [
+                          {
+                            "address_prefix": "10.0.0.0",
+                            "prefix_len": 8
+                          },
+                          {
+                            "address_prefix": "172.16.0.0",
+                            "prefix_len": 12
+                          },
+                          {
+                            "address_prefix": "192.168.0.0",
+                            "prefix_len": 16
+                          },
+                          {
+                            "address_prefix": "127.0.0.1",
+                            "prefix_len": 32
+                          },
+                          {
+                            "address_prefix": "::1",
+                            "prefix_len": 128
+                          }
+                        ]
+                      },
                       "stream_idle_timeout": "0s"
                     }
                   }
@@ -399,6 +423,30 @@ data:
                           }
                         }
                       ],
+                      "internal_address_config": {
+                        "cidr_ranges": [
+                          {
+                            "address_prefix": "10.0.0.0",
+                            "prefix_len": 8
+                          },
+                          {
+                            "address_prefix": "172.16.0.0",
+                            "prefix_len": 12
+                          },
+                          {
+                            "address_prefix": "192.168.0.0",
+                            "prefix_len": 16
+                          },
+                          {
+                            "address_prefix": "127.0.0.1",
+                            "prefix_len": 32
+                          },
+                          {
+                            "address_prefix": "::1",
+                            "prefix_len": 128
+                          }
+                        ]
+                      },
                       "stream_idle_timeout": "0s"
                     }
                   }
@@ -619,7 +667,7 @@ metadata:
   name: hubble-relay-config
   namespace: kube-system
 data:
-  config.yaml: "cluster-name: default\npeer-service: \"hubble-peer.kube-system.svc.cluster.local:443\"\nlisten-address: :4245\ngops: true\ngops-port: \"9893\"\ndial-timeout: \nretry-timeout: \nsort-buffer-len-max: \nsort-buffer-drain-timeout: \ntls-hubble-client-cert-file: /var/lib/hubble-relay/tls/client.crt\ntls-hubble-client-key-file: /var/lib/hubble-relay/tls/client.key\ntls-hubble-server-ca-files: /var/lib/hubble-relay/tls/hubble-server-ca.crt\n\ndisable-server-tls: true\n"
+  config.yaml: "cluster-name: default\npeer-service: \"hubble-peer.kube-system.svc.cluster.local.:443\"\nlisten-address: :4245\ngops: true\ngops-port: \"9893\"\ndial-timeout: \nretry-timeout: \nsort-buffer-len-max: \nsort-buffer-drain-timeout: \ntls-hubble-client-cert-file: /var/lib/hubble-relay/tls/client.crt\ntls-hubble-client-key-file: /var/lib/hubble-relay/tls/client.key\ntls-hubble-server-ca-files: /var/lib/hubble-relay/tls/hubble-server-ca.crt\n\ndisable-server-tls: true\n"
 ---
 # Source: cilium/templates/hubble-ui/configmap.yaml
 apiVersion: v1
@@ -1216,7 +1264,7 @@ spec:
           type: Unconfined
       containers:
       - name: cilium-agent
-        image: "quay.io/cilium/cilium:v1.16.4@sha256:d55ec38938854133e06739b1af237932b9c4dd4e75e9b7b2ca3acc72540a44bf"
+        image: "quay.io/cilium/cilium:v1.16.5@sha256:758ca0793f5995bb938a2fa219dcce63dc0b3fa7fc4ce5cc851125281fb7361d"
         imagePullPolicy: IfNotPresent
         command:
         - cilium-agent
@@ -1369,7 +1417,7 @@ spec:
           mountPath: /tmp
       initContainers:
       - name: config
-        image: "quay.io/cilium/cilium:v1.16.4@sha256:d55ec38938854133e06739b1af237932b9c4dd4e75e9b7b2ca3acc72540a44bf"
+        image: "quay.io/cilium/cilium:v1.16.5@sha256:758ca0793f5995bb938a2fa219dcce63dc0b3fa7fc4ce5cc851125281fb7361d"
         imagePullPolicy: IfNotPresent
         command:
         - cilium-dbg
@@ -1392,7 +1440,7 @@ spec:
       # Required to mount cgroup2 filesystem on the underlying Kubernetes node.
       # We use nsenter command with host's cgroup and mount namespaces enabled.
       - name: mount-cgroup
-        image: "quay.io/cilium/cilium:v1.16.4@sha256:d55ec38938854133e06739b1af237932b9c4dd4e75e9b7b2ca3acc72540a44bf"
+        image: "quay.io/cilium/cilium:v1.16.5@sha256:758ca0793f5995bb938a2fa219dcce63dc0b3fa7fc4ce5cc851125281fb7361d"
         imagePullPolicy: IfNotPresent
         env:
         - name: CGROUP_ROOT
@@ -1429,7 +1477,7 @@ spec:
             drop:
             - ALL
       - name: apply-sysctl-overwrites
-        image: "quay.io/cilium/cilium:v1.16.4@sha256:d55ec38938854133e06739b1af237932b9c4dd4e75e9b7b2ca3acc72540a44bf"
+        image: "quay.io/cilium/cilium:v1.16.5@sha256:758ca0793f5995bb938a2fa219dcce63dc0b3fa7fc4ce5cc851125281fb7361d"
         imagePullPolicy: IfNotPresent
         env:
         - name: BIN_PATH
@@ -1467,7 +1515,7 @@ spec:
       # from a privileged container because the mount propagation bidirectional
       # only works from privileged containers.
       - name: mount-bpf-fs
-        image: "quay.io/cilium/cilium:v1.16.4@sha256:d55ec38938854133e06739b1af237932b9c4dd4e75e9b7b2ca3acc72540a44bf"
+        image: "quay.io/cilium/cilium:v1.16.5@sha256:758ca0793f5995bb938a2fa219dcce63dc0b3fa7fc4ce5cc851125281fb7361d"
         imagePullPolicy: IfNotPresent
         args:
         - 'mount | grep "/sys/fs/bpf type bpf" || mount -t bpf bpf /sys/fs/bpf'
@@ -1483,7 +1531,7 @@ spec:
           mountPath: /sys/fs/bpf
           mountPropagation: Bidirectional
       - name: clean-cilium-state
-        image: "quay.io/cilium/cilium:v1.16.4@sha256:d55ec38938854133e06739b1af237932b9c4dd4e75e9b7b2ca3acc72540a44bf"
+        image: "quay.io/cilium/cilium:v1.16.5@sha256:758ca0793f5995bb938a2fa219dcce63dc0b3fa7fc4ce5cc851125281fb7361d"
         imagePullPolicy: IfNotPresent
         command:
         - /init-container.sh
@@ -1530,7 +1578,7 @@ spec:
           mountPath: /var/run/cilium # wait-for-kube-proxy
       # Install the CNI binaries in an InitContainer so we don't have a writable host mount in the agent
       - name: install-cni-binaries
-        image: "quay.io/cilium/cilium:v1.16.4@sha256:d55ec38938854133e06739b1af237932b9c4dd4e75e9b7b2ca3acc72540a44bf"
+        image: "quay.io/cilium/cilium:v1.16.5@sha256:758ca0793f5995bb938a2fa219dcce63dc0b3fa7fc4ce5cc851125281fb7361d"
         imagePullPolicy: IfNotPresent
         command:
         - "/install-plugin.sh"
@@ -1708,7 +1756,7 @@ spec:
           type: Unconfined
       containers:
       - name: cilium-envoy
-        image: "quay.io/cilium/cilium-envoy:v1.30.7-1731393961-97edc2815e2c6a174d3d12e71731d54f5d32ea16@sha256:0287b36f70cfbdf54f894160082f4f94d1ee1fb10389f3a95baa6c8e448586ed"
+        image: "quay.io/cilium/cilium-envoy:v1.30.8-1733837904-eaae5aca0fb988583e5617170a65ac5aa51c0aa8@sha256:709c08ade3d17d52da4ca2af33f431360ec26268d288d9a6cd1d98acc9a1dced"
         imagePullPolicy: IfNotPresent
         command:
         - /usr/bin/cilium-envoy-starter
@@ -1884,7 +1932,7 @@ spec:
     spec:
       containers:
       - name: cilium-operator
-        image: "quay.io/cilium/operator-aws:v1.16.4@sha256:355051bbebab73ea3067bb7f0c28cfd43b584d127570cb826f794f468e2d31be"
+        image: "quay.io/cilium/operator-aws:v1.16.5@sha256:97e1fe0c2b522583033138eb10c170919d8de49d2788ceefdcff229a92210476"
         imagePullPolicy: IfNotPresent
         command:
         - cilium-operator-aws
@@ -2017,7 +2065,7 @@ spec:
           runAsGroup: 65532
           runAsNonRoot: true
           runAsUser: 65532
-        image: "quay.io/cilium/hubble-relay:v1.16.4@sha256:fb2c7d127a1c809f6ba23c05973f3dd00f6b6a48e4aee2da95db925a4f0351d2"
+        image: "quay.io/cilium/hubble-relay:v1.16.5@sha256:6cfae1d1afa566ba941f03d4d7e141feddd05260e5cd0a1509aba1890a45ef00"
         imagePullPolicy: IfNotPresent
         command:
         - hubble-relay
