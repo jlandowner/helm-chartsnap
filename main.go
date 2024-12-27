@@ -241,6 +241,13 @@ func run(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	if envForceColor, _ := strconv.ParseBool(os.Getenv("FORCE_COLOR")); envForceColor {
+		// By default, faith/color does not colorize outputs if stdout is not a TTY.
+		// e.g. GitHub Actions is not tty but it supports colorized outputs
+		// https://github.com/jlandowner/helm-chartsnap/issues/149#issuecomment-2562030457
+		color.NoColor = false
+	}
+
 	var cfg v1alpha1.SnapshotConfig
 	if _, err := os.Stat(o.ConfigFile); err == nil {
 		if err := loadSnapshotConfig(o.ConfigFile, &cfg); err != nil {

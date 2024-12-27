@@ -70,9 +70,29 @@ Use --debug flag to render out invalid YAML
 ['rootCmd fail snapshot is different should fail 1']
 SnapShot = 'snapshot does not match chart=example/app1 values=example/app1/testfail/test_ingress_enabled.yaml'
 
+['rootCmd fail snapshot is different should fail 2']
+SnapShot = """
+ RUNS  Snapshot testing chart=example/app1 values=example/app1/testfail/test_ingress_enabled.yaml
+ FAIL  Snapshot does not match chart=example/app1 values=example/app1/testfail/test_ingress_enabled.yaml snapshot_version=v2
+"""
+
 ['rootCmd fail values directory contains not matched snapshots should fail 1']
 SnapShot = 'snapshot does not match chart=example/app1 values=example/app1/testfail/test_ingress_enabled.yaml'
 
 ['rootCmd fail values file not found should fail 1']
 SnapShot = """
 values file 'example/app1/test_latest/notfound.yaml' not found"""
+
+['rootCmd success env FORCE_COLOR is enabled should force a colorized output 1']
+SnapShot = """
+\u001B[37;44m RUNS \u001B[0m\u001B[0m Snapshot testing chart=example/app1 values=example/app1/test_latest/test_ingress_enabled.yaml
+\u001B[0m\u001B[37;42m PASS \u001B[0m\u001B[32m Snapshot matched chart=example/app1 values=example/app1/test_latest/test_ingress_enabled.yaml snapshot_version=v3
+\u001B[0m\u001B[37;42m PASS \u001B[0m\u001B[32m All snapshots matched
+\u001B[0m"""
+
+['rootCmd success snapshot local chart with single values file should pass 1']
+SnapShot = """
+ RUNS  Snapshot testing chart=example/app1 values=example/app1/test_latest/test_ingress_enabled.yaml
+ PASS  Snapshot matched chart=example/app1 values=example/app1/test_latest/test_ingress_enabled.yaml snapshot_version=v3
+ PASS  All snapshots matched
+"""

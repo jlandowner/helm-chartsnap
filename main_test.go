@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"os"
 	"testing"
 
+	"github.com/fatih/color"
 	. "github.com/jlandowner/helm-chartsnap/pkg/snap/gomega"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -21,9 +23,15 @@ var _ = Describe("rootCmd", func() {
 	Context("success", func() {
 		Context("snapshot local chart with single values file", func() {
 			It("should pass", func() {
+				var output bytes.Buffer
+				color.Output = &output
+				DeferCleanup(func() {
+					color.Output = os.Stdout
+				})
 				rootCmd.SetArgs([]string{"--chart", "example/app1", "-f", "example/app1/test_latest/test_ingress_enabled.yaml", "--namespace", "default"})
 				err := rootCmd.Execute()
 				Expect(err).ShouldNot(HaveOccurred())
+				Ω(output.String()).To(MatchSnapShot())
 			})
 		})
 
@@ -92,6 +100,23 @@ var _ = Describe("rootCmd", func() {
 				Expect(err).ShouldNot(HaveOccurred())
 			})
 		})
+
+		Context("env FORCE_COLOR is enabled", func() {
+			It("should force a colorized output", func() {
+				rootCmd.SetArgs([]string{"--chart", "example/app1", "-f", "example/app1/test_latest/test_ingress_enabled.yaml", "--namespace", "default"})
+				var output bytes.Buffer
+				color.Output = &output
+				os.Setenv("FORCE_COLOR", "1")
+				DeferCleanup(func() {
+					color.Output = os.Stdout
+					color.NoColor = true
+					os.Unsetenv("FORCE_COLOR")
+				})
+				err := rootCmd.Execute()
+				Expect(err).ShouldNot(HaveOccurred())
+				Ω(output.String()).To(MatchSnapShot())
+			})
+		})
 	})
 
 	Context("fail", func() {
@@ -106,10 +131,16 @@ var _ = Describe("rootCmd", func() {
 
 		Context("snapshot is different", func() {
 			It("should fail", func() {
+				var output bytes.Buffer
+				color.Output = &output
+				DeferCleanup(func() {
+					color.Output = os.Stdout
+				})
 				rootCmd.SetArgs([]string{"--chart", "example/app1", "--namespace", "default", "-f", "example/app1/testfail/test_ingress_enabled.yaml"})
 				err := rootCmd.Execute()
 				Expect(err).To(HaveOccurred())
 				Ω(err.Error()).To(MatchSnapShot())
+				Ω(output.String()).To(MatchSnapShot())
 			})
 		})
 
