@@ -43,8 +43,8 @@ jobs:
 
       - name: Integration test
         run: |
-          make integ-test GO=go
+          FORCE_COLOR=1 make integ-test GO=go
 
       - name: Integration test kong
         run: |
-          make integ-test-kong
+          FORCE_COLOR=1 make integ-test-kong
