@@ -1007,7 +1007,7 @@ spec:
           type: Unconfined
       containers:
       - name: cilium-agent
-        image: "quay.io/cilium/cilium:v1.17.0@sha256:51f21bdd003c3975b5aaaf41bd21aee23cc08f44efaa27effc91c621bc9d8b1d"
+        image: "quay.io/cilium/cilium:v1.17.1@sha256:8969bfd9c87cbea91e40665f8ebe327268c99d844ca26d7d12165de07f702866"
         imagePullPolicy: IfNotPresent
         command:
         - cilium-agent
@@ -1163,7 +1163,7 @@ spec:
           mountPath: /tmp
       initContainers:
       - name: config
-        image: "quay.io/cilium/cilium:v1.17.0@sha256:51f21bdd003c3975b5aaaf41bd21aee23cc08f44efaa27effc91c621bc9d8b1d"
+        image: "quay.io/cilium/cilium:v1.17.1@sha256:8969bfd9c87cbea91e40665f8ebe327268c99d844ca26d7d12165de07f702866"
         imagePullPolicy: IfNotPresent
         command:
         - cilium-dbg
@@ -1186,7 +1186,7 @@ spec:
       # Required to mount cgroup2 filesystem on the underlying Kubernetes node.
       # We use nsenter command with host's cgroup and mount namespaces enabled.
       - name: mount-cgroup
-        image: "quay.io/cilium/cilium:v1.17.0@sha256:51f21bdd003c3975b5aaaf41bd21aee23cc08f44efaa27effc91c621bc9d8b1d"
+        image: "quay.io/cilium/cilium:v1.17.1@sha256:8969bfd9c87cbea91e40665f8ebe327268c99d844ca26d7d12165de07f702866"
         imagePullPolicy: IfNotPresent
         env:
         - name: CGROUP_ROOT
@@ -1223,7 +1223,7 @@ spec:
             drop:
             - ALL
       - name: apply-sysctl-overwrites
-        image: "quay.io/cilium/cilium:v1.17.0@sha256:51f21bdd003c3975b5aaaf41bd21aee23cc08f44efaa27effc91c621bc9d8b1d"
+        image: "quay.io/cilium/cilium:v1.17.1@sha256:8969bfd9c87cbea91e40665f8ebe327268c99d844ca26d7d12165de07f702866"
         imagePullPolicy: IfNotPresent
         env:
         - name: BIN_PATH
@@ -1261,7 +1261,7 @@ spec:
       # from a privileged container because the mount propagation bidirectional
       # only works from privileged containers.
       - name: mount-bpf-fs
-        image: "quay.io/cilium/cilium:v1.17.0@sha256:51f21bdd003c3975b5aaaf41bd21aee23cc08f44efaa27effc91c621bc9d8b1d"
+        image: "quay.io/cilium/cilium:v1.17.1@sha256:8969bfd9c87cbea91e40665f8ebe327268c99d844ca26d7d12165de07f702866"
         imagePullPolicy: IfNotPresent
         args:
         - 'mount | grep "/sys/fs/bpf type bpf" || mount -t bpf bpf /sys/fs/bpf'
@@ -1277,7 +1277,7 @@ spec:
           mountPath: /sys/fs/bpf
           mountPropagation: Bidirectional
       - name: clean-cilium-state
-        image: "quay.io/cilium/cilium:v1.17.0@sha256:51f21bdd003c3975b5aaaf41bd21aee23cc08f44efaa27effc91c621bc9d8b1d"
+        image: "quay.io/cilium/cilium:v1.17.1@sha256:8969bfd9c87cbea91e40665f8ebe327268c99d844ca26d7d12165de07f702866"
         imagePullPolicy: IfNotPresent
         command:
         - /init-container.sh
@@ -1324,7 +1324,7 @@ spec:
           mountPath: /var/run/cilium # wait-for-kube-proxy
       # Install the CNI binaries in an InitContainer so we don't have a writable host mount in the agent
       - name: install-cni-binaries
-        image: "quay.io/cilium/cilium:v1.17.0@sha256:51f21bdd003c3975b5aaaf41bd21aee23cc08f44efaa27effc91c621bc9d8b1d"
+        image: "quay.io/cilium/cilium:v1.17.1@sha256:8969bfd9c87cbea91e40665f8ebe327268c99d844ca26d7d12165de07f702866"
         imagePullPolicy: IfNotPresent
         command:
         - "/install-plugin.sh"
@@ -1507,7 +1507,7 @@ spec:
           type: Unconfined
       containers:
       - name: cilium-envoy
-        image: "quay.io/cilium/cilium-envoy:v1.31.5-1737535524-fe8efeb16a7d233bffd05af9ea53599340d3f18e@sha256:57a3aa6355a3223da360395e3a109802867ff635cb852aa0afe03ec7bf04e545"
+        image: "quay.io/cilium/cilium-envoy:v1.31.5-1739264036-958bef243c6c66fcfd73ca319f2eb49fff1eb2ae@sha256:fc708bd36973d306412b2e50c924cd8333de67e0167802c9b48506f9d772f521"
         imagePullPolicy: IfNotPresent
         command:
         - /usr/bin/cilium-envoy-starter
@@ -1682,7 +1682,7 @@ spec:
     spec:
       containers:
       - name: cilium-operator
-        image: "quay.io/cilium/operator-aws:v1.17.0@sha256:a81cea10c4210589750c2588a20ece2822fd57be8529df4dc7779031cec66af7"
+        image: "quay.io/cilium/operator-aws:v1.17.1@sha256:da74748057c836471bfdc0e65bb29ba0edb82916ec4b99f6a4f002b2fcc849d6"
         imagePullPolicy: IfNotPresent
         command:
         - cilium-operator-aws
@@ -1815,7 +1815,7 @@ spec:
           runAsGroup: 65532
           runAsNonRoot: true
           runAsUser: 65532
-        image: "quay.io/cilium/hubble-relay:v1.17.0@sha256:022c084588caad91108ac73e04340709926ea7fe12af95f57fcb794b68472e05"
+        image: "quay.io/cilium/hubble-relay:v1.17.1@sha256:397e8fbb188157f744390a7b272a1dec31234e605bcbe22d8919a166d202a3dc"
         imagePullPolicy: IfNotPresent
         command:
         - hubble-relay
