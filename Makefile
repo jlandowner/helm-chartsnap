@@ -37,6 +37,7 @@ integ-test: install-dev-bin
 	helm chartsnap --chart ingress-nginx -f example/remote/ingress-nginx.values.yaml $(ARGS) -- --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --skip-tests $(EXTRA_ARGS)
 	helm chartsnap --chart example/app2 --namespace default $(ARGS)
 	helm chartsnap --chart example/app3 --namespace default $(ARGS)
+	helm chartsnap --chart example/app3 --namespace default --snapshot-file-ext yaml $(ARGS)
 	helm chartsnap --chart example/app3 --namespace default $(ARGS) -f example/app3/test/ok.yaml
 
 .PHONY: integ-test-kong
