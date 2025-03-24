@@ -46,25 +46,19 @@ func log() *slog.Logger {
 type ChartSnapshotter struct {
 	HelmTemplateCmdOptions HelmTemplateCmdOptions
 	SnapshotConfig         v1alpha1.SnapshotConfig
-	SnapshotFile           string
+	SnapshotDir            string
 	SnapshotVersion        string
 	DiffContextLineN       int
 	UpdateSnapshot         bool
 	HeaderVersion          string
 	FailHelmError          bool
+
+	snapshotFile string
 }
 
 type SnapshotResult struct {
 	Match          bool
 	FailureMessage string
-}
-
-func (o *ChartSnapshotter) updateSnapshot() error {
-	err := snap.RemoveFile(o.SnapshotFile)
-	if err != nil && !os.IsNotExist(err) {
-		return fmt.Errorf("failed to replace snapshot file: %w", err)
-	}
-	return nil
 }
 
 func (o *ChartSnapshotter) prependSnapshotHeader(data []byte) []byte {
@@ -74,24 +68,47 @@ func (o *ChartSnapshotter) prependSnapshotHeader(data []byte) []byte {
 }
 
 func (o *ChartSnapshotter) getVersionFromSnapshotFile() string {
-	s, err := snap.ReadFile(o.SnapshotFile)
+	s, err := snap.ReadFile(o.SnapshotFile())
 	if err != nil {
-		log().Debug("failed to read snapshot file", "path", o.SnapshotFile, "err", err)
+		log().Debug("failed to read snapshot file", "err", err)
 		return SnapshotVersionLatest
 	}
 	split := strings.Split(string(s), "\n")
 	return v1alpha1.ParseHeader(split[0]).SnapshotVersion
 }
 
-func (o *ChartSnapshotter) Snap(ctx context.Context) (result *SnapshotResult, err error) {
-	if _, err := os.Stat(o.SnapshotFile); err == nil {
-		log().Debug("snapshot file already exists", "path", o.SnapshotFile)
-	} else if os.IsNotExist(err) {
-		log().Debug("snapshot file does not exist", "path", o.SnapshotFile)
+func (o *ChartSnapshotter) snapshotFilePath() string {
+	if o.SnapshotDir != "" {
+		return snapshotFilePath(o.SnapshotDir, o.HelmTemplateCmdOptions.ValuesFile)
 	} else {
-		log().Error("unexpected error in snapshot file stat", "path", o.SnapshotFile, "err", err)
+		return defaultSnapshotFilePath(o.HelmTemplateCmdOptions.Chart, o.HelmTemplateCmdOptions.ValuesFile)
+	}
+}
+
+func (o *ChartSnapshotter) SnapshotFile() string {
+	if o.snapshotFile != "" {
+		return o.snapshotFile
 	}
 
+	o.snapshotFile = o.snapshotFilePath()
+
+	if o.SnapshotConfig.SnapshotFileExt != "" {
+		// append snapshot file extension
+		o.snapshotFile += "." + o.SnapshotConfig.SnapshotFileExt
+	}
+
+	if _, err := os.Stat(o.snapshotFile); err == nil {
+		log().Debug("snapshot file already exists")
+	} else if os.IsNotExist(err) {
+		log().Debug("snapshot file does not exist")
+	} else {
+		log().Error("unexpected error in snapshot file stat", "err", err)
+	}
+
+	return o.snapshotFile
+}
+
+func (o *ChartSnapshotter) Snap(ctx context.Context) (result *SnapshotResult, err error) {
 	// override snapshot config within values file's test spec
 	sv := v1alpha1.SnapshotValues{}
 	if o.HelmTemplateCmdOptions.ValuesFile != "" {
@@ -100,8 +117,12 @@ func (o *ChartSnapshotter) Snap(ctx context.Context) (result *SnapshotResult, er
 			return nil, fmt.Errorf("failed to decode values file: %w", err)
 		}
 	}
-	log().Debug("loaded values", "values", sv, "path", o.SnapshotFile)
+	log().Debug("loaded values", "values", sv)
 	sv.TestSpec.Merge(o.SnapshotConfig)
+	o.SnapshotConfig = sv.TestSpec
+	log().Debug("compluted config", "config", o.SnapshotConfig)
+
+	SetLogger(log().With("path", o.SnapshotFile()))
 
 	// execute helm template command
 	out, err := o.HelmTemplateCmdOptions.Execute(ctx)
@@ -112,11 +133,11 @@ func (o *ChartSnapshotter) Snap(ctx context.Context) (result *SnapshotResult, er
 			log().Error("helm command failed but snapshot it anyway. use --fail-helm-error if you want error exit code", "err", err, "output", string(out))
 		}
 	}
-	log().Debug("helm template output", "output", string(out), "path", o.SnapshotFile)
+	log().Debug("helm template output", "output", string(out))
 
 	// fallback if version is not specified
 	if o.SnapshotVersion == "" {
-		if snap.IsMultiSnapshots(o.SnapshotFile) {
+		if snap.IsMultiSnapshots(o.SnapshotFile()) {
 			// v1: if snapshot file is v1(multi-snapshot, toml) format, fallback to v1 snapshot matcher
 			o.SnapshotVersion = SnapshotVersionV1
 		} else if snapVersion := o.getVersionFromSnapshotFile(); snapVersion == "" {
@@ -129,18 +150,28 @@ func (o *ChartSnapshotter) Snap(ctx context.Context) (result *SnapshotResult, er
 	}
 
 	if o.UpdateSnapshot {
-		log().Debug("updating snapshot", "path", o.SnapshotFile)
-		if err := o.updateSnapshot(); err != nil {
-			return nil, fmt.Errorf("failed to update snapshot: %w", err)
+		log().Debug("updating snapshot")
+		err := snap.RemoveFile(o.SnapshotFile())
+		if err != nil && !os.IsNotExist(err) {
+			log().Warn("failed to update snapshot", "err", err)
+		}
+
+		if o.SnapshotConfig.SnapshotFileExt != "" {
+			// remove snapshot file without extension
+			noExtSnapshotFile := o.snapshotFilePath()
+			err := snap.RemoveFile(noExtSnapshotFile)
+			if err != nil && !os.IsNotExist(err) {
+				log().Warn("failed to remove snapshot file without specified extension", "err", err, "file", noExtSnapshotFile)
+			}
 		}
 	}
 
 	// take snapshot
-	log().Debug("taking snapshot", "version", o.SnapshotVersion, "path", o.SnapshotFile)
+	log().Debug("taking snapshot", "version", o.SnapshotVersion)
 
 	switch o.SnapshotVersion {
 	case SnapshotVersionV1:
-		log().Warn("legacy format snapshot. it will be deprecated in the future version. please update the snapshots to the latest format", "path", o.SnapshotFile)
+		log().Warn("legacy format snapshot. it will be deprecated in the future version. please update the snapshots to the latest format")
 		return o.snapV1(sv.TestSpec, out)
 	case SnapshotVersionV2:
 		return o.snapV2(sv.TestSpec, out)
@@ -176,8 +207,8 @@ func (o *ChartSnapshotter) snapV1(cfg v1alpha1.SnapshotConfig, data []byte) (res
 	}
 
 	// v1 snapshot is multi snapshot format with encoding legacy formatted yaml
-	matcher := snap.SnapshotMatcher(o.SnapshotFile,
-		snap.WithSnapshotID(SnapshotFileName(o.HelmTemplateCmdOptions.ValuesFile)),
+	matcher := snap.SnapshotMatcher(o.SnapshotFile(),
+		snap.WithSnapshotID(snapshotFileName(o.HelmTemplateCmdOptions.ValuesFile)),
 		snap.WithDiffFunc((&unstV1.DiffOptions{ContextLineN: o.DiffContextLineN}).Diff))
 
 	match, err := matcher.Match(raw)
@@ -212,7 +243,7 @@ func (o *ChartSnapshotter) snapV2(cfg v1alpha1.SnapshotConfig, data []byte) (res
 	if err != nil {
 		return nil, fmt.Errorf("failed to encode manifests: %w", err)
 	}
-	matcher := snap.SnapshotMatcher(o.SnapshotFile, snap.WithDiffFunc((&unstV2.DiffOptions{ContextLineN: o.DiffContextLineN}).Diff))
+	matcher := snap.SnapshotMatcher(o.SnapshotFile(), snap.WithDiffFunc((&unstV2.DiffOptions{ContextLineN: o.DiffContextLineN}).Diff))
 
 	match, err := matcher.Match(raw)
 	if err != nil {
@@ -244,7 +275,7 @@ func (o *ChartSnapshotter) snapV3(cfg v1alpha1.SnapshotConfig, data []byte) (res
 		return nil, fmt.Errorf("failed to encode manifests: %w", err)
 	}
 
-	matcher := snap.SnapshotMatcher(o.SnapshotFile, snap.WithDiffFunc((&yaml.DiffOptions{ContextLineN: o.DiffContextLineN}).Diff))
+	matcher := snap.SnapshotMatcher(o.SnapshotFile(), snap.WithDiffFunc((&yaml.DiffOptions{ContextLineN: o.DiffContextLineN}).Diff))
 
 	// add snapshot header on the top of the snapshot file from v3
 	raw = o.prependSnapshotHeader(raw)
@@ -259,28 +290,30 @@ func (o *ChartSnapshotter) snapV3(cfg v1alpha1.SnapshotConfig, data []byte) (res
 	}, nil
 }
 
-func DefaultSnapshotFilePath(chartPath, valuesFile string) string {
+func defaultSnapshotFilePath(chartPath, valuesFile string) string {
 	// if values file is specified, use the directory of the values file as the snapshot directory.
 	// otherwise, use the chart directory.
 	if valuesFile != "" {
-		return SnapshotFilePath(path.Dir(valuesFile), valuesFile)
+		return snapshotFilePath(path.Dir(valuesFile), valuesFile)
 	} else {
 		// if remote chart, create output directory
 		if _, err := os.Stat(path.Join(chartPath, "Chart.yaml")); os.IsNotExist(err) {
 			chartPath = path.Join("__snapshots__", path.Base(chartPath))
 		}
-		return SnapshotFilePath(chartPath, "")
+		return snapshotFilePath(chartPath, "")
 	}
 }
 
-func SnapshotFileName(valuesFile string) string {
+func snapshotFileName(valuesFile string) string {
 	if valuesFile != "" {
-		return strings.ReplaceAll(path.Base(valuesFile), ".yaml", "")
+		name := path.Base(valuesFile)
+		name = strings.ReplaceAll(name, ".yaml", "")
+		return name
 	} else {
 		return "default"
 	}
 }
 
-func SnapshotFilePath(dir, valuesFile string) string {
-	return path.Join(dir, "__snapshots__", SnapshotFileName(valuesFile)+".snap")
+func snapshotFilePath(dir, valuesFile string) string {
+	return path.Join(dir, "__snapshots__", snapshotFileName(valuesFile)+".snap")
 }

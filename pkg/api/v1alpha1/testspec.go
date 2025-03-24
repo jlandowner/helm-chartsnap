@@ -27,7 +27,8 @@ type SnapshotValues struct {
 }
 
 type SnapshotConfig struct {
-	DynamicFields []ManifestPath `yaml:"dynamicFields,omitempty"`
+	DynamicFields   []ManifestPath `yaml:"dynamicFields,omitempty"`
+	SnapshotFileExt string         `yaml:"snapshotFileExt,omitempty"`
 }
 
 type ManifestPath struct {
@@ -56,4 +57,7 @@ func (t *SnapshotConfig) Merge(cfg SnapshotConfig) {
 	// For DynamicFields, it doesn't matter if the same field is replaced with a fixed value several times
 	// But the current snapshot config has higher priority than the given snapshot config
 	t.DynamicFields = append(cfg.DynamicFields, t.DynamicFields...)
+	if cfg.SnapshotFileExt != "" {
+		t.SnapshotFileExt = cfg.SnapshotFileExt
+	}
 }

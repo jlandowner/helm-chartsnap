@@ -40,7 +40,7 @@ var _ = Describe("Snap", func() {
 						},
 					},
 				},
-				SnapshotFile:     "__snapshots__/helm_stub_snap_v3.yaml",
+				snapshotFile:     "__snapshots__/helm_stub_snap_v3.yaml",
 				SnapshotVersion:  "v3",
 				DiffContextLineN: 3,
 			}
@@ -73,7 +73,7 @@ var _ = Describe("Snap", func() {
 						},
 					},
 				},
-				SnapshotFile:     "__snapshots__/helm_stub_snap_v2.yaml",
+				snapshotFile:     "__snapshots__/helm_stub_snap_v2.yaml",
 				SnapshotVersion:  "v2",
 				DiffContextLineN: 3,
 			}
@@ -106,7 +106,7 @@ var _ = Describe("Snap", func() {
 						},
 					},
 				},
-				SnapshotFile:     "__snapshots__/helm_stub_snap_v1.toml",
+				snapshotFile:     "__snapshots__/helm_stub_snap_v1.toml",
 				SnapshotVersion:  "v1",
 				DiffContextLineN: 3,
 			}
@@ -127,7 +127,7 @@ var _ = Describe("Snap", func() {
 					Chart:       "ccc",
 					ValuesFile:  "./testdata/snap_values.yaml",
 				},
-				SnapshotFile:     "__snapshots__/helm_stub_snap_unmatch_v2.yaml",
+				snapshotFile:     "__snapshots__/helm_stub_snap_unmatch_v2.yaml",
 				SnapshotVersion:  "v2",
 				DiffContextLineN: 3,
 			}
@@ -167,7 +167,7 @@ var _ = Describe("Snap", func() {
 					Chart:       "ccc",
 					ValuesFile:  "./testdata/snap_values.yaml",
 				},
-				SnapshotFile:     "__snapshots__/helm_stub_snap_unmatch_v3_copy.yaml",
+				snapshotFile:     "__snapshots__/helm_stub_snap_unmatch_v3_copy.yaml",
 				SnapshotVersion:  "v3",
 				DiffContextLineN: 3,
 			}
@@ -186,7 +186,7 @@ var _ = Describe("Snap", func() {
 					Chart:       "ccc",
 					ValuesFile:  "./testdata/snap_values.yaml",
 				},
-				SnapshotFile:     "__snapshots__/helm_stub_snap_unmatch_v3_copy.yaml",
+				snapshotFile:     "__snapshots__/helm_stub_snap_unmatch_v3_copy.yaml",
 				SnapshotVersion:  "v3",
 				DiffContextLineN: 3,
 				UpdateSnapshot:   true,
@@ -203,7 +203,7 @@ var _ = Describe("Snap", func() {
 				HelmTemplateCmdOptions: HelmTemplateCmdOptions{
 					HelmPath: "./testdata/helm_empty.bash",
 				},
-				SnapshotFile:     "__snapshots__/empty.yaml",
+				snapshotFile:     "__snapshots__/empty.yaml",
 				SnapshotVersion:  "",
 				DiffContextLineN: 3,
 			}
@@ -235,7 +235,7 @@ var _ = Describe("Snap", func() {
 						},
 					},
 				},
-				SnapshotFile:     "__snapshots__/helm_stub_snap_latest.yaml",
+				snapshotFile:     "__snapshots__/helm_stub_snap_latest.yaml",
 				SnapshotVersion:  "", // not specified
 				DiffContextLineN: 3,
 			}
@@ -267,7 +267,7 @@ var _ = Describe("Snap", func() {
 						},
 					},
 				},
-				SnapshotFile:     "__snapshots__/helm_stub_snap_v1.toml",
+				snapshotFile:     "__snapshots__/helm_stub_snap_v1.toml",
 				SnapshotVersion:  "", // not specified
 				DiffContextLineN: 3,
 			}
@@ -299,7 +299,7 @@ var _ = Describe("Snap", func() {
 						},
 					},
 				},
-				SnapshotFile:     "__snapshots__/helm_stub_snap_v2.yaml",
+				snapshotFile:     "__snapshots__/helm_stub_snap_v2.yaml",
 				SnapshotVersion:  "", // not specified
 				DiffContextLineN: 3,
 			}
@@ -331,13 +331,47 @@ var _ = Describe("Snap", func() {
 						},
 					},
 				},
-				SnapshotFile:     "__snapshots__/helm_stub_snap_v3.yaml",
+				snapshotFile:     "__snapshots__/helm_stub_snap_v3.yaml",
 				SnapshotVersion:  "", // not specified
 				DiffContextLineN: 3,
 			}
 			res, err := ss.Snap(context.Background())
 			Expect(err).NotTo(HaveOccurred())
 			Expect(res.Match).To(BeTrueBecause("diff: %s", res.FailureMessage))
+		})
+	})
+})
+
+var _ = Describe("SnapshotFile", func() {
+	Context("when SnapshotFileExt is empty", func() {
+		It("should return the .snap file path", func() {
+			snapshotter := &ChartSnapshotter{
+				SnapshotDir: "",
+				HelmTemplateCmdOptions: HelmTemplateCmdOptions{
+					ValuesFile: "testdata/values.yaml",
+				},
+				SnapshotConfig: v1alpha1.SnapshotConfig{
+					SnapshotFileExt: "",
+				},
+				UpdateSnapshot: false,
+			}
+			Expect(snapshotter.SnapshotFile()).To(Equal("testdata/__snapshots__/values.snap"))
+		})
+	})
+
+	Context("when SnapshotFileExt is yaml", func() {
+		It("should return the .snap.yaml snapshot file path", func() {
+			snapshotter := &ChartSnapshotter{
+				SnapshotDir: "",
+				HelmTemplateCmdOptions: HelmTemplateCmdOptions{
+					ValuesFile: "testdata/values.yaml",
+				},
+				SnapshotConfig: v1alpha1.SnapshotConfig{
+					SnapshotFileExt: "yaml",
+				},
+				UpdateSnapshot: false,
+			}
+			Expect(snapshotter.SnapshotFile()).To(Equal("testdata/__snapshots__/values.snap.yaml"))
 		})
 	})
 })
@@ -375,7 +409,7 @@ func TestSnapshotFileName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SnapshotFileName(tt.args.valuesFile); got != tt.want {
+			if got := snapshotFileName(tt.args.valuesFile); got != tt.want {
 				t.Errorf("SnapshotFileName() = %v, want %v", got, tt.want)
 			}
 		})
@@ -427,7 +461,7 @@ func TestDefaultSnapshotFilePath(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := DefaultSnapshotFilePath(tt.args.chartPath, tt.args.valuesFile); got != tt.want {
+			if got := defaultSnapshotFilePath(tt.args.chartPath, tt.args.valuesFile); got != tt.want {
 				t.Errorf("DefaultSnapshotFilePath() = %v, want %v", got, tt.want)
 			}
 		})
@@ -455,7 +489,7 @@ func TestSnapshotFilePath(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SnapshotFilePath(tt.args.dir, tt.args.valuesFile); got != tt.want {
+			if got := snapshotFilePath(tt.args.dir, tt.args.valuesFile); got != tt.want {
 				t.Errorf("SnapshotFilePath() = %v, want %v", got, tt.want)
 			}
 		})
