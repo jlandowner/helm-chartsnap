@@ -45,9 +45,9 @@ integ-test-kong:
 
 .PHONY: integ-test-fail
 integ-test-fail: install-dev-bin
-	helm chartsnap --chart example/app1 --namespace default $(ARGS) && (echo "should fail"; exit 1) || (echo "--- fail is expected ---"; true)
-	helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/test_ingress_enabled.yaml $(ARGS) && (echo "should fail"; exit 1) || (echo "--- fail is expected ---"; true)
-	helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/ $(ARGS) && (echo "should fail"; exit 1) || (echo "--- fail is expected ---"; true)
+	helm chartsnap --chart example/app1 --namespace default $(ARGS) && echo "should fail" && exit 1 || (echo "--- fail is expected ---"; true)
+	helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/test_ingress_enabled.yaml $(ARGS) && echo "should fail" && exit 1 || (echo "--- fail is expected ---"; true)
+	helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/ $(ARGS) && echo "should fail" && exit 1 || (echo "--- fail is expected ---"; true)
 
 .PHONY: update-versions
 update-versions:
