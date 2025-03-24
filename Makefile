@@ -73,3 +73,11 @@ helm-template-diff:
 helm-template-diff.update:
 	-rm hack/helm-template-diff/helm-template.snap
 	make helm-template-diff
+
+kubectl-validate:
+	$(GO) install sigs.k8s.io/kubectl-validate@latest
+
+.PHONY: validate
+validate: kubectl-validate
+	kubectl validate example/remote/__snapshots__/
+	kubectl validate example/app3/__snapshots__/ --local-crds hack/crd/
