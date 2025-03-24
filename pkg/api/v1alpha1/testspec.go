@@ -29,6 +29,7 @@ type SnapshotValues struct {
 type SnapshotConfig struct {
 	DynamicFields   []ManifestPath `yaml:"dynamicFields,omitempty"`
 	SnapshotFileExt string         `yaml:"snapshotFileExt,omitempty"`
+	SnapshotVersion string         `yaml:"snapshotVersion,omitempty"`
 }
 
 type ManifestPath struct {
@@ -59,5 +60,8 @@ func (t *SnapshotConfig) Merge(cfg SnapshotConfig) {
 	t.DynamicFields = append(cfg.DynamicFields, t.DynamicFields...)
 	if cfg.SnapshotFileExt != "" {
 		t.SnapshotFileExt = cfg.SnapshotFileExt
+	}
+	if cfg.SnapshotVersion != "" {
+		t.SnapshotVersion = cfg.SnapshotVersion
 	}
 }

@@ -39,9 +39,9 @@ var _ = Describe("Snap", func() {
 							},
 						},
 					},
+					SnapshotVersion: "v3",
 				},
 				snapshotFile:     "__snapshots__/helm_stub_snap_v3.yaml",
-				SnapshotVersion:  "v3",
 				DiffContextLineN: 3,
 			}
 			res, err := ss.Snap(context.Background())
@@ -72,9 +72,9 @@ var _ = Describe("Snap", func() {
 							},
 						},
 					},
+					SnapshotVersion: "v2",
 				},
 				snapshotFile:     "__snapshots__/helm_stub_snap_v2.yaml",
-				SnapshotVersion:  "v2",
 				DiffContextLineN: 3,
 			}
 			res, err := ss.Snap(context.Background())
@@ -105,9 +105,9 @@ var _ = Describe("Snap", func() {
 							},
 						},
 					},
+					SnapshotVersion: "v1",
 				},
 				snapshotFile:     "__snapshots__/helm_stub_snap_v1.toml",
-				SnapshotVersion:  "v1",
 				DiffContextLineN: 3,
 			}
 			res, err := ss.Snap(context.Background())
@@ -127,8 +127,10 @@ var _ = Describe("Snap", func() {
 					Chart:       "ccc",
 					ValuesFile:  "./testdata/snap_values.yaml",
 				},
+				SnapshotConfig: v1alpha1.SnapshotConfig{
+					SnapshotVersion: "v2",
+				},
 				snapshotFile:     "__snapshots__/helm_stub_snap_unmatch_v2.yaml",
-				SnapshotVersion:  "v2",
 				DiffContextLineN: 3,
 			}
 			res, err := ss.Snap(context.Background())
@@ -171,8 +173,10 @@ var _ = Describe("Snap", func() {
 					Chart:       "ccc",
 					ValuesFile:  "./testdata/snap_values.yaml",
 				},
+				SnapshotConfig: v1alpha1.SnapshotConfig{
+					SnapshotVersion: "v3",
+				},
 				snapshotFile:     "__snapshots__/helm_stub_snap_unmatch_v3_copy.yaml",
-				SnapshotVersion:  "v3",
 				DiffContextLineN: 3,
 			}
 			res, err := ss.Snap(context.Background())
@@ -190,8 +194,10 @@ var _ = Describe("Snap", func() {
 					Chart:       "ccc",
 					ValuesFile:  "./testdata/snap_values.yaml",
 				},
+				SnapshotConfig: v1alpha1.SnapshotConfig{
+					SnapshotVersion: "v3",
+				},
 				snapshotFile:     "__snapshots__/helm_stub_snap_unmatch_v3_copy.yaml",
-				SnapshotVersion:  "v3",
 				DiffContextLineN: 3,
 				UpdateSnapshot:   true,
 			}
@@ -235,8 +241,10 @@ var _ = Describe("Snap", func() {
 				HelmTemplateCmdOptions: HelmTemplateCmdOptions{
 					HelmPath: "./testdata/helm_empty.bash",
 				},
+				SnapshotConfig: v1alpha1.SnapshotConfig{
+					SnapshotVersion: "",
+				},
 				snapshotFile:     "__snapshots__/empty.yaml",
-				SnapshotVersion:  "",
 				DiffContextLineN: 3,
 			}
 			res, err := ss.Snap(context.Background())
@@ -266,9 +274,9 @@ var _ = Describe("Snap", func() {
 							},
 						},
 					},
+					SnapshotVersion: "", // not specified
 				},
 				snapshotFile:     "__snapshots__/helm_stub_snap_latest.yaml",
-				SnapshotVersion:  "", // not specified
 				DiffContextLineN: 3,
 			}
 			res, err := ss.Snap(context.Background())
@@ -298,9 +306,9 @@ var _ = Describe("Snap", func() {
 							},
 						},
 					},
+					SnapshotVersion: "", // not specified
 				},
 				snapshotFile:     "__snapshots__/helm_stub_snap_v1.toml",
-				SnapshotVersion:  "", // not specified
 				DiffContextLineN: 3,
 			}
 			res, err := ss.Snap(context.Background())
@@ -330,9 +338,9 @@ var _ = Describe("Snap", func() {
 							},
 						},
 					},
+					SnapshotVersion: "", // not specified
 				},
 				snapshotFile:     "__snapshots__/helm_stub_snap_v2.yaml",
-				SnapshotVersion:  "", // not specified
 				DiffContextLineN: 3,
 			}
 			res, err := ss.Snap(context.Background())
@@ -362,9 +370,9 @@ var _ = Describe("Snap", func() {
 							},
 						},
 					},
+					SnapshotVersion: "", // not specified
 				},
 				snapshotFile:     "__snapshots__/helm_stub_snap_v3.yaml",
-				SnapshotVersion:  "", // not specified
 				DiffContextLineN: 3,
 			}
 			res, err := ss.Snap(context.Background())
