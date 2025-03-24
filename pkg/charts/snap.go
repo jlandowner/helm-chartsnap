@@ -47,7 +47,6 @@ type ChartSnapshotter struct {
 	HelmTemplateCmdOptions HelmTemplateCmdOptions
 	SnapshotConfig         v1alpha1.SnapshotConfig
 	SnapshotDir            string
-	SnapshotVersion        string
 	DiffContextLineN       int
 	UpdateSnapshot         bool
 	HeaderVersion          string
@@ -62,7 +61,7 @@ type SnapshotResult struct {
 }
 
 func (o *ChartSnapshotter) prependSnapshotHeader(data []byte) []byte {
-	header := (&v1alpha1.Header{SnapshotVersion: o.SnapshotVersion}).ToString()
+	header := (&v1alpha1.Header{SnapshotVersion: o.SnapshotConfig.SnapshotVersion}).ToString()
 	data = append([]byte(header), data...)
 	return data
 }
@@ -136,16 +135,16 @@ func (o *ChartSnapshotter) Snap(ctx context.Context) (result *SnapshotResult, er
 	log().Debug("helm template output", "output", string(out))
 
 	// fallback if version is not specified
-	if o.SnapshotVersion == "" {
+	if o.SnapshotConfig.SnapshotVersion == "" {
 		if snap.IsMultiSnapshots(o.SnapshotFile()) {
 			// v1: if snapshot file is v1(multi-snapshot, toml) format, fallback to v1 snapshot matcher
-			o.SnapshotVersion = SnapshotVersionV1
+			o.SnapshotConfig.SnapshotVersion = SnapshotVersionV1
 		} else if snapVersion := o.getVersionFromSnapshotFile(); snapVersion == "" {
 			// v2: if snapshot file have no header, fallback to v2 snapshot matcher
-			o.SnapshotVersion = SnapshotVersionV2
+			o.SnapshotConfig.SnapshotVersion = SnapshotVersionV2
 		} else {
 			// later: use snapshot version from snapshot file if exists
-			o.SnapshotVersion = snapVersion
+			o.SnapshotConfig.SnapshotVersion = snapVersion
 		}
 	}
 
@@ -167,9 +166,9 @@ func (o *ChartSnapshotter) Snap(ctx context.Context) (result *SnapshotResult, er
 	}
 
 	// take snapshot
-	log().Debug("taking snapshot", "version", o.SnapshotVersion)
+	log().Debug("taking snapshot", "version", o.SnapshotConfig.SnapshotVersion)
 
-	switch o.SnapshotVersion {
+	switch o.SnapshotConfig.SnapshotVersion {
 	case SnapshotVersionV1:
 		log().Warn("legacy format snapshot. it will be deprecated in the future version. please update the snapshots to the latest format")
 		return o.snapV1(sv.TestSpec, out)
@@ -178,8 +177,8 @@ func (o *ChartSnapshotter) Snap(ctx context.Context) (result *SnapshotResult, er
 	case SnapshotVersionV3:
 		return o.snapV3(sv.TestSpec, out)
 	default:
-		log().Error("unsupported snapshot version. use latest", "version", o.SnapshotVersion, "latest", SnapshotVersionLatest)
-		o.SnapshotVersion = SnapshotVersionLatest
+		log().Error("unsupported snapshot version. use latest", "version", o.SnapshotConfig.SnapshotVersion, "latest", SnapshotVersionLatest)
+		o.SnapshotConfig.SnapshotVersion = SnapshotVersionLatest
 		return o.snapV3(sv.TestSpec, out)
 	}
 }
