@@ -372,6 +372,42 @@ var _ = Describe("Snap", func() {
 			Expect(res.Match).To(BeTrueBecause("diff: %s", res.FailureMessage))
 		})
 	})
+
+	Context("helm error", func() {
+		It("should success and snapshot the error", func() {
+			ss := &ChartSnapshotter{
+				HelmTemplateCmdOptions: HelmTemplateCmdOptions{
+					HelmPath: "helm",
+					Chart:    "notfound",
+				},
+				snapshotFile:     "__snapshots__/helm-error.snap",
+				SnapshotVersion:  "",
+				DiffContextLineN: 3,
+				UpdateSnapshot:   true,
+			}
+			res, err := ss.Snap(context.Background())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(res.Match).To(BeTrueBecause("diff: %s", res.FailureMessage))
+		})
+
+		It("should fail if failHelmError flag", func() {
+			ss := &ChartSnapshotter{
+				FailHelmError: true,
+				HelmTemplateCmdOptions: HelmTemplateCmdOptions{
+					HelmPath: "helm",
+					Chart:    "notfound",
+				},
+				snapshotFile:     "__snapshots__/helm-error.snap",
+				SnapshotVersion:  "",
+				DiffContextLineN: 3,
+				UpdateSnapshot:   true,
+			}
+			res, err := ss.Snap(context.Background())
+			Expect(err).To(HaveOccurred())
+			Ω(err.Error()).To(MatchSnapShot())
+			Ω(res).To(MatchSnapShot())
+		})
+	})
 })
 
 var _ = Describe("SnapshotFile", func() {

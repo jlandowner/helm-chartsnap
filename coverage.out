@@ -31,7 +31,7 @@ github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:64:			prependSnapshotHea
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:70:			getVersionFromSnapshotFile	66.7%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:80:			snapshotFilePath		100.0%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:88:			SnapshotFile			90.9%
-github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:111:			Snap				78.0%
+github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:111:			Snap				85.4%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:187:			snapV1				81.2%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:224:			snapV2				82.4%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:258:			snapV3				75.0%
@@ -108,4 +108,4 @@ github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:71:			ApplyFixedValueToDyn
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:89:			convertInvalidYAMLToUnknown	100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:105:			convertScalerNodeToUnknownNode	100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:120:			Replace				100.0%
-total:										(statements)			84.9%
+total:										(statements)			85.3%
