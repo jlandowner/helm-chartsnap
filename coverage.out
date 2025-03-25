@@ -3,7 +3,7 @@ github.com/jlandowner/helm-chartsnap/main.go:62:				Namespace			75.0%
 github.com/jlandowner/helm-chartsnap/main.go:70:				HelmBin				75.0%
 github.com/jlandowner/helm-chartsnap/main.go:78:				OK				66.7%
 github.com/jlandowner/helm-chartsnap/main.go:86:				snapshotVersion			66.7%
-github.com/jlandowner/helm-chartsnap/main.go:95:				overrideSnapshotConfig		50.0%
+github.com/jlandowner/helm-chartsnap/main.go:95:				overrideSnapshotConfig		100.0%
 github.com/jlandowner/helm-chartsnap/main.go:101:				init				100.0%
 github.com/jlandowner/helm-chartsnap/main.go:105:				initRootCmd			85.7%
 github.com/jlandowner/helm-chartsnap/main.go:206:				main				0.0%
@@ -16,7 +16,7 @@ github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:13:		ToString			
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:17:		ParseHeader			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:11:		FromFile			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:46:		DynamicValue			100.0%
-github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:56:		Merge				66.7%
+github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:56:		Merge				100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown.go:17:		NewUnknownError			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown.go:25:		Error				100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown.go:29:		Unstructured			100.0%
@@ -108,4 +108,4 @@ github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:71:			ApplyFixedValueToDyn
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:89:			convertInvalidYAMLToUnknown	100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:105:			convertScalerNodeToUnknownNode	100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:120:			Replace				100.0%
-total:										(statements)			84.0%
+total:										(statements)			84.2%

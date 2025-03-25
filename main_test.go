@@ -117,6 +117,14 @@ var _ = Describe("rootCmd", func() {
 				Ω(output.String()).To(MatchSnapShot())
 			})
 		})
+
+		Context("snapshot file ext is yaml", func() {
+			It("should pass", func() {
+				rootCmd.SetArgs([]string{"--chart", "example/app3", "--namespace", "default", "--snapshot-file-ext", "yaml"})
+				err := rootCmd.Execute()
+				Expect(err).ShouldNot(HaveOccurred())
+			})
+		})
 	})
 
 	Context("fail", func() {
