@@ -1,3 +1,13 @@
+['Snap helm error should fail if failHelmError flag 1']
+SnapShot = """
+'helm template' command failed: exit status 1: Error: non-absolute URLs should be in form of repo_name/path_to_chart, got: notfound
+"""
+
+['Snap helm error should fail if failHelmError flag 2']
+SnapShot = """
+null
+"""
+
 ['Snap v1 snapshot matched should return success response 1']
 SnapShot = """
 

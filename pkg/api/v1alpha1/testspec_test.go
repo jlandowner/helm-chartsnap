@@ -97,6 +97,26 @@ var _ = Describe("TestSpec", func() {
 			cfg1.Merge(cfg2)
 			Expect(cfg1).To(MatchSnapShot())
 		})
+
+		It("should merge snapshot file extensions", func() {
+			base := SnapshotConfig{
+				SnapshotFileExt: "json",
+			}
+			overwrite := SnapshotConfig{
+				SnapshotFileExt: "yaml",
+			}
+			base.Merge(overwrite)
+			Expect(base.SnapshotFileExt).To(Equal("yaml"))
+		})
+
+		It("should override snapshot file extension if not set in current config", func() {
+			base := SnapshotConfig{}
+			overwrite := SnapshotConfig{
+				SnapshotFileExt: "yaml",
+			}
+			base.Merge(overwrite)
+			Expect(base.SnapshotFileExt).To(Equal("yaml"))
+		})
 	})
 
 })

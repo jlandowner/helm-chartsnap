@@ -43,6 +43,7 @@ type option struct {
 	LegacySnapshot   bool // deprecated
 	SnapshotVersion  string
 	FailHelmError    bool
+	SnapshotFileExt  string
 
 	// Below properties are the same as helm global options
 	// They are passed to the plugin as environment variables
@@ -88,6 +89,12 @@ func (o *option) snapshotVersion() string {
 		return charts.SnapshotVersionV1
 	} else {
 		return o.SnapshotVersion
+	}
+}
+
+func (o *option) overrideSnapshotConfig(cfg *v1alpha1.SnapshotConfig) {
+	if o.SnapshotFileExt != "" {
+		cfg.SnapshotFileExt = o.SnapshotFileExt
 	}
 }
 
@@ -192,6 +199,7 @@ MIT 2023 jlandowner/helm-chartsnap
 	rootCmd.PersistentFlags().BoolVar(&o.LegacySnapshot, "legacy-snapshot", false, "use toml-based legacy snapshot format")
 	rootCmd.PersistentFlags().MarkDeprecated("legacy-snapshot", "use --snapshot-version=v1 instead")
 	rootCmd.PersistentFlags().StringVar(&o.SnapshotVersion, "snapshot-version", "", "use a specific snapshot format version. v1, v2, v3 are supported. (default: latest)")
+	rootCmd.PersistentFlags().StringVar(&o.SnapshotFileExt, "snapshot-file-ext", "", `snapshot file extension. default is ".snap" and if set "yaml", ".snap.yaml" is used`)
 	rootCmd.PersistentFlags().BoolVar(&o.FailHelmError, "fail-helm-error", false, "fail if 'helm template' command failed")
 }
 
@@ -299,6 +307,9 @@ func run(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	// override if snapshot config is set in the command line
+	o.overrideSnapshotConfig(&cfg)
+
 	eg, ctx := errgroup.WithContext(cmd.Context())
 	if !o.FailFast {
 		// not cancel ctx even if some case failed
@@ -319,20 +330,12 @@ func run(cmd *cobra.Command, args []string) error {
 			ValuesFile:     v,
 			AdditionalArgs: args,
 		}
-		bannerPrintln("RUNS",
-			fmt.Sprintf("Snapshot testing chart=%s values=%s", ht.Chart, ht.ValuesFile), 0, color.BgBlue)
+		bannerPrintln("RUNS", fmt.Sprintf("Snapshot testing chart=%s values=%s", ht.Chart, ht.ValuesFile), 0, color.BgBlue)
 		eg.Go(func() error {
-			var snapshotFilePath string
-			if o.OutputDir != "" {
-				snapshotFilePath = charts.SnapshotFilePath(o.OutputDir, ht.ValuesFile)
-			} else {
-				snapshotFilePath = charts.DefaultSnapshotFilePath(ht.Chart, ht.ValuesFile)
-			}
-
 			snapshotter := charts.ChartSnapshotter{
 				HelmTemplateCmdOptions: ht,
 				SnapshotConfig:         cfg,
-				SnapshotFile:           snapshotFilePath,
+				SnapshotDir:            o.OutputDir,
 				SnapshotVersion:        o.snapshotVersion(),
 				DiffContextLineN:       o.DiffContextLineN,
 				UpdateSnapshot:         o.UpdateSnapshot,

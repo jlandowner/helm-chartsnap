@@ -37,6 +37,7 @@ integ-test: install-dev-bin
 	helm chartsnap --chart ingress-nginx -f example/remote/ingress-nginx.values.yaml $(ARGS) -- --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --skip-tests $(EXTRA_ARGS)
 	helm chartsnap --chart example/app2 --namespace default $(ARGS)
 	helm chartsnap --chart example/app3 --namespace default $(ARGS)
+	helm chartsnap --chart example/app3 --namespace default --snapshot-file-ext yaml $(ARGS)
 	helm chartsnap --chart example/app3 --namespace default $(ARGS) -f example/app3/test/ok.yaml
 
 .PHONY: integ-test-kong
@@ -45,9 +46,9 @@ integ-test-kong:
 
 .PHONY: integ-test-fail
 integ-test-fail: install-dev-bin
-	helm chartsnap --chart example/app1 --namespace default $(ARGS) && (echo "should fail"; exit 1) || (echo "--- fail is expected ---"; true)
-	helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/test_ingress_enabled.yaml $(ARGS) && (echo "should fail"; exit 1) || (echo "--- fail is expected ---"; true)
-	helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/ $(ARGS) && (echo "should fail"; exit 1) || (echo "--- fail is expected ---"; true)
+	helm chartsnap --chart example/app1 --namespace default $(ARGS) && echo "should fail" && exit 1 || (echo "--- fail is expected ---"; true)
+	helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/test_ingress_enabled.yaml $(ARGS) && echo "should fail" && exit 1 || (echo "--- fail is expected ---"; true)
+	helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/ $(ARGS) && echo "should fail" && exit 1 || (echo "--- fail is expected ---"; true)
 
 .PHONY: update-versions
 update-versions:
@@ -72,3 +73,11 @@ helm-template-diff:
 helm-template-diff.update:
 	-rm hack/helm-template-diff/helm-template.snap
 	make helm-template-diff
+
+kubectl-validate:
+	$(GO) install sigs.k8s.io/kubectl-validate@latest
+
+.PHONY: validate
+validate: kubectl-validate
+	kubectl validate example/remote/__snapshots__/
+	kubectl validate example/app3/__snapshots__/ --local-crds hack/crd/

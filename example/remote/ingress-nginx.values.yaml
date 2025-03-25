@@ -1,3 +1,6 @@
+testSpec:
+  snapshotFileExt: yaml
+
 # https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml#L518
 controller:
   service:
