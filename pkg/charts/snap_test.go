@@ -221,8 +221,8 @@ var _ = Describe("Snap", func() {
 					SnapshotDir: ".",
 					SnapshotConfig: v1alpha1.SnapshotConfig{
 						SnapshotFileExt: "yaml",
+						SnapshotVersion: "v3",
 					},
-					SnapshotVersion:  "v3",
 					DiffContextLineN: 3,
 					UpdateSnapshot:   true,
 				}
@@ -389,7 +389,6 @@ var _ = Describe("Snap", func() {
 					Chart:    "notfound",
 				},
 				snapshotFile:     "__snapshots__/helm-error.snap",
-				SnapshotVersion:  "",
 				DiffContextLineN: 3,
 				UpdateSnapshot:   true,
 			}
@@ -406,7 +405,6 @@ var _ = Describe("Snap", func() {
 					Chart:    "notfound",
 				},
 				snapshotFile:     "__snapshots__/helm-error.snap",
-				SnapshotVersion:  "",
 				DiffContextLineN: 3,
 				UpdateSnapshot:   true,
 			}
