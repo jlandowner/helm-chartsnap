@@ -153,9 +153,13 @@ var _ = Describe("Snap", func() {
 				Expect(err).NotTo(HaveOccurred())
 			}
 			copyFile("__snapshots__/helm_stub_snap_unmatch_v3.yaml", "__snapshots__/helm_stub_snap_unmatch_v3_copy.yaml")
+			copyFile("__snapshots__/helm_stub_snap_unmatch_v3.yaml", "__snapshots__/snap_values.snap")
+			copyFile("__snapshots__/helm_stub_snap_unmatch_v3.yaml", "__snapshots__/snap_values.snap.yaml")
 		})
 		AfterEach(func() {
 			os.Remove("__snapshots__/helm_stub_snap_unmatch_v3_copy.yaml")
+			os.Remove("__snapshots__/snap_values.snap")
+			os.Remove("__snapshots__/snap_values.snap.yaml")
 		})
 
 		It("should return unmatched response", func() {
@@ -194,6 +198,34 @@ var _ = Describe("Snap", func() {
 			res, err := ss.Snap(context.Background())
 			Expect(err).NotTo(HaveOccurred())
 			Expect(res.Match).To(BeTrueBecause("diff: %s", res.FailureMessage))
+		})
+
+		Context("with file ext is specified", func() {
+			It("should remove snapshot which does not have the specified ext", func() {
+				Expect("__snapshots__/snap_values.snap").To(BeAnExistingFile())
+				Expect("__snapshots__/snap_values.snap.yaml").To(BeAnExistingFile())
+				ss := &ChartSnapshotter{
+					HelmTemplateCmdOptions: HelmTemplateCmdOptions{
+						HelmPath:    "./testdata/helm_stub.bash",
+						ReleaseName: "aaa",
+						Namespace:   "bbb",
+						Chart:       "ccc",
+						ValuesFile:  "./testdata/snap_values.yaml",
+					},
+					SnapshotDir: ".",
+					SnapshotConfig: v1alpha1.SnapshotConfig{
+						SnapshotFileExt: "yaml",
+					},
+					SnapshotVersion:  "v3",
+					DiffContextLineN: 3,
+					UpdateSnapshot:   true,
+				}
+				res, err := ss.Snap(context.Background())
+				Expect(err).NotTo(HaveOccurred())
+				Expect("__snapshots__/snap_values.snap").NotTo(BeAnExistingFile()) // removed
+				Expect("__snapshots__/snap_values.snap.yaml").To(BeAnExistingFile())
+				Expect(res.Match).To(BeTrueBecause("diff: %s", res.FailureMessage))
+			})
 		})
 	})
 
@@ -372,6 +404,22 @@ var _ = Describe("SnapshotFile", func() {
 				UpdateSnapshot: false,
 			}
 			Expect(snapshotter.SnapshotFile()).To(Equal("testdata/__snapshots__/values.snap.yaml"))
+		})
+	})
+
+	Context("when SnapshotDir is not empty", func() {
+		It("should return the .snap file path", func() {
+			snapshotter := &ChartSnapshotter{
+				SnapshotDir: "xxx",
+				HelmTemplateCmdOptions: HelmTemplateCmdOptions{
+					ValuesFile: "testdata/values.yaml",
+				},
+				SnapshotConfig: v1alpha1.SnapshotConfig{
+					SnapshotFileExt: "",
+				},
+				UpdateSnapshot: false,
+			}
+			Expect(snapshotter.SnapshotFile()).To(Equal("xxx/__snapshots__/values.snap"))
 		})
 	})
 })
