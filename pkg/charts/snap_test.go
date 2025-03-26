@@ -51,6 +51,39 @@ var _ = Describe("Snap", func() {
 		})
 	})
 
+	Context("latest snapshot matched", func() {
+		It("should return success response", func() {
+			ss := &ChartSnapshotter{
+				HelmTemplateCmdOptions: HelmTemplateCmdOptions{
+					HelmPath:    "./testdata/helm_stub.bash",
+					ReleaseName: "aaa",
+					Namespace:   "bbb",
+					Chart:       "ccc",
+					ValuesFile:  "./testdata/snap_values.yaml",
+				},
+				SnapshotConfig: v1alpha1.SnapshotConfig{
+					DynamicFields: []v1alpha1.ManifestPath{
+						{
+							APIVersion: "v1",
+							Kind:       "Service",
+							Name:       "chartsnap-app1",
+							JSONPath: []string{
+								"/spec/type",
+							},
+						},
+					},
+					// SnapshotVersion: "v3", // not specified
+				},
+				snapshotFile:     "__snapshots__/helm_stub_snap_v3.yaml",
+				DiffContextLineN: 3,
+			}
+			res, err := ss.Snap(context.Background())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(res.Match).To(BeTrueBecause("diff: %s", res.FailureMessage))
+			Expect(res.FailureMessage).To(MatchSnapShot())
+		})
+	})
+
 	Context("v2 snapshot matched", func() {
 		It("should return success response", func() {
 			ss := &ChartSnapshotter{

@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/fatih/color"
+	"github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1"
+	"github.com/jlandowner/helm-chartsnap/pkg/charts"
 	. "github.com/jlandowner/helm-chartsnap/pkg/snap/gomega"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -15,6 +17,90 @@ func TestMain(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Main Suite")
 }
+
+var _ = Describe("overrideSnapshotConfig", func() {
+	type testCase struct {
+		name     string
+		opt      *option
+		cfg      *v1alpha1.SnapshotConfig
+		expected *v1alpha1.SnapshotConfig
+	}
+
+	DescribeTable("overriding snapshot config",
+		func(tc testCase) {
+			tc.opt.overrideSnapshotConfig(tc.cfg)
+
+			Expect(tc.cfg.DynamicFields).To(Equal(tc.expected.DynamicFields))
+			Expect(tc.cfg.SnapshotFileExt).To(Equal(tc.expected.SnapshotFileExt))
+			Expect(tc.cfg.SnapshotVersion).To(Equal(tc.expected.SnapshotVersion))
+		},
+		Entry("when SnapshotFileExt is set in option", testCase{
+			name: "SnapshotFileExt is set",
+			opt: &option{
+				SnapshotFileExt: "yaml",
+			},
+			cfg: &v1alpha1.SnapshotConfig{},
+			expected: &v1alpha1.SnapshotConfig{
+				SnapshotFileExt: "yaml",
+			},
+		}),
+		Entry("when SnapshotVersion is set in option", testCase{
+			name: "SnapshotVersion is set",
+			opt: &option{
+				SnapshotVersion: "v2",
+			},
+			cfg: &v1alpha1.SnapshotConfig{},
+			expected: &v1alpha1.SnapshotConfig{
+				SnapshotVersion: "v2",
+			},
+		}),
+		Entry("when SnapshotFileExt is set in config", testCase{
+			name: "SnapshotFileExt is set",
+			opt:  &option{},
+			cfg: &v1alpha1.SnapshotConfig{
+				SnapshotFileExt: "yaml",
+			},
+			expected: &v1alpha1.SnapshotConfig{
+				SnapshotFileExt: "yaml",
+			},
+		}),
+		Entry("when SnapshotVersion is set in config", testCase{
+			name: "SnapshotVersion is set",
+			opt:  &option{},
+			cfg: &v1alpha1.SnapshotConfig{
+				SnapshotVersion: "v2",
+			},
+			expected: &v1alpha1.SnapshotConfig{
+				SnapshotVersion: "v2",
+			},
+		}),
+		Entry("when LegacySnapshot is true", testCase{
+			name: "LegacySnapshot is true",
+			opt: &option{
+				LegacySnapshot: true,
+			},
+			cfg: &v1alpha1.SnapshotConfig{},
+			expected: &v1alpha1.SnapshotConfig{
+				SnapshotVersion: charts.SnapshotVersionV1,
+			},
+		}),
+		Entry("when both SnapshotFileExt and SnapshotVersion are set", testCase{
+			name: "both SnapshotFileExt and SnapshotVersion are set",
+			opt: &option{
+				SnapshotFileExt: "yaml",
+				SnapshotVersion: "v3",
+			},
+			cfg: &v1alpha1.SnapshotConfig{
+				SnapshotFileExt: "yml",
+				SnapshotVersion: "v2",
+			},
+			expected: &v1alpha1.SnapshotConfig{
+				SnapshotFileExt: "yaml",
+				SnapshotVersion: "v3",
+			},
+		}),
+	)
+})
 
 var _ = Describe("rootCmd", func() {
 	BeforeEach(func() {
