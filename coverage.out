@@ -2,8 +2,8 @@ github.com/jlandowner/helm-chartsnap/main.go:54:				Debug				100.0%
 github.com/jlandowner/helm-chartsnap/main.go:62:				Namespace			75.0%
 github.com/jlandowner/helm-chartsnap/main.go:70:				HelmBin				75.0%
 github.com/jlandowner/helm-chartsnap/main.go:78:				OK				66.7%
-github.com/jlandowner/helm-chartsnap/main.go:86:				snapshotVersion			66.7%
-github.com/jlandowner/helm-chartsnap/main.go:95:				overrideSnapshotConfig		75.0%
+github.com/jlandowner/helm-chartsnap/main.go:86:				snapshotVersion			100.0%
+github.com/jlandowner/helm-chartsnap/main.go:95:				overrideSnapshotConfig		100.0%
 github.com/jlandowner/helm-chartsnap/main.go:104:				init				100.0%
 github.com/jlandowner/helm-chartsnap/main.go:108:				initRootCmd			85.7%
 github.com/jlandowner/helm-chartsnap/main.go:209:				main				0.0%
@@ -108,4 +108,4 @@ github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:71:			ApplyFixedValueToDyn
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:89:			convertInvalidYAMLToUnknown	100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:105:			convertScalerNodeToUnknownNode	100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:120:			Replace				100.0%
-total:										(statements)			85.2%
+total:										(statements)			85.5%
