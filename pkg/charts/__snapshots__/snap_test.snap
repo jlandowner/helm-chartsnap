@@ -13,6 +13,11 @@ SnapShot = """
 
 """
 
+['Snap unbigurous snapshot matched should return success response 1']
+SnapShot = """
+
+"""
+
 ['Snap v1 snapshot matched should return success response 1']
 SnapShot = """
 
