@@ -96,6 +96,9 @@ func (o *option) overrideSnapshotConfig(cfg *v1alpha1.SnapshotConfig) {
 	if o.SnapshotFileExt != "" {
 		cfg.SnapshotFileExt = o.SnapshotFileExt
 	}
+	if o.snapshotVersion() != "" {
+		cfg.SnapshotVersion = o.snapshotVersion()
+	}
 }
 
 func init() {
@@ -336,7 +339,6 @@ func run(cmd *cobra.Command, args []string) error {
 				HelmTemplateCmdOptions: ht,
 				SnapshotConfig:         cfg,
 				SnapshotDir:            o.OutputDir,
-				SnapshotVersion:        o.snapshotVersion(),
 				DiffContextLineN:       o.DiffContextLineN,
 				UpdateSnapshot:         o.UpdateSnapshot,
 				HeaderVersion:          version,
@@ -344,15 +346,15 @@ func run(cmd *cobra.Command, args []string) error {
 			}
 			result, err := snapshotter.Snap(ctx)
 			if err != nil {
-				bannerPrintln("FAIL", fmt.Sprintf("chart=%s values=%s err=%v snapshot_version=%s", ht.Chart, ht.ValuesFile, snapshotter.SnapshotVersion, err), color.FgRed, color.BgRed)
+				bannerPrintln("FAIL", fmt.Sprintf("chart=%s values=%s err=%v snapshot_version=%s", ht.Chart, ht.ValuesFile, snapshotter.SnapshotConfig.SnapshotVersion, err), color.FgRed, color.BgRed)
 				return fmt.Errorf("failed to get snapshot chart=%s values=%s: %w", ht.Chart, ht.ValuesFile, err)
 			}
 			if !result.Match {
-				bannerPrintln("FAIL", fmt.Sprintf("Snapshot does not match chart=%s values=%s snapshot_version=%s", ht.Chart, ht.ValuesFile, snapshotter.SnapshotVersion), color.FgRed, color.BgRed)
+				bannerPrintln("FAIL", fmt.Sprintf("Snapshot does not match chart=%s values=%s snapshot_version=%s", ht.Chart, ht.ValuesFile, snapshotter.SnapshotConfig.SnapshotVersion), color.FgRed, color.BgRed)
 				fmt.Println(result.FailureMessage)
 				return fmt.Errorf("snapshot does not match chart=%s values=%s", ht.Chart, ht.ValuesFile)
 			}
-			bannerPrintln("PASS", fmt.Sprintf("Snapshot %s chart=%s values=%s snapshot_version=%s", o.OK(), ht.Chart, ht.ValuesFile, snapshotter.SnapshotVersion), color.FgGreen, color.BgGreen)
+			bannerPrintln("PASS", fmt.Sprintf("Snapshot %s chart=%s values=%s snapshot_version=%s", o.OK(), ht.Chart, ht.ValuesFile, snapshotter.SnapshotConfig.SnapshotVersion), color.FgGreen, color.BgGreen)
 			return nil
 		})
 	}
