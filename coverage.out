@@ -17,12 +17,12 @@ github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:17:		ParseHeader
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:11:		FromFile			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:46:		DynamicValue			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:56:		Merge				100.0%
-github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:20:	NewUnknownError			100.0%
-github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:39:	Error				100.0%
-github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:43:	Unstructured			100.0%
-github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:56:	Node				100.0%
-github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:74:	String				100.0%
-github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:82:	MustString			75.0%
+github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:21:	NewUnknownError			100.0%
+github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:40:	Error				100.0%
+github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:44:	Unstructured			100.0%
+github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:57:	Node				100.0%
+github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:75:	String				100.0%
+github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:83:	MustString			75.0%
 github.com/jlandowner/helm-chartsnap/pkg/charts/helm.go:19:			Args				100.0%
 github.com/jlandowner/helm-chartsnap/pkg/charts/helm.go:35:			Execute				100.0%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:31:			SetLogger			100.0%
@@ -106,6 +106,6 @@ github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:45:			Decode				80.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:62:			decode				100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:71:			ApplyFixedValueToDynamicFieleds	87.5%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:89:			convertInvalidYAMLToUnknown	100.0%
-github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:105:			convertToUnknownNode		64.3%
+github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:105:			convertToUnknownNode		100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:126:			Replace				100.0%
-total:										(statements)			84.7%
+total:										(statements)			85.4%

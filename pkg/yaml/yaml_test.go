@@ -125,6 +125,44 @@ var _ = Describe("ApplyFixedValueToDynamicFieleds", func() {
 	})
 })
 
+var _ = Describe("ConvertToUnknownNode", func() {
+	DescribeTable("should convert nodes appropriately based on apiVersion and kind",
+		func(name string, input string, expected bool) {
+			node, err := yaml.Parse(input)
+			Expect(err).NotTo(HaveOccurred())
+
+			docs := []*yaml.RNode{node}
+			err = convertToUnknownNode(docs)
+			Expect(err).NotTo(HaveOccurred())
+
+			// Check if the document was converted to Unknown
+			if expected {
+				// Should be converted to Unknown
+				Expect(docs[0].GetKind()).To(Equal(v1alpha1.UnknownKind))
+				Expect(docs[0].GetApiVersion()).To(Equal(v1alpha1.GroupVersion.String()))
+				Expect(docs[0].ShouldKeep).To(BeTrue())
+			} else {
+				// Should remain unchanged
+				Expect(docs[0].GetKind()).NotTo(Equal(v1alpha1.UnknownKind))
+				Expect(docs[0].GetApiVersion()).NotTo(Equal(v1alpha1.GroupVersion.String()))
+			}
+		},
+		Entry("normal yaml with apiVersion and kind", "normal yaml with apiVersion and kind", `
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test
+`, false),
+		Entry("yaml without apiVersion and kind", "yaml without apiVersion and kind", `
+foo: bar
+baz: qux
+`, true),
+		Entry("string value", "string value", `
+just a string
+`, true),
+	)
+})
+
 func load(filePath string) []*yaml.RNode {
 	f, err := os.Open(filePath)
 	Expect(err).NotTo(HaveOccurred())

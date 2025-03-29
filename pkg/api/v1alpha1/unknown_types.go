@@ -15,6 +15,7 @@ import (
 var (
 	// GroupVersion is group version used to register these objects
 	GroupVersion = schema.GroupVersion{Group: "helm-chartsnap.jlandowner.dev", Version: "v1alpha1"}
+	UnknownKind  = "Unknown"
 )
 
 func NewUnknownError(raw string) *Unknown {
