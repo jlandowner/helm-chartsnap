@@ -14,7 +14,8 @@ SnapShot = """
       \"Base64\": true
     }
   ],
-  \"SnapshotFileExt\": \"\"
+  \"SnapshotFileExt\": \"\",
+  \"SnapshotVersion\": \"\"
 }
 """
 
@@ -43,7 +44,8 @@ SnapShot = """
         \"Base64\": true
       }
     ],
-    \"SnapshotFileExt\": \"\"
+    \"SnapshotFileExt\": \"\",
+    \"SnapshotVersion\": \"\"
   }
 }
 """
@@ -89,6 +91,7 @@ SnapShot = """
       \"Base64\": false
     }
   ],
-  \"SnapshotFileExt\": \"\"
+  \"SnapshotFileExt\": \"\",
+  \"SnapshotVersion\": \"\"
 }
 """

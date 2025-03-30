@@ -117,6 +117,26 @@ var _ = Describe("TestSpec", func() {
 			base.Merge(overwrite)
 			Expect(base.SnapshotFileExt).To(Equal("yaml"))
 		})
+
+		It("should merge snapshot version when target is empty", func() {
+			base := SnapshotConfig{}
+			overwrite := SnapshotConfig{
+				SnapshotVersion: "v1",
+			}
+			base.Merge(overwrite)
+			Expect(base.SnapshotVersion).To(Equal("v1"))
+		})
+
+		It("should override snapshot version when target has value", func() {
+			base := SnapshotConfig{
+				SnapshotVersion: "v2",
+			}
+			overwrite := SnapshotConfig{
+				SnapshotVersion: "v1",
+			}
+			base.Merge(overwrite)
+			Expect(base.SnapshotVersion).To(Equal("v1")) // overwrite の値で上書きされることを期待
+		})
 	})
 
 })
