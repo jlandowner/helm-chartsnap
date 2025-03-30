@@ -81,10 +81,10 @@ github.com/jlandowner/helm-chartsnap/pkg/unstructured/unstructured.go:111:	Repla
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/unstructured.go:134:	StringToUnstructured		100.0%
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/unstructured.go:138:	BytesToUnstructured		83.3%
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/unstructured.go:148:	UnstructuredToJSONBytes		100.0%
-github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:16:		Encode				85.7%
-github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:30:		findKind			83.3%
-github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:42:		findName			90.0%
-github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:63:		Diff				47.8%
+github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:16:		Encode				0.0%
+github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:30:		findKind			0.0%
+github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:42:		findName			0.0%
+github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:63:		Diff				0.0%
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:117:		intInRange			0.0%
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:127:		diffString			0.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/diff.go:12:			MergeDiffOptions		100.0%
@@ -108,4 +108,4 @@ github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:71:			ApplyFixedValueToDyn
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:89:			convertInvalidYAMLToUnknown	100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:105:			convertToUnknownNode		100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:126:			Replace				100.0%
-total:										(statements)			85.9%
+total:										(statements)			82.1%
