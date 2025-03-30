@@ -2,8 +2,8 @@ github.com/jlandowner/helm-chartsnap/main.go:54:				Debug				100.0%
 github.com/jlandowner/helm-chartsnap/main.go:62:				Namespace			75.0%
 github.com/jlandowner/helm-chartsnap/main.go:70:				HelmBin				75.0%
 github.com/jlandowner/helm-chartsnap/main.go:78:				OK				66.7%
-github.com/jlandowner/helm-chartsnap/main.go:86:				snapshotVersion			66.7%
-github.com/jlandowner/helm-chartsnap/main.go:95:				overrideSnapshotConfig		75.0%
+github.com/jlandowner/helm-chartsnap/main.go:86:				snapshotVersion			100.0%
+github.com/jlandowner/helm-chartsnap/main.go:95:				overrideSnapshotConfig		100.0%
 github.com/jlandowner/helm-chartsnap/main.go:104:				init				100.0%
 github.com/jlandowner/helm-chartsnap/main.go:108:				initRootCmd			85.7%
 github.com/jlandowner/helm-chartsnap/main.go:209:				main				0.0%
@@ -15,8 +15,8 @@ github.com/jlandowner/helm-chartsnap/main.go:377:				printOptions			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:13:		ToString			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:17:		ParseHeader			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:11:		FromFile			100.0%
-github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:46:		DynamicValue			100.0%
-github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:56:		Merge				100.0%
+github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:47:		DynamicValue			100.0%
+github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:57:		Merge				100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:21:	NewUnknownError			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:40:	Error				100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:44:	Unstructured			100.0%
@@ -31,7 +31,7 @@ github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:63:			prependSnapshotHea
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:69:			getVersionFromSnapshotFile	66.7%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:79:			snapshotFilePath		100.0%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:87:			SnapshotFile			90.9%
-github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:110:			Snap				85.4%
+github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:110:			Snap				92.7%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:186:			snapV1				81.2%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:223:			snapV2				82.4%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:257:			snapV3				75.0%
@@ -108,4 +108,4 @@ github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:71:			ApplyFixedValueToDyn
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:89:			convertInvalidYAMLToUnknown	100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:105:			convertToUnknownNode		100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:126:			Replace				100.0%
-total:										(statements)			85.4%
+total:										(statements)			85.9%
