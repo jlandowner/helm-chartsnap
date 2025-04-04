@@ -1,12 +1,7 @@
 # chartsnap: snapshot_version=v3
 ---
-apiVersion: helm-chartsnap.jlandowner.dev/v1alpha1
-kind: Unknown
-metadata:
-  name: helm-output
-raw: |
-  Pulled: ghcr.io/nginxinc/charts/nginx-gateway-fabric:1.5.1
-  Digest: sha256:5a8e2fb46822c756dfe32af8bf9e09cd63808e4316b564c74c3d0afb3c828d45
+Pulled: ghcr.io/nginxinc/charts/nginx-gateway-fabric:1.5.1
+Digest: sha256:5a8e2fb46822c756dfe32af8bf9e09cd63808e4316b564c74c3d0afb3c828d45
 ---
 # Source: nginx-gateway-fabric/templates/serviceaccount.yaml
 apiVersion: v1
