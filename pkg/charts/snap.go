@@ -306,8 +306,8 @@ func defaultSnapshotFilePath(chartPath, valuesFile string) string {
 func snapshotFileName(valuesFile string) string {
 	if valuesFile != "" {
 		name := path.Base(valuesFile)
-		name = strings.ReplaceAll(name, ".yaml", "")
-		name = strings.ReplaceAll(name, ".yml", "")
+		name = strings.TrimSuffix(name, ".yaml")
+		name = strings.TrimSuffix(name, ".yml")
 		return name
 	} else {
 		return "default"
