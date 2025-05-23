@@ -292,11 +292,15 @@ func run(cmd *cobra.Command, args []string) error {
 					continue
 				}
 
-				// read test values files (only *.yaml)
-				if !f.IsDir() && strings.HasSuffix(f.Name(), ".yaml") {
+				// read test values files (only *.yaml or *.yml)
+				if !f.IsDir() && (strings.HasSuffix(f.Name(), ".yaml") || strings.HasSuffix(f.Name(), ".yml")) {
 					values = append(values, path.Join(o.ValuesFile, f.Name()))
 				}
 			}
+			if len(values) == 0 {
+				return fmt.Errorf("no values file found in directory '%s'", o.ValuesFile)
+			}
+
 		} else {
 			values = []string{o.ValuesFile}
 

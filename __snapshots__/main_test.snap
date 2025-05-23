@@ -91,6 +91,10 @@ SnapShot = """
 \u001B[0m\u001B[37;42m PASS \u001B[0m\u001B[32m All snapshots matched
 \u001B[0m"""
 
+['rootCmd success error handling for specifying the empty directory should return an error for empty values 1']
+SnapShot = """
+no values file found in directory 'scripts'"""
+
 ['rootCmd success snapshot local chart with single values file should pass 1']
 SnapShot = """
  RUNS  Snapshot testing chart=example/app1 values=example/app1/test_latest/test_ingress_enabled.yaml
