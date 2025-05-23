@@ -161,6 +161,15 @@ var _ = Describe("rootCmd", func() {
 			})
 		})
 
+		Context("error handling for specifying the empty directory", func() {
+			It("should return an error for empty values", func() {
+				rootCmd.SetArgs([]string{"--chart", "example/app1", "-f", "scripts", "--namespace", "default"})
+				err := rootCmd.Execute()
+				Expect(err).To(HaveOccurred())
+				Ω(err.Error()).To(MatchSnapShot())
+			})
+		})
+
 		Context("snapshot helm error", func() {
 			It("should pass", func() {
 				rootCmd.SetArgs([]string{"--chart", "example/app3", "--namespace", "default"})

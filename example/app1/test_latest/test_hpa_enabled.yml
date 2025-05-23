@@ -1,0 +1,5 @@
+# This file is a duplicate of test_hpa_enabled.yaml to test .yml extension support.
+autoscaling:
+  enabled: true
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 65

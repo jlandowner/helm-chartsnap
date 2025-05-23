@@ -9,9 +9,9 @@ github.com/jlandowner/helm-chartsnap/main.go:108:				initRootCmd			85.7%
 github.com/jlandowner/helm-chartsnap/main.go:209:				main				0.0%
 github.com/jlandowner/helm-chartsnap/main.go:216:				slogHandler			100.0%
 github.com/jlandowner/helm-chartsnap/main.go:229:				loadSnapshotConfig		57.1%
-github.com/jlandowner/helm-chartsnap/main.go:242:				run				90.6%
-github.com/jlandowner/helm-chartsnap/main.go:370:				bannerPrintln			100.0%
-github.com/jlandowner/helm-chartsnap/main.go:377:				printOptions			100.0%
+github.com/jlandowner/helm-chartsnap/main.go:242:				run				90.9%
+github.com/jlandowner/helm-chartsnap/main.go:374:				bannerPrintln			100.0%
+github.com/jlandowner/helm-chartsnap/main.go:381:				printOptions			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:13:		ToString			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:17:		ParseHeader			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:11:		FromFile			100.0%
@@ -37,7 +37,7 @@ github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:223:			snapV2				82.4%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:257:			snapV3				75.0%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:292:			defaultSnapshotFilePath		100.0%
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:306:			snapshotFileName		100.0%
-github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:316:			snapshotFilePath		100.0%
+github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:317:			snapshotFilePath		100.0%
 github.com/jlandowner/helm-chartsnap/pkg/jsonpatch/jsonpatch.go:16:		DecodePatchKey			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/jsonpatch/jsonpatch.go:20:		SplitPathDecoded		100.0%
 github.com/jlandowner/helm-chartsnap/pkg/snap/cachefs.go:21:			WriteFile			70.0%
