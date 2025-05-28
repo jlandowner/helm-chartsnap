@@ -57,15 +57,15 @@ fi
 # If update flag is provided, git checkout the latest tag
 if [ "$1" = "-u" ]; then
     echo "Updating ${name} plugin..."
-    git fetch --tags || error_exit "Failed to fetch tags from remote repository"
+    before_version=$(get_plugin_version)
+    git fetch 2>/dev/null
+    git pull 2>/dev/null
     
-    latest_tag=$(git tag --sort=-creatordate | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
-    current_tag=$(git describe --exact-match --tags HEAD 2>/dev/null || echo "")
-    if [ "$current_tag" = "$latest_tag" ]; then
-        echo "${name} is already up to date (${latest_tag})."
+    latest_version=$(get_plugin_version)
+    if [ "$before_version" = "$latest_version" ]; then
+        echo "${name} is already up to date (${latest_version})."
         exit 0
     fi
-    git checkout "$latest_tag" || error_exit "Failed to checkout: $latest_tag"
 fi
 
 version=$(get_plugin_version)
