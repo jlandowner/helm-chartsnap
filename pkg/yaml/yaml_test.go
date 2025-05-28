@@ -125,6 +125,192 @@ var _ = Describe("ApplyFixedValueToDynamicFieleds", func() {
 	})
 })
 
+var _ = Describe("ApplyFixedValueToDynamicFields with JSONPathList scenarios", func() {
+	var (
+		baseConfigMapYAML = `
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-cm
+data:
+  key1: value1
+  key2: value2
+  key3: value3
+`
+	)
+
+	Context("Scenario 1: JSONPathList with paths only", func() {
+		It("should replace specified fields with DynamicValue", func() {
+			manifests, err := Decode([]byte(baseConfigMapYAML))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(manifests).To(HaveLen(1))
+
+			cfg := v1alpha1.SnapshotConfig{
+				DynamicFields: []v1alpha1.ManifestPath{
+					{
+						APIVersion: "v1",
+						Kind:       "ConfigMap",
+						Name:       "test-cm",
+						JSONPath: v1alpha1.JSONPathList{
+							{Path: "/data/key1"},
+							{Path: "/metadata/name"},
+						},
+					},
+				},
+			}
+
+			err = ApplyFixedValueToDynamicFieleds(cfg, manifests)
+			Expect(err).NotTo(HaveOccurred())
+
+			// Assertions
+			dataKey1, err := manifests[0].Pipe(yaml.Lookup("data", "key1"))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(dataKey1.YNode().Value).To(Equal(v1alpha1.DynamicValue))
+
+			metadataName, err := manifests[0].Pipe(yaml.Lookup("metadata", "name"))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(metadataName.YNode().Value).To(Equal(v1alpha1.DynamicValue))
+
+			// Ensure other fields are untouched
+			dataKey2, err := manifests[0].Pipe(yaml.Lookup("data", "key2"))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(dataKey2.YNode().Value).To(Equal("value2"))
+		})
+	})
+
+	Context("Scenario 1.1: JSONPathList with paths only and Base64", func() {
+		It("should replace specified fields with Base64DynamicValue", func() {
+			manifests, err := Decode([]byte(baseConfigMapYAML)) // Using CM for simplicity, imagine it's a Secret
+			Expect(err).NotTo(HaveOccurred())
+			Expect(manifests).To(HaveLen(1))
+
+			cfg := v1alpha1.SnapshotConfig{
+				DynamicFields: []v1alpha1.ManifestPath{
+					{
+						APIVersion: "v1",
+						Kind:       "ConfigMap",
+						Name:       "test-cm",
+						Base64:     true,
+						JSONPath: v1alpha1.JSONPathList{
+							{Path: "/data/key1"},
+						},
+					},
+				},
+			}
+
+			err = ApplyFixedValueToDynamicFieleds(cfg, manifests)
+			Expect(err).NotTo(HaveOccurred())
+
+			dataKey1, err := manifests[0].Pipe(yaml.Lookup("data", "key1"))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(dataKey1.YNode().Value).To(Equal(v1alpha1.Base64DynamicValue))
+		})
+	})
+
+	Context("Scenario 2: JSONPathList with paths and values", func() {
+		It("should replace specified fields with fixed values", func() {
+			manifests, err := Decode([]byte(baseConfigMapYAML))
+			Expect(err).NotTo(HaveOccurred())
+
+			cfg := v1alpha1.SnapshotConfig{
+				DynamicFields: []v1alpha1.ManifestPath{
+					{
+						APIVersion: "v1",
+						Kind:       "ConfigMap",
+						Name:       "test-cm",
+						JSONPath: v1alpha1.JSONPathList{
+							{Path: "/data/key1", Value: "fixed-key1-value"},
+							{Path: "/metadata/name", Value: "fixed-cm-name"},
+						},
+					},
+				},
+			}
+
+			err = ApplyFixedValueToDynamicFieleds(cfg, manifests)
+			Expect(err).NotTo(HaveOccurred())
+
+			dataKey1, err := manifests[0].Pipe(yaml.Lookup("data", "key1"))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(dataKey1.YNode().Value).To(Equal("fixed-key1-value"))
+
+			metadataName, err := manifests[0].Pipe(yaml.Lookup("metadata", "name"))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(metadataName.YNode().Value).To(Equal("fixed-cm-name"))
+		})
+	})
+
+	Context("Scenario 3: JSONPathList with mixed paths-only and paths-with-values", func() {
+		It("should replace fields correctly based on item definition", func() {
+			manifests, err := Decode([]byte(baseConfigMapYAML))
+			Expect(err).NotTo(HaveOccurred())
+
+			cfg := v1alpha1.SnapshotConfig{
+				DynamicFields: []v1alpha1.ManifestPath{
+					{
+						APIVersion: "v1",
+						Kind:       "ConfigMap",
+						Name:       "test-cm",
+						JSONPath: v1alpha1.JSONPathList{
+							{Path: "/data/key1", Value: "fixed-key1-mixed"}, // Fixed value
+							{Path: "/data/key2"},                            // Dynamic placeholder
+							{Path: "/metadata/name", Value: "fixed-name-mixed"}, // Fixed value
+						},
+					},
+				},
+			}
+
+			err = ApplyFixedValueToDynamicFieleds(cfg, manifests)
+			Expect(err).NotTo(HaveOccurred())
+
+			dataKey1, err := manifests[0].Pipe(yaml.Lookup("data", "key1"))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(dataKey1.YNode().Value).To(Equal("fixed-key1-mixed"))
+
+			dataKey2, err := manifests[0].Pipe(yaml.Lookup("data", "key2"))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(dataKey2.YNode().Value).To(Equal(v1alpha1.DynamicValue))
+			
+			metadataName, err := manifests[0].Pipe(yaml.Lookup("metadata", "name"))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(metadataName.YNode().Value).To(Equal("fixed-name-mixed"))
+
+			// Check untouched field
+			dataKey3, err := manifests[0].Pipe(yaml.Lookup("data", "key3"))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(dataKey3.YNode().Value).To(Equal("value3"))
+		})
+	})
+
+	Context("No matching manifest", func() {
+		It("should not modify the manifest", func() {
+			manifests, err := Decode([]byte(baseConfigMapYAML))
+			Expect(err).NotTo(HaveOccurred())
+			originalYAML, err := Encode(manifests) // Get original state
+			Expect(err).NotTo(HaveOccurred())
+
+			cfg := v1alpha1.SnapshotConfig{
+				DynamicFields: []v1alpha1.ManifestPath{
+					{
+						APIVersion: "v1",
+						Kind:       "ConfigMap",
+						Name:       "non-existent-cm", // Does not match "test-cm"
+						JSONPath: v1alpha1.JSONPathList{
+							{Path: "/data/key1", Value: "should-not-apply"},
+						},
+					},
+				},
+			}
+
+			err = ApplyFixedValueToDynamicFieleds(cfg, manifests)
+			Expect(err).NotTo(HaveOccurred())
+
+			modifiedYAML, err := Encode(manifests)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(modifiedYAML).To(Equal(originalYAML)) // Content should be unchanged
+		})
+	})
+})
+
 var _ = Describe("ConvertToUnknownNode", func() {
 	DescribeTable("should convert nodes appropriately based on apiVersion and kind",
 		func(name string, input string, expected bool) {

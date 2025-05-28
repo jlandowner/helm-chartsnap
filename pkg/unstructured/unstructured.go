@@ -95,8 +95,12 @@ func ApplyFixedValue(t v1alpha1.SnapshotConfig, manifests []metaV1.Unstructured)
 			if v.APIVersion == obj.GetAPIVersion() &&
 				v.Kind == obj.GetKind() &&
 				v.Name == obj.GetName() {
-				for _, p := range v.JSONPath {
-					newObj, err := Replace(manifests[i], p, v.DynamicValue())
+				for _, p := range v.JSONPath { // p is now a JSONPathItem
+					valueToApply := v.DynamicValue() // Default to existing dynamic placeholder
+					if p.Value != "" {
+						valueToApply = p.Value
+					}
+					newObj, err := Replace(manifests[i], p.Path, valueToApply)
 					if err != nil {
 						return fmt.Errorf("failed to replace json path: %w", err)
 					}

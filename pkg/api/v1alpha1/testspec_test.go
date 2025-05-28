@@ -184,3 +184,86 @@ func TestManifestPath_DynamicValue(t *testing.T) {
 		})
 	}
 }
+
+var _ = Describe("JSONPathList UnmarshalYAML", func() {
+	// Helper struct to trigger the custom unmarshaler
+	type TestHostStruct struct {
+		JPList JSONPathList `yaml:"jsonPath"`
+	}
+
+	Context("when unmarshalling from a list of strings", func() {
+		It("should correctly populate the JSONPathList", func() {
+			yamlInput := `jsonPath: ["/data/foo", "/data/bar"]`
+			var host TestHostStruct
+			err := yaml.Unmarshal([]byte(yamlInput), &host)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(host.JPList).To(Equal(JSONPathList{
+				{Path: "/data/foo", Value: ""},
+				{Path: "/data/bar", Value: ""},
+			}))
+		})
+	})
+
+	Context("when unmarshalling from a list of objects", func() {
+		It("should correctly populate the JSONPathList", func() {
+			yamlInput := `jsonPath: [{path: "/data/foo", value: "val1"}, {path: "/data/bar", value: "val2"}]`
+			var host TestHostStruct
+			err := yaml.Unmarshal([]byte(yamlInput), &host)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(host.JPList).To(Equal(JSONPathList{
+				{Path: "/data/foo", Value: "val1"},
+				{Path: "/data/bar", Value: "val2"},
+			}))
+		})
+	})
+
+	Context("when unmarshalling from an empty list", func() {
+		It("should result in an empty JSONPathList", func() {
+			yamlInput := `jsonPath: []`
+			var host TestHostStruct
+			err := yaml.Unmarshal([]byte(yamlInput), &host)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(host.JPList).To(BeEmpty())
+		})
+	})
+
+	Context("when unmarshalling from a mixed list (string first)", func() {
+		It("should return an error", func() {
+			yamlInput := `jsonPath: ["/data/foo", {path: "/data/bar", value: "val2"}]`
+			var host TestHostStruct
+			err := yaml.Unmarshal([]byte(yamlInput), &host)
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(ContainSubstring("failed to unmarshal JSONPathList: expected a list of JSONPathItem objects or a list of strings"))
+		})
+	})
+
+	Context("when unmarshalling from a mixed list (object first)", func() {
+		It("should return an error", func() {
+			yamlInput := `jsonPath: [{path: "/data/foo", value: "val1"}, "/data/bar"]`
+			var host TestHostStruct
+			err := yaml.Unmarshal([]byte(yamlInput), &host)
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(ContainSubstring("failed to unmarshal JSONPathList: expected a list of JSONPathItem objects or a list of strings"))
+		})
+	})
+
+	Context("when input is a map instead of a list", func() {
+		It("should return an error", func() {
+			yamlInput := `jsonPath: {path: "/data/foo"}`
+			var host TestHostStruct
+			err := yaml.Unmarshal([]byte(yamlInput), &host)
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(ContainSubstring("failed to unmarshal JSONPathList: expected a list of JSONPathItem objects or a list of strings"))
+		})
+	})
+
+	Context("when input is a string instead of a list", func() {
+		It("should return an error", func() {
+			yamlInput := `jsonPath: "/data/foo"`
+			var host TestHostStruct
+			err := yaml.Unmarshal([]byte(yamlInput), &host)
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(ContainSubstring("failed to unmarshal JSONPathList: expected a list of JSONPathItem objects or a list of strings"))
+		})
+	})
+})

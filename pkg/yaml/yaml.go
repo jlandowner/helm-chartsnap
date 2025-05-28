@@ -74,8 +74,12 @@ func ApplyFixedValueToDynamicFieleds(t v1alpha1.SnapshotConfig, docs []*yaml.RNo
 			if v.APIVersion == doc.GetApiVersion() &&
 				v.Kind == doc.GetKind() &&
 				v.Name == doc.GetName() {
-				for _, p := range v.JSONPath {
-					err := Replace(docs[i], p, v.DynamicValue())
+				for _, p := range v.JSONPath { // p is a v1alpha1.JSONPathItem
+					valueToApply := v.DynamicValue() // Default to existing dynamic placeholder
+					if p.Value != "" {
+						valueToApply = p.Value
+					}
+					err := Replace(docs[i], p.Path, valueToApply)
 					if err != nil {
 						return fmt.Errorf("failed to replace json path: %w", err)
 					}

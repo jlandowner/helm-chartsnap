@@ -34,10 +34,41 @@ type SnapshotConfig struct {
 
 type ManifestPath struct {
 	Kind       string   `yaml:"kind,omitempty"`
-	APIVersion string   `yaml:"apiVersion,omitempty"`
-	Name       string   `yaml:"name,omitempty"`
-	JSONPath   []string `yaml:"jsonPath,omitempty"`
-	Base64     bool     `yaml:"base64,omitempty"`
+	APIVersion string       `yaml:"apiVersion,omitempty"`
+	Name       string       `yaml:"name,omitempty"`
+	JSONPath   JSONPathList `yaml:"jsonPath,omitempty"`
+	Base64     bool         `yaml:"base64,omitempty"`
+}
+
+// JSONPathItem is a struct that holds a JSON path and a value.
+type JSONPathItem struct {
+	Path  string `yaml:"path"`
+	Value string `yaml:"value,omitempty"`
+}
+
+// JSONPathList is a slice of JSONPathItem.
+type JSONPathList []JSONPathItem
+
+// UnmarshalYAML implements the yaml.Unmarshaler interface.
+// It allows JSONPathList to be unmarshalled from a list of JSONPathItem objects
+// or a list of strings.
+func (j *JSONPathList) UnmarshalYAML(value *yaml.Node) error {
+	var items []JSONPathItem
+	if err := value.Decode(&items); err == nil {
+		*j = items
+		return nil
+	}
+
+	var paths []string
+	if err := value.Decode(&paths); err == nil {
+		*j = make([]JSONPathItem, len(paths))
+		for i, path := range paths {
+			(*j)[i] = JSONPathItem{Path: path}
+		}
+		return nil
+	}
+
+	return fmt.Errorf("failed to unmarshal JSONPathList: expected a list of JSONPathItem objects or a list of strings")
 }
 
 const DynamicValue = "###DYNAMIC_FIELD###"
