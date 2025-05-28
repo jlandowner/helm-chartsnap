@@ -41,15 +41,6 @@ install_plugin() {
     mv "${plugin_directory}/${name}" "bin/${name}" || mv "${plugin_directory}/${name}.exe" "bin/${name}"
 }
 
-get_current_tag() {
-    git describe --exact-match --tags HEAD 2>/dev/null || echo ""
-}
-
-get_latest_release_tag() {
-    git fetch --tags
-    git tag --sort=-creatordate | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1
-}
-
 # Main script
 name="chartsnap"
 repo_name="helm-chartsnap"
