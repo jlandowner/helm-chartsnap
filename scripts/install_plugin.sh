@@ -68,7 +68,6 @@ if [ "$1" = "-u" ]; then
     git checkout "$latest_tag" || error_exit "Failed to checkout: $latest_tag"
 fi
 
-# Autodetect the plugin version
 version=$(get_plugin_version)
 echo "Downloading and installing ${name} v${version} ..."
 
