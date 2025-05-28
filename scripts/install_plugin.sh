@@ -54,20 +54,7 @@ if [ -n "$HELM_PUSH_PLUGIN_NO_INSTALL_HOOK" ]; then
     exit 0
 fi
 
-# If update flag is provided, git checkout the latest tag
-if [ "$1" = "-u" ]; then
-    echo "Updating ${name} plugin..."
-    before_version=$(get_plugin_version)
-    git fetch 2>/dev/null
-    git pull 2>/dev/null
-    
-    latest_version=$(get_plugin_version)
-    if [ "$before_version" = "$latest_version" ]; then
-        echo "${name} is already up to date (${latest_version})."
-        exit 0
-    fi
-fi
-
+# Autodetect the latest version
 version=$(get_plugin_version)
 echo "Downloading and installing ${name} v${version} ..."
 
