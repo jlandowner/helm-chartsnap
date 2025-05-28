@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-[ $HELM_DEBUG != "false" ] && set -x && (printenv | grep HELM)
+[ "$HELM_DEBUG" != "false" ] && set -x && (printenv | grep HELM)
 
 
 # Function to print error message and exit
@@ -57,18 +57,16 @@ fi
 # If update flag is provided, git checkout the latest tag
 if [ "$1" = "-u" ]; then
     echo "Updating ${name} plugin..."
-    cd "$HELM_PLUGIN_DIR"
     git fetch --tags || error_exit "Failed to fetch tags from remote repository"
     
     latest_tag=$(git tag --sort=-creatordate | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
     current_tag=$(git describe --exact-match --tags HEAD 2>/dev/null || echo "")
-    if [ "$current_tag" == "$latest_tag" ]; then
+    if [ "$current_tag" = "$latest_tag" ]; then
         echo "${name} is already up to date (${latest_tag})."
         exit 0
     fi
     git checkout "$latest_tag" || error_exit "Failed to checkout: $latest_tag"
-    cd -
-else
+fi
 
 # Autodetect the plugin version
 version=$(get_plugin_version)
