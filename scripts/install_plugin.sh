@@ -66,7 +66,7 @@ if [ "$1" = "-u" ]; then
         echo "${name} is already up to date (${latest_tag})."
         exit 0
     fi
-    git checkout $latest_tag || error_exit "Failed to checkout: $latest_tag"
+    git checkout "$latest_tag" || error_exit "Failed to checkout: $latest_tag"
     cd -
 else
 
