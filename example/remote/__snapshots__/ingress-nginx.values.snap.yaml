@@ -374,6 +374,7 @@ spec:
       app.kubernetes.io/component: controller
   replicas: 1
   revisionHistoryLimit: 10
+  progressDeadlineSeconds: 0
   minReadySeconds: 0
   template:
     metadata:
