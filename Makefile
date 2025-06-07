@@ -2,7 +2,7 @@ all: build
 
 GO_VERSION ?= $(shell grep '^go ' go.mod | awk '{print $$2}')
 # Ensure the directory for go binaries exists
-GO_BIN_DIR := $(HOME)/go/bin
+GO_BIN_DIR := $(shell go env GOBIN || echo $$(go env GOPATH)/bin)
 # Define GO to point to the versioned executable in GO_BIN_DIR
 GO ?= $(GO_BIN_DIR)/go$(GO_VERSION)
 CONTROLLER_TOOLS_VERSION ?= v0.15.0
