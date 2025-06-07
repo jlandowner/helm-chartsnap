@@ -27,6 +27,8 @@ build: goreleaser
 
 .PHONY: setup
 .PHONY: test
+.PHONY: go
+.PHONY: helm
 test:
 	$(GO) test -race -coverprofile=coverage.txt -covermode=atomic `$(GO) list ./... | grep -v /hack`
 	$(GO) tool cover -func=coverage.txt -o=coverage.out
