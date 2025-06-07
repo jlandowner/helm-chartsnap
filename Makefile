@@ -1,13 +1,19 @@
 all: build
 
 GO_VERSION ?= $(shell grep '^go ' go.mod | awk '{print $$2}')
-GO ?= go$(GO_VERSION)
+GO_BIN := $(shell go env GOBIN | grep -q "^$$" && echo $$(go env GOPATH)/bin || echo $$(go env GOBIN))
+GO ?= $(GO_BIN)/go$(GO_VERSION)
 CONTROLLER_TOOLS_VERSION ?= v0.15.0
 
-go:
-	-go install golang.org/dl/go$(GO_VERSION)@latest
-	go$(GO_VERSION) download
+.PHONY: setup
+setup: go helm
 
+.PHONY: go
+go:
+	go install golang.org/dl/go$(GO_VERSION)@latest
+	$(GO) download
+
+.PHONY: helm
 helm:
 	curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
