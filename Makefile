@@ -9,12 +9,7 @@ CONTROLLER_TOOLS_VERSION ?= v0.15.0
 
 go:
 	mkdir -p $(GO_BIN_DIR)
-	# Install the go version downloader/runner into GOBIN or GOPATH/bin, then ensure it's in our GO_BIN_DIR
-	# The actual goX.Y.Z binary will be placed in GO_BIN_DIR by the "go install" for golang.org/dl
-	# if GOBIN is set to GO_BIN_DIR, or by copying it.
-	# Simpler: assume "go install" of "golang.org/dl/go..." puts "goX.Y.Z" into $(GO_BIN_DIR) if GOBIN is not set,
-	# or directly into a known path like $(HOME)/go/bin if GOBIN isn't set.
-	# Let's ensure GOBIN is set for the install command for predictability.
+	# Install the specified Go version into $(GO_BIN_DIR) for predictable builds.
 	GOBIN=$(GO_BIN_DIR) go install golang.org/dl/go$(GO_VERSION)@latest
 	$(GO) download
 
