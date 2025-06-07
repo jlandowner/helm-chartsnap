@@ -1,22 +1,21 @@
 all: build
 
 GO_VERSION ?= $(shell grep '^go ' go.mod | awk '{print $$2}')
-# Ensure the directory for go binaries exists
-GO_BIN_DIR := $(shell go env GOBIN || echo $$(go env GOPATH)/bin)
-# Define GO to point to the versioned executable in GO_BIN_DIR
-GO ?= $(GO_BIN_DIR)/go$(GO_VERSION)
+GO_BIN := $(shell go env GOBIN | grep -q "^$$" && echo $$(go env GOPATH)/bin || echo $$(go env GOBIN))
+GO ?= $(GO_BIN)/go$(GO_VERSION)
 CONTROLLER_TOOLS_VERSION ?= v0.15.0
 
+.PHONY: setup
+setup: go helm
+
+.PHONY: go
 go:
-	mkdir -p $(GO_BIN_DIR)
-	# Install the specified Go version into $(GO_BIN_DIR) for predictable builds.
-	GOBIN=$(GO_BIN_DIR) go install golang.org/dl/go$(GO_VERSION)@latest
+	go install golang.org/dl/go$(GO_VERSION)@latest
 	$(GO) download
 
+.PHONY: helm
 helm:
 	curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-
-setup: go helm
 
 goreleaser:
 	$(GO) install github.com/goreleaser/goreleaser@latest
@@ -25,10 +24,7 @@ goreleaser:
 build: goreleaser
 	goreleaser build --single-target --snapshot --clean --skip=before
 
-.PHONY: setup
 .PHONY: test
-.PHONY: go
-.PHONY: helm
 test:
 	$(GO) test -race -coverprofile=coverage.txt -covermode=atomic `$(GO) list ./... | grep -v /hack`
 	$(GO) tool cover -func=coverage.txt -o=coverage.out
