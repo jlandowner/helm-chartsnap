@@ -1,6 +1,7 @@
 package unstructured
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/aryann/difflib"
@@ -50,6 +51,52 @@ func TestEncode(t *testing.T) {
 						"kind":       "ConfigMap",
 						"metadata": map[string]interface{}{
 							"name": "test-config",
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "resources sorted by api version",
+			input: []metaV1.Unstructured{
+				{
+					Object: map[string]interface{}{
+						"apiVersion": "v2",
+						"kind":       "Service",
+						"metadata": map[string]interface{}{
+							"name": "test-service",
+						},
+					},
+				},
+				{
+					Object: map[string]interface{}{
+						"apiVersion": "v1",
+						"kind":       "Service",
+						"metadata": map[string]interface{}{
+							"name": "test-service2",
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "resources sorted by name",
+			input: []metaV1.Unstructured{
+				{
+					Object: map[string]interface{}{
+						"apiVersion": "v1",
+						"kind":       "ConfigMap",
+						"metadata": map[string]interface{}{
+							"name": "z-config",
+						},
+					},
+				},
+				{
+					Object: map[string]interface{}{
+						"apiVersion": "v1",
+						"kind":       "ConfigMap",
+						"metadata": map[string]interface{}{
+							"name": "a-config",
 						},
 					},
 				},
@@ -119,7 +166,18 @@ func TestFindName(t *testing.T) {
 		}
 	})
 
-	t.Run("no name found", func(t *testing.T) {
+	t.Run("metadata found but no name", func(t *testing.T) {
+		diffs := difflib.Diff(
+			[]string{"apiVersion: v1", "kind: ConfigMap", "      metadata:", "        labels:", "          app: test"},
+			[]string{"apiVersion: v1", "kind: ConfigMap", "      metadata:", "        labels:", "          app: test2"},
+		)
+		result := findName(diffs)
+		if result != "" {
+			t.Errorf("findName() = %v, want empty string when no name field", result)
+		}
+	})
+
+	t.Run("no metadata found", func(t *testing.T) {
 		diffs := difflib.Diff(
 			[]string{"some", "text"},
 			[]string{"other", "text"},
@@ -127,6 +185,17 @@ func TestFindName(t *testing.T) {
 		result := findName(diffs)
 		if result != "" {
 			t.Errorf("findName() = %v, want empty string", result)
+		}
+	})
+
+	t.Run("metadata at end of diff", func(t *testing.T) {
+		diffs := difflib.Diff(
+			[]string{"apiVersion: v1", "kind: ConfigMap", "      metadata:"},
+			[]string{"apiVersion: v1", "kind: ConfigMap", "      metadata:"},
+		)
+		result := findName(diffs)
+		if result != "" {
+			t.Errorf("findName() = %v, want empty string when metadata is at end", result)
 		}
 	})
 }
@@ -159,6 +228,20 @@ func TestDiffOptions_Diff(t *testing.T) {
 			x:       "same\nlines",
 			y:       "same\nlines",
 			shouldDiff: false,
+		},
+		{
+			name:    "diff with object divider",
+			options: &DiffOptions{ContextLineN: 1},
+			x:       "  - object:\n      kind: ConfigMap\n      metadata:\n          name: test",
+			y:       "  - object:\n      kind: Service\n      metadata:\n          name: test",
+			shouldDiff: true,
+		},
+		{
+			name:    "diff sequence with common lines",
+			options: &DiffOptions{ContextLineN: 1},
+			x:       "common1\ndiff1\ncommon2\ndiff2\ncommon3",
+			y:       "common1\nchanged1\ncommon2\nchanged2\ncommon3",
+			shouldDiff: true,
 		},
 	}
 
@@ -210,6 +293,39 @@ func TestIntInRange(t *testing.T) {
 			result := intInRange(tt.min, tt.max, tt.value)
 			if result != tt.expected {
 				t.Errorf("intInRange(%d, %d, %d) = %d, want %d", tt.min, tt.max, tt.value, result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestDiffString(t *testing.T) {
+	tests := []struct {
+		name     string
+		record   difflib.DiffRecord
+		expected string
+	}{
+		{
+			name:     "left only record",
+			record:   difflib.DiffRecord{Delta: difflib.LeftOnly, Payload: "removed line"},
+			expected: "removed line",
+		},
+		{
+			name:     "right only record",
+			record:   difflib.DiffRecord{Delta: difflib.RightOnly, Payload: "added line"},
+			expected: "added line",
+		},
+		{
+			name:     "common record",
+			record:   difflib.DiffRecord{Delta: difflib.Common, Payload: "common line"},
+			expected: "common line",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := diffString(tt.record)
+			if !strings.Contains(result, tt.expected) {
+				t.Errorf("diffString() = %v, want to contain %v", result, tt.expected)
 			}
 		})
 	}
