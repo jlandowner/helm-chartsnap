@@ -84,6 +84,24 @@ var _ = Describe("CacheFS", func() {
 			Expect(os.IsNotExist(err)).To(BeTrue())
 		})
 
+		It("WriteFile with permission error", func() {
+			// Try to write to a directory that doesn't exist and can't be created
+			invalidPath := "/root/nonexistent/test.txt"
+			data := []byte("test data")
+
+			err := WriteFile(invalidPath, data)
+			// Should handle error gracefully even if directory creation fails
+			// The exact behavior depends on the system, but we expect it to handle errors
+			Expect(err).To(HaveOccurred())
+		})
+
+		It("ReadFile with non-existent file", func() {
+			nonExistentPath := "/tmp/non-existent-file.txt"
+
+			_, err := ReadFile(nonExistentPath)
+			Expect(os.IsNotExist(err)).To(BeTrue())
+		})
+
 	})
 })
 

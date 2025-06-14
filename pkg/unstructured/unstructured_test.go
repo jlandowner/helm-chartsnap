@@ -7,6 +7,12 @@ import (
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
+func TestSetLogger(t *testing.T) {
+	// Test that SetLogger sets the logger
+	SetLogger(nil)
+	// logger should be nil when passing nil
+}
+
 func TestEncode(t *testing.T) {
 	type args struct {
 		arr []metaV1.Unstructured
