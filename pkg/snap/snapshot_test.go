@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -235,5 +236,63 @@ func TestDiffFunc(t *testing.T) {
 	// Check the result
 	if actualDiffFunc(x, y) != expectedDiffFunc(x, y) {
 		t.Errorf("Diff function does not match expected")
+	}
+}
+
+func TestSetLogger(t *testing.T) {
+	// Test SetLogger with nil
+	SetLogger(nil)
+	
+	// Test that log() returns a default logger when logger is nil
+	logger := log()
+	if logger == nil {
+		t.Error("Expected log() to return a logger even when SetLogger(nil) is called")
+	}
+	
+	// Reset logger
+	SetLogger(nil)
+}
+
+func TestNegatedFailureMessage(t *testing.T) {
+	matcher := &snapshotMatcher{
+		snapFilePath:   "test.snap",
+		diffFunc:       func(x, y string) string { return "diff output" },
+		expectedString: "expected",
+		actualString:   "actual",
+	}
+	
+	result := matcher.NegatedFailureMessage(nil)
+	expected := "diff output\n"
+	
+	if result != expected {
+		t.Errorf("Expected '%s', got '%s'", expected, result)
+	}
+}
+
+func TestDefaultDiffFunc(t *testing.T) {
+	// Test with different JSON objects
+	x := `{"name": "test1", "value": 1}`
+	y := `{"name": "test2", "value": 2}`
+	
+	result := defaultDiffFunc(x, y)
+	
+	// Should contain diff indicators
+	if result == "" {
+		t.Error("Expected non-empty diff result")
+	}
+	if !strings.Contains(result, "test1") || !strings.Contains(result, "test2") {
+		t.Error("Expected diff to contain both test1 and test2")
+	}
+}
+
+func TestMatchErrorHandling(t *testing.T) {
+	// Test with invalid snapshot path (directory instead of file)
+	tempDir := t.TempDir()
+	
+	matcher := SnapshotMatcher(tempDir) // Using directory as file path
+	_, err := matcher.Match("test content")
+	
+	if err == nil {
+		t.Error("Expected error when using directory as snapshot file path")
 	}
 }
