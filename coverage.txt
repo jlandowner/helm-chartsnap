@@ -18,7 +18,7 @@ github.com/jlandowner/helm-chartsnap/pkg/snap/cachefs.go:60.2,60.15 1 10
 github.com/jlandowner/helm-chartsnap/pkg/snap/cachefs.go:63.36,66.2 2 1
 github.com/jlandowner/helm-chartsnap/pkg/snap/snapshot.go:21.36,25.2 3 1
 github.com/jlandowner/helm-chartsnap/pkg/snap/snapshot.go:27.25,30.19 3 22
-github.com/jlandowner/helm-chartsnap/pkg/snap/snapshot.go:30.19,32.3 1 6
+github.com/jlandowner/helm-chartsnap/pkg/snap/snapshot.go:30.19,32.3 1 7
 github.com/jlandowner/helm-chartsnap/pkg/snap/snapshot.go:33.2,33.15 1 22
 github.com/jlandowner/helm-chartsnap/pkg/snap/snapshot.go:36.42,38.56 2 2
 github.com/jlandowner/helm-chartsnap/pkg/snap/snapshot.go:38.56,40.3 1 1
@@ -174,6 +174,11 @@ github.com/jlandowner/helm-chartsnap/pkg/unstructured/unstructured.go:138.95,142
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/unstructured.go:142.16,144.3 1 0
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/unstructured.go:145.2,145.22 1 11
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/unstructured.go:148.72,150.2 1 5
+github.com/jlandowner/helm-chartsnap/pkg/snap/gomega/object_snapshot.go:9.54,14.2 4 1
+github.com/jlandowner/helm-chartsnap/pkg/snap/gomega/object_snapshot.go:16.43,24.43 7 1
+github.com/jlandowner/helm-chartsnap/pkg/snap/gomega/object_snapshot.go:24.43,27.3 2 1
+github.com/jlandowner/helm-chartsnap/pkg/snap/gomega/object_snapshot.go:28.2,28.33 1 1
+github.com/jlandowner/helm-chartsnap/pkg/snap/gomega/snap.go:21.42,37.2 11 2
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:16.56,17.44 1 3
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:17.44,18.55 1 1
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:18.55,20.4 1 0
@@ -216,11 +221,6 @@ github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:127.46,128.17
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:129.24,130.51 1 3
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:131.25,132.53 1 3
 github.com/jlandowner/helm-chartsnap/pkg/unstructured/v1/legacy.go:133.10,134.32 1 3
-github.com/jlandowner/helm-chartsnap/pkg/snap/gomega/object_snapshot.go:9.54,14.2 4 1
-github.com/jlandowner/helm-chartsnap/pkg/snap/gomega/object_snapshot.go:16.43,24.43 7 1
-github.com/jlandowner/helm-chartsnap/pkg/snap/gomega/object_snapshot.go:24.43,27.3 2 1
-github.com/jlandowner/helm-chartsnap/pkg/snap/gomega/object_snapshot.go:28.2,28.33 1 1
-github.com/jlandowner/helm-chartsnap/pkg/snap/gomega/snap.go:21.42,37.2 11 2
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:13.36,15.2 1 1
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:17.39,23.26 5 1
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:23.26,25.18 2 3
