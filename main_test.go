@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"log/slog"
 	"os"
 	"testing"
 
@@ -170,10 +171,13 @@ var _ = Describe("loadSnapshotConfig", func() {
 		configPath = tempDir + "/.chartsnap.yaml"
 		cfg = &v1alpha1.SnapshotConfig{}
 		o = &option{FailFast: false}
+		// Initialize the logger to prevent panic
+		log = slog.New(slogHandler())
 	})
 
 	AfterEach(func() {
 		os.RemoveAll(tempDir)
+		log = nil
 	})
 
 	Context("when config file exists and is valid", func() {
