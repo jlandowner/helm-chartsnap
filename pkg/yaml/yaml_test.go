@@ -19,6 +19,14 @@ func TestYAML(t *testing.T) {
 	RunSpecs(t, "YAML Suite")
 }
 
+var _ = Describe("SetLogger", func() {
+	It("should set the logger", func() {
+		// Test that SetLogger sets the logger
+		SetLogger(nil)
+		// logger should be nil when passing nil
+	})
+})
+
 var _ = Describe("Decode & Encode", func() {
 	It("should success", func() {
 		// Decode

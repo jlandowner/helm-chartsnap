@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"log/slog"
 	"os"
 	"testing"
 
@@ -100,6 +101,130 @@ var _ = Describe("overrideSnapshotConfig", func() {
 			},
 		}),
 	)
+})
+
+var _ = Describe("option methods", func() {
+	Describe("OK", func() {
+		It("should return 'updated' when UpdateSnapshot is true", func() {
+			opt := &option{UpdateSnapshot: true}
+			Expect(opt.OK()).To(Equal("updated"))
+		})
+
+		It("should return 'matched' when UpdateSnapshot is false", func() {
+			opt := &option{UpdateSnapshot: false}
+			Expect(opt.OK()).To(Equal("matched"))
+		})
+	})
+
+	Describe("HelmBin", func() {
+		It("should return HELM_BIN env var when set", func() {
+			os.Setenv("HELM_BIN", "/custom/helm")
+			defer os.Unsetenv("HELM_BIN")
+			opt := &option{}
+			Expect(opt.HelmBin()).To(Equal("/custom/helm"))
+		})
+
+		It("should return 'helm' when HELM_BIN env var is not set", func() {
+			os.Unsetenv("HELM_BIN")
+			opt := &option{}
+			Expect(opt.HelmBin()).To(Equal("helm"))
+		})
+	})
+
+	Describe("Namespace", func() {
+		It("should return HELM_NAMESPACE env var when set", func() {
+			os.Setenv("HELM_NAMESPACE", "custom-namespace")
+			defer os.Unsetenv("HELM_NAMESPACE")
+			opt := &option{NamespaceFlag: "default"}
+			Expect(opt.Namespace()).To(Equal("custom-namespace"))
+		})
+
+		It("should return NamespaceFlag when HELM_NAMESPACE env var is not set", func() {
+			os.Unsetenv("HELM_NAMESPACE")
+			opt := &option{NamespaceFlag: "test-namespace"}
+			Expect(opt.Namespace()).To(Equal("test-namespace"))
+		})
+	})
+
+	Describe("snapshotVersion", func() {
+		It("should return v1 when LegacySnapshot is true", func() {
+			opt := &option{LegacySnapshot: true, SnapshotVersion: "v3"}
+			Expect(opt.snapshotVersion()).To(Equal(charts.SnapshotVersionV1))
+		})
+
+		It("should return SnapshotVersion when LegacySnapshot is false", func() {
+			opt := &option{LegacySnapshot: false, SnapshotVersion: "v2"}
+			Expect(opt.snapshotVersion()).To(Equal("v2"))
+		})
+	})
+})
+
+var _ = Describe("loadSnapshotConfig", func() {
+	var tempDir string
+	var configPath string
+	var cfg *v1alpha1.SnapshotConfig
+
+	BeforeEach(func() {
+		var err error
+		tempDir, err = os.MkdirTemp("", "chartsnap-test")
+		Expect(err).ShouldNot(HaveOccurred())
+		configPath = tempDir + "/.chartsnap.yaml"
+		cfg = &v1alpha1.SnapshotConfig{}
+		o = &option{FailFast: false}
+		// Initialize the logger to prevent panic
+		log = slog.New(slogHandler())
+	})
+
+	AfterEach(func() {
+		os.RemoveAll(tempDir)
+		log = nil
+	})
+
+	Context("when config file exists and is valid", func() {
+		It("should load config successfully", func() {
+			configContent := `snapshotVersion: v2
+snapshotFileExt: yaml`
+			err := os.WriteFile(configPath, []byte(configContent), 0644)
+			Expect(err).ShouldNot(HaveOccurred())
+
+			err = loadSnapshotConfig(configPath, cfg)
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(cfg.SnapshotVersion).To(Equal("v2"))
+			Expect(cfg.SnapshotFileExt).To(Equal("yaml"))
+		})
+	})
+
+	Context("when config file does not exist", func() {
+		It("should not return error", func() {
+			err := loadSnapshotConfig(configPath, cfg)
+			Expect(err).ShouldNot(HaveOccurred())
+		})
+	})
+
+	Context("when config file exists but is invalid and FailFast is true", func() {
+		It("should return error", func() {
+			o.FailFast = true
+			invalidContent := `invalid: yaml: content:`
+			err := os.WriteFile(configPath, []byte(invalidContent), 0644)
+			Expect(err).ShouldNot(HaveOccurred())
+
+			err = loadSnapshotConfig(configPath, cfg)
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(ContainSubstring("failed to load snapshot config"))
+		})
+	})
+
+	Context("when config file exists but is invalid and FailFast is false", func() {
+		It("should not return error but log warning", func() {
+			o.FailFast = false
+			invalidContent := `invalid: yaml: content:`
+			err := os.WriteFile(configPath, []byte(invalidContent), 0644)
+			Expect(err).ShouldNot(HaveOccurred())
+
+			err = loadSnapshotConfig(configPath, cfg)
+			Expect(err).ShouldNot(HaveOccurred())
+		})
+	})
 })
 
 var _ = Describe("rootCmd", func() {

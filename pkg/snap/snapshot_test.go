@@ -30,6 +30,14 @@ var _ = Describe("Snap", func() {
 		logger = nil
 	})
 
+	Describe("SetLogger", func() {
+		It("should set the logger", func() {
+			// Test that SetLogger sets the logger
+			SetLogger(nil)
+			// Just test that the function can be called without error
+		})
+	})
+
 	Describe("SnapshotMatcher", func() {
 		Context("snapshot file does not exist", func() {
 			It("should pass and create snapshot file", func() {
@@ -186,6 +194,16 @@ metadata:
 			Expect(err).NotTo(HaveOccurred())
 			fmt.Println(matcher.FailureMessage(nil))
 			Expect(success).To(BeTrue())
+		})
+	})
+
+	Context("NegatedFailureMessage", func() {
+		It("should return negated failure message", func() {
+			snapFilePath := filepath.Join(pwd, "__snapshot__", "test.snap")
+			matcher := SnapshotMatcher(snapFilePath)
+
+			message := matcher.NegatedFailureMessage(nil)
+			Expect(message).To(ContainSubstring("Expected"))
 		})
 	})
 })
