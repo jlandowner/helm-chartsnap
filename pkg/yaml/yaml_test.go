@@ -57,6 +57,80 @@ var _ = Describe("Decode & Encode", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Ω(buf).Should(MatchSnapShot())
 	})
+
+	DescribeTable("wildcard matching",
+		func(df []v1alpha1.ManifestPath) {
+			cfg := v1alpha1.SnapshotConfig{
+				DynamicFields: df,
+			}
+			manifests := load("testdata/input.yaml")
+			err := ApplyFixedValueToDynamicFieleds(cfg, manifests)
+			Expect(err).NotTo(HaveOccurred())
+
+			// Encode
+			buf, err := Encode(manifests)
+			Expect(err).NotTo(HaveOccurred())
+			Ω(buf).Should(MatchSnapShot())
+		},
+		Entry("wildcard for apiVersion", []v1alpha1.ManifestPath{
+			{
+				Kind: "Service",
+				Name: "chartsnap-app1",
+				JSONPath: []string{
+					"/spec/ports/0/targetPort",
+				},
+			},
+		}),
+		Entry("wildcard for kind", []v1alpha1.ManifestPath{
+			{
+				APIVersion: "v1",
+				Name:       "chartsnap-app1",
+				JSONPath: []string{
+					"/spec/ports/0/targetPort",
+				},
+			},
+		}),
+		Entry("wildcard for name", []v1alpha1.ManifestPath{
+			{
+				APIVersion: "v1",
+				Kind:       "Service",
+				JSONPath: []string{
+					"/spec/ports/0/targetPort",
+				},
+			},
+		}),
+		Entry("wildcard for apiVersion and kind", []v1alpha1.ManifestPath{
+			{
+				Name: "chartsnap-app1",
+				JSONPath: []string{
+					"/spec/ports/0/targetPort",
+				},
+			},
+		}),
+		Entry("wildcard for apiVersion and name", []v1alpha1.ManifestPath{
+			{
+				Kind: "Service",
+				JSONPath: []string{
+					"/spec/ports/0/targetPort",
+				},
+			},
+		}),
+		Entry("wildcard for kind and name", []v1alpha1.ManifestPath{
+			{
+				APIVersion: "v1",
+				JSONPath: []string{
+					"/spec/ports/0/targetPort",
+				},
+			},
+		}),
+		Entry("wildcard for all", []v1alpha1.ManifestPath{
+			{
+				JSONPath: []string{
+					"/metadata/labels/app.kubernetes.io~1version",
+				},
+			},
+		}),
+	)
 })
 
 var _ = Describe("ApplyFixedValueToDynamicFieleds", func() {

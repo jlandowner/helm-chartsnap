@@ -1,0 +1,147 @@
+# chartsnap: snapshot_version=v3
+---
+# Source: app1/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: chartsnap-app1
+  labels:
+    helm.sh/chart: '###DYNAMIC_FIELD###'
+    app.kubernetes.io/name: app1
+    app.kubernetes.io/instance: chartsnap
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+automountServiceAccountToken: true
+---
+# Source: app1/templates/cert.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app1-cert
+  namespace: default
+  labels:
+    helm.sh/chart: '###DYNAMIC_FIELD###'
+    app.kubernetes.io/name: app1
+    app.kubernetes.io/instance: chartsnap
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+type: kubernetes.io/tls
+data:
+  ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURFRENDQWZpZ0F3SUJBZ0lSQU9xZmpqVHpCOFdhWFRmU0d4UG9VeHN3RFFZSktvWklodmNOQVFFTEJRQXcKRWpFUU1BNEdBMVVFQXhNSFlYQndNUzFqWVRBZUZ3MHlOVEE0TVRBeE16TXpNVEZhRncwek5UQTRNRGd4TXpNegpNVEZhTUJJeEVEQU9CZ05WQkFNVEIyRndjREV0WTJFd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3CmdnRUtBb0lCQVFDOXl0aVNZcEw2Qm9pcEtDRlBlZ3dFbkRxaU9LQWw1blhZSVRPOTBhUktnVjdZV3ZJWmlVbEkKUVR5ZzZKVEdvd2VoNkszS1A1M0QwaVM1M0FyL2VhejF5UVJuSEpZcGZFdkJqOFFjVjBDVGMrN0ZxOHBMbnd2cAp3blZIU0Rub3hLbFYrbDlBd1JJbERBUkN3RU9ISkxBN2ZQZE1nUDBRR0V4MCtYajdBSnRveGloUWsyZE82TGtJCnlhVzVDTUlaUGdWMm5sQ09NQkdzeEV5U252d0g2ZjJLRElRYXE1cjFTU0lqZklwUHJFbjFCQ0ZXU2RKa3FrcjgKUUw1ai9vZVcwZENXUWwyNWU1K29VMzNuMksrT1lINmNja1FoQm1aOFk2Vmx0YTBmTFZZMzdTV0wyR1NGazBvKwo0KzFZZWVlNlJadFcvODM4dmlhcnRJVmo4U2N3YmFmYkFnTUJBQUdqWVRCZk1BNEdBMVVkRHdFQi93UUVBd0lDCnBEQWRCZ05WSFNVRUZqQVVCZ2dyQmdFRkJRY0RBUVlJS3dZQkJRVUhBd0l3RHdZRFZSMFRBUUgvQkFVd0F3RUIKL3pBZEJnTlZIUTRFRmdRVUxPVjRzTjBmZndIVXRLVGozNjFDQllmYlFPMHdEUVlKS29aSWh2Y05BUUVMQlFBRApnZ0VCQUdEcThHc0FjZ3plY2t0SnZtN0pyL3dQKzZ4NUllTGM1YVRFR1QyTThOZmc3OXo2Wkd1Y002WXU2Mmt1CmRxVUh6L2p5RWlyOXAvSUlQSjdkdXVBLzd5TXptbDE0UG1LQ2VnMS91SEMyalJZUWQ4QXhZNElFVVZlbzBqQlUKd0FyR1I2dVZCQzRhZlNmc25KRkQwTDlXbGUxRHM3V1B3a3Q1VDk2c0p0WlZrZm5oNFdOOXd6S3ROMVloQ2ZhQQpXOFVwcjRqTGtDWGQ5UXlad0lUcHY2SXQ4RGJCRFdiUEFGUDQyb3FQKzF4MTVyMExmY1NianlGUnRXTUxxaWZLCnBwTjI2YVE4MmQzOGoxZUVGbm9PQ2dwS01FTFFjTUt1RGpvdml3VTRDYmJHUCtGVGd2VFZ3VURJYU5zMlRwY24KeStQVUNUSjZ4TlYyZTFNMzhaUnJuS0w5aUU4PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURhRENDQWxDZ0F3SUJBZ0lRQ2wxQ0lrQ1RrZm5FamRXbHdFTjlXREFOQmdrcWhraUc5dzBCQVFzRkFEQVMKTVJBd0RnWURWUVFERXdkaGNIQXhMV05oTUI0WERUSTFNRGd4TURFek16TXhNbG9YRFRNMU1EZ3dPREV6TXpNeApNbG93R1RFWE1CVUdBMVVFQXhNT1kyaGhjblJ6Ym1Gd0xXRndjREV3Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBCkE0SUJEd0F3Z2dFS0FvSUJBUUMvS0dmRXZUZ0lWR3RYQWNIUmlKbGtVL1k3Z0RIVVhHeG9qMmJsNW4wbkRrRnEKVkRtM2ZVSWQ1dkhlVHRtZmY1dERuc21kS0QwUzlEZFhRTzljckhMUm5HUGxxVnYvWS96ajMrMi90eE9zU2JVagpRanBkYUNIMnFuV3B2VENhSlFyNXZhMkY4bDJQcWgrdUdSLzBUeDFQTnpEbC8ya1dxK3pKSEJFeVF5aVpuYm9tCjdWS0NRSGJuNW5lZHhDNFl1Zm5aclBqamViaUg5TVlSR2kzRW5pUEFZM09EOEdaRE9lVXdWMzlSRDlXNm1OUG8KUGphR2QyWEl3YUNnWkVZYmVKeENub2ozcUl2djgrQVd5QXd0bHFpZXVEOThzOFh1bmZTanQvU016b2ZGdEFlMApCOWR2U2xHQm92Vy9iaEx0TytIdzRuNlBLd2IyM24vaTFjckV2blNIQWdNQkFBR2pnYkl3Z2E4d0RnWURWUjBQCkFRSC9CQVFEQWdXZ01CMEdBMVVkSlFRV01CUUdDQ3NHQVFVRkJ3TUJCZ2dyQmdFRkJRY0RBakFNQmdOVkhSTUIKQWY4RUFqQUFNQjhHQTFVZEl3UVlNQmFBRkN6bGVMRGRIMzhCMUxTazQ5K3RRZ1dIMjBEdE1FOEdBMVVkRVFSSQpNRWFDR21Ob1lYSjBjMjVoY0MxaGNIQXhMbVJsWm1GMWJIUXVjM1pqZ2loamFHRnlkSE51WVhBdFlYQndNUzVrClpXWmhkV3gwTG5OMll5NWpiSFZ6ZEdWeUxteHZZMkZzTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCQVFBRlEwUkkKL1pxbjl3b1lLSXlqcHFxZkhoR0swUWlkUEFMUzJvY1pOUTIyUkJ3NEJVNEF5WjJURm1UTWZGenpoY3pYeTRSegpCQTJSWUk5cDc4amNSUkF5Ym1FNHFpem5MUEZhWnJWN2E2TVRiZnYvMXhTblJTcUZGVnY4VExaVUMxTjMvK1l2CmpIUFZGZ2VlQUJ1dXd0Mkd6OFlocmlRMzZPSWRydlV2UEVvbTllRVA1MVlpclVJb01iY05NRjh2WTZDeWUvTzMKelk2R3Q1Y0Q2dmh5dko0T0REWmdaVFJqUE8wS3FocnA2RVkyNmp4cHp5b0JQSE9OZjFhTFoxbVlJZFlGbDA0OQp3NVdnUlRaL3M2R1czcS9yRHNpbFFXckJTdjQ4N1dYQmxSOXA4Z1hubWcycU5HV0lmK2JqSTZ3RVdaditzTzUvCkRZaFJmQks2NEZvQTFpR08KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBdnlobnhMMDRDRlJyVndIQjBZaVpaRlAyTzRBeDFGeHNhSTltNWVaOUp3NUJhbFE1CnQzMUNIZWJ4M2s3Wm4zK2JRNTdKblNnOUV2UTNWMER2WEt4eTBaeGo1YWxiLzJQODQ5L3R2N2NUckVtMUkwSTYKWFdnaDlxcDFxYjB3bWlVSytiMnRoZkpkajZvZnJoa2Y5RThkVHpjdzVmOXBGcXZzeVJ3Uk1rTW9tWjI2SnUxUwpna0IyNStaM25jUXVHTG41MmF6NDQzbTRoL1RHRVJvdHhKNGp3R056Zy9CbVF6bmxNRmQvVVEvVnVwalQ2RDQyCmhuZGx5TUdnb0dSR0czaWNRcDZJOTZpTDcvUGdGc2dNTFphb25yZy9mTFBGN3AzMG83ZjBqTTZIeGJRSHRBZlgKYjBwUmdhTDF2MjRTN1R2aDhPSitqeXNHOXQ1LzR0WEt4TDUwaHdJREFRQUJBb0lCQUZnbVhFL0x5QUtEVjJwcwplNEhTQVpaVDU1a0JvVGppRS9YVnB5ZytOUmxsQ0FKdDY1MnpTK0Y1SmJFVDRHUWVWcTJFbEVsK0RFZm95WHBaCmplZkkrRHV6NkJjNGxaMThjTnB1WVhjR2lESnJYUFh3N1BRMCtIQ0VvN1ROOHhNcUlOa1F3R3VqMjhSTHVjY3gKZTl4UC9WNlJ2MkZZZWhBRDRUSE9XUm02QVlkd2VjSkExUy9TM3JtODFiUVJCNVpEcndBWUREUUt0WDNEbENyeAoyTFdYR0lPa0pXSkN3anBsZWlKc3FnY3pMZlVtYWNTcHA4cjhLemVVc0pkU0d6OER1dEkzVUJXRDJ1TWFVSXZ3CkJ2NlNuVlVjUE1BTWhwMzBVbld3Vkgxd1RMNXUrS3lDcHhCNXRseHdhVmtQRVZNZWIzaVpDaTBMRjJIamYrN1oKYVNNd3ZoRUNnWUVBNjRBSEE3eEpuVkVHOWlBYTdPLytvUWtsZ1pidHNmdEN5UUlWVmY2NlJ1ZnF1VnkzZlNIRwp4cmN2ZEJCaGlqRGR0MnFkRjZqQm85c04wQ3BlWlRoRHJaekFiSXlodWs4NEdQZDUxN2FCcm9WVzV0RlM5dFBnClJwQTk5WmJKRWZXSStwR2pKTHRhQkpZVDNSbjlZRnR5emRicm16MFpPNll5QXFsZ3FSMlQ0NUVDZ1lFQXo4dzgKOUxnUUxuTGxxUXpmOVNUYnZ0YXlDOUVPYVhXQmdhc3ZzT2pZc1d3Y3BCZUIvaFQwR244L3BmRnlrZ2QxcjNWVQpJbGlyQnc1NDhmRVZ2bUtOZDFEczlrVjFqZGxrbGpKMUV1Q3NkT2doWitGc2Q3YzQ3UzNjVUp6cEQzSW5QUkVFCldjUllJTnFUczdNNUVRMFVjVUFNaW8zeGFreWhSbnpMRGhhK21wY0NnWUJ1U2RML0tOckExZ1dRbHBDRmpnK04Ka3g4QmhaRmozT3YxL3dmRzhqaUNwSElFeFNzWmF3d1FYQkhaSlNMSStRR2N1RTFCbTBLMFhnNG1BdkdhTGJOawpSeGpHdlVXd1h4RkNnQU9MeG1rTk5sendVKytxc0tkRDVLRmZ0bklMK3hWZlkzMG40cVhScUFjOWNNSjhzZGNlCkZ4elg0dEZDWWg3aHFEa2dlajJjUVFLQmdRQ0NNRSt3Y3ZHUWFHUUMraElHb01VY1Y1N05VSGxiRVVmR1dkNVQKVkU4UE9kRG43ZUovc2RrT0VOTnJ3RTRydDRqQUdSNVJOb1JRczN5SytLVEsxeXdTcVIwTlhvODhCQXZGSG0vRApHQWgwWmtzbnJsQXE0UnhGWFFvL1owK05ZZE83cXNHekRCUzY0TGJSUzJSaGpuUlVUL0NMamtyR2NxUklhVDgrCjRIa2ltUUtCZ0ViWFBWcjlnMGxnMEI0U1p0NGcwM0ttcFRCR2FjSVo1YmFsZjI2VC9RR0EzdHAzZWtVMkJrYzEKcXBjNllCVndsa1JsRmhPenFNUzR1ZFF2Q0N1YW0xNGgvUXFsLzdpeEVQeGo1LzByU2JOS05Ia2ZSd2lQVGd4MgpzUE81YmxiaW5aeUF3ckI4N3JFSTVaYVFOTFNpQ0ZUOFdBdWkxRFFEbllQVWdTVlpGS2grCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+---
+# Source: app1/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: chartsnap-app1
+  labels:
+    helm.sh/chart: '###DYNAMIC_FIELD###'
+    app.kubernetes.io/name: app1
+    app.kubernetes.io/instance: chartsnap
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app.kubernetes.io/name: app1
+    app.kubernetes.io/instance: chartsnap
+---
+# Source: app1/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chartsnap-app1
+  labels:
+    helm.sh/chart: '###DYNAMIC_FIELD###'
+    app.kubernetes.io/name: app1
+    app.kubernetes.io/instance: chartsnap
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: app1
+      app.kubernetes.io/instance: chartsnap
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: app1-0.1.0
+        app.kubernetes.io/name: app1
+        app.kubernetes.io/instance: chartsnap
+        app.kubernetes.io/version: "1.16.0"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: chartsnap-app1
+      securityContext: {}
+      containers:
+      - name: app1
+        securityContext: {}
+        image: "nginx:1.16.0"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        resources: {}
+---
+# Source: app1/templates/hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: chartsnap-app1
+  labels:
+    helm.sh/chart: '###DYNAMIC_FIELD###'
+    app.kubernetes.io/name: app1
+    app.kubernetes.io/instance: chartsnap
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: chartsnap-app1
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 65
+---
+# Source: app1/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "chartsnap-app1-test-connection"
+  labels:
+    helm.sh/chart: '###DYNAMIC_FIELD###'
+    app.kubernetes.io/name: app1
+    app.kubernetes.io/instance: chartsnap
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+  - name: wget
+    image: busybox
+    command: ['wget']
+    args: ['chartsnap-app1:80']
+  restartPolicy: Never
