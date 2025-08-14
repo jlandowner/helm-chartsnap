@@ -1,0 +1,3 @@
+dynamicFields:
+  - jsonPath:
+    - /metadata/labels/helm.sh~1chart
