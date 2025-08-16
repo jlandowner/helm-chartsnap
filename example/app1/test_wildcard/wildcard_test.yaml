@@ -1,0 +1,14 @@
+autoscaling:
+  enabled: true
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 65
+
+testSpec:
+  dynamicFields:
+    - jsonPath:
+      - /metadata/labels/helm.sh~1chart
+    - kind: Secret
+      jsonPath:
+      - /data/ca.crt
+      - /data/tls.crt
+      - /data/tls.key

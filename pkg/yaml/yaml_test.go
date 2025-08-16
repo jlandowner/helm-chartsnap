@@ -59,7 +59,7 @@ var _ = Describe("Decode & Encode", func() {
 	})
 })
 
-var _ = Describe("ApplyFixedValueToDynamicFieleds", func() {
+var _ = Describe("ApplyFixedValueToDynamicFields", func() {
 	It("should replace specified fields", func() {
 		cfg := v1alpha1.SnapshotConfig{
 			DynamicFields: []v1alpha1.ManifestPath{
@@ -123,7 +123,7 @@ var _ = Describe("ApplyFixedValueToDynamicFieleds", func() {
 			},
 		}
 		manifests := load("testdata/input.yaml")
-		err := ApplyFixedValueToDynamicFieleds(cfg, manifests)
+		err := ApplyFixedValueToDynamicFields(cfg, manifests)
 		Expect(err).NotTo(HaveOccurred())
 
 		// Encode
@@ -131,6 +131,136 @@ var _ = Describe("ApplyFixedValueToDynamicFieleds", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Ω(buf).Should(MatchSnapShot())
 	})
+
+	DescribeTable("wildcard matching",
+		func(df []v1alpha1.ManifestPath) {
+			cfg := v1alpha1.SnapshotConfig{
+				DynamicFields: df,
+			}
+			manifests := load("testdata/input4.yaml")
+			err := ApplyFixedValueToDynamicFields(cfg, manifests)
+			Expect(err).NotTo(HaveOccurred())
+
+			// Encode
+			buf, err := Encode(manifests)
+			Expect(err).NotTo(HaveOccurred())
+			Ω(buf).Should(MatchSnapShot())
+		},
+		Entry("wildcard for all matches any resource", []v1alpha1.ManifestPath{
+			{
+				// APIVersion: "",
+				// Kind: "",
+				// Name: "",
+				JSONPath: []string{
+					"/data/ca.crt",
+					"/data/tls.crt",
+					"/data/tls.key",
+				},
+			},
+			{
+				JSONPath: []string{
+					"/metadata/labels/app.kubernetes.io~1version",
+				},
+			},
+		}),
+		Entry("to all resources which kind='DummySecret'", []v1alpha1.ManifestPath{
+			{
+				// APIVersion: "",
+				Kind: "DummySecret",
+				// Name: "",
+				JSONPath: []string{
+					"/data/ca.crt",
+					"/data/tls.crt",
+					"/data/tls.key",
+				},
+			},
+			{
+				JSONPath: []string{
+					"/metadata/labels/app.kubernetes.io~1version",
+				},
+			},
+		}),
+		Entry("to all name is 'test-secret'", []v1alpha1.ManifestPath{
+			{
+				// APIVersion: "",
+				// Kind: "",
+				Name: "test-secret",
+				JSONPath: []string{
+					"/data/ca.crt",
+					"/data/tls.crt",
+					"/data/tls.key",
+				},
+			},
+			{
+				JSONPath: []string{
+					"/metadata/labels/app.kubernetes.io~1version",
+				},
+			},
+		}),
+		Entry("to all resources which apiVersion='dummy/v1'", []v1alpha1.ManifestPath{
+			{
+				APIVersion: "dummy/v1",
+				// Kind: "",
+				// Name: "",
+				JSONPath: []string{
+					"/data/ca.crt",
+					"/data/tls.crt",
+					"/data/tls.key",
+				},
+			},
+			{
+				JSONPath: []string{
+					"/metadata/labels/app.kubernetes.io~1version",
+				},
+			},
+		}),
+		Entry("to all resources which apiVersion='v1' and kind='Secret'", []v1alpha1.ManifestPath{
+			{
+				APIVersion: "v1",
+				Kind:       "Secret",
+				// Name: "",
+				JSONPath: []string{
+					"/data/ca.crt",
+					"/data/tls.crt",
+					"/data/tls.key",
+				},
+			},
+		}),
+		Entry("to all resources which apiVersion='dummy/v1' and name='test-secret'", []v1alpha1.ManifestPath{
+			{
+				APIVersion: "dummy/v1",
+				// Kind: "",
+				Name: "test-secret",
+				JSONPath: []string{
+					"/data/ca.crt",
+					"/data/tls.crt",
+					"/data/tls.key",
+				},
+			},
+			{
+				JSONPath: []string{
+					"/metadata/labels/app.kubernetes.io~1version",
+				},
+			},
+		}),
+		Entry("to all resources which kind='Secret' and name='test-secret'", []v1alpha1.ManifestPath{
+			{
+				// APIVersion: "",
+				Kind: "Secret",
+				Name: "test-secret",
+				JSONPath: []string{
+					"/data/ca.crt",
+					"/data/tls.crt",
+					"/data/tls.key",
+				},
+			},
+			{
+				JSONPath: []string{
+					"/metadata/labels/app.kubernetes.io~1version",
+				},
+			},
+		}),
+	)
 })
 
 var _ = Describe("ConvertToUnknownNode", func() {
