@@ -104,7 +104,7 @@ github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:29:			log				100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:38:			Encode				100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:45:			Decode				80.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:62:			decode				100.0%
-github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:71:			ApplyFixedValueToDynamicFieleds	87.5%
+github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:71:			ApplyFixedValueToDynamicFields	87.5%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:89:			convertInvalidYAMLToUnknown	100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:105:			convertToUnknownNode		100.0%
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:126:			Replace				100.0%

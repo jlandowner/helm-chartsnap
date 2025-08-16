@@ -68,7 +68,7 @@ func decode(bs []byte) ([]*yaml.RNode, error) {
 	}).Read()
 }
 
-func ApplyFixedValueToDynamicFieleds(t v1alpha1.SnapshotConfig, docs []*yaml.RNode) error {
+func ApplyFixedValueToDynamicFields(t v1alpha1.SnapshotConfig, docs []*yaml.RNode) error {
 	for _, v := range t.DynamicFields {
 		for i, doc := range docs {
 			if (v.APIVersion == "" || v.APIVersion == doc.GetApiVersion()) &&

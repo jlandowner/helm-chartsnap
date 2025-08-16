@@ -59,7 +59,7 @@ var _ = Describe("Decode & Encode", func() {
 	})
 })
 
-var _ = Describe("ApplyFixedValueToDynamicFieleds", func() {
+var _ = Describe("ApplyFixedValueToDynamicFields", func() {
 	It("should replace specified fields", func() {
 		cfg := v1alpha1.SnapshotConfig{
 			DynamicFields: []v1alpha1.ManifestPath{
@@ -123,7 +123,7 @@ var _ = Describe("ApplyFixedValueToDynamicFieleds", func() {
 			},
 		}
 		manifests := load("testdata/input.yaml")
-		err := ApplyFixedValueToDynamicFieleds(cfg, manifests)
+		err := ApplyFixedValueToDynamicFields(cfg, manifests)
 		Expect(err).NotTo(HaveOccurred())
 
 		// Encode
@@ -138,7 +138,7 @@ var _ = Describe("ApplyFixedValueToDynamicFieleds", func() {
 				DynamicFields: df,
 			}
 			manifests := load("testdata/input4.yaml")
-			err := ApplyFixedValueToDynamicFieleds(cfg, manifests)
+			err := ApplyFixedValueToDynamicFields(cfg, manifests)
 			Expect(err).NotTo(HaveOccurred())
 
 			// Encode

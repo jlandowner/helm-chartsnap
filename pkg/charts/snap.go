@@ -265,7 +265,7 @@ func (o *ChartSnapshotter) snapV3(cfg v1alpha1.SnapshotConfig, data []byte) (res
 	}
 
 	// apply fixed values to dynamic fields
-	if err := yaml.ApplyFixedValueToDynamicFieleds(cfg, manifests); err != nil {
+	if err := yaml.ApplyFixedValueToDynamicFields(cfg, manifests); err != nil {
 		return nil, fmt.Errorf("failed to replace json path: %w", err)
 	}
 
