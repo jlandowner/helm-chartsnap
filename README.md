@@ -230,24 +230,15 @@ Your values file can be like this:
 # Add this property to your values.
 testSpec:
   dynamicFields:
-    - apiVersion: v1
-      kind: Secret
-      name: cilium-ca
+    - # A sepecific resource in the chart
+      apiVersion: v1
+      kind: Deployment
+      name: your-app
       jsonPath:
-        - /data/ca.crt
-        - /data/ca.key
-      base64: true
-    - apiVersion: v1
+        - /spec/template/metadata/annotations/checksum~1values # "/" is escaped as "~1"
+    - # All secrets in the chart
+      apiVersion: v1
       kind: Secret
-      name: hubble-server-certs
-      jsonPath:
-        - /data/ca.crt
-        - /data/tls.crt
-        - /data/tls.key
-      base64: true
-    - apiVersion: v1
-      kind: Secret
-      name: hubble-relay-client-certs
       jsonPath:
         - /data/ca.crt
         - /data/tls.crt
