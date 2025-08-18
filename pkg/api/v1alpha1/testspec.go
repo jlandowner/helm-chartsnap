@@ -38,17 +38,21 @@ type ManifestPath struct {
 	Name       string   `yaml:"name,omitempty"`
 	JSONPath   []string `yaml:"jsonPath,omitempty"`
 	Base64     bool     `yaml:"base64,omitempty"`
+	Value      string   `yaml:"value,omitempty"`
 }
 
 const DynamicValue = "###DYNAMIC_FIELD###"
 
-var Base64DynamicValue = base64.StdEncoding.EncodeToString([]byte(DynamicValue))
-
 func (v *ManifestPath) DynamicValue() string {
+	value := DynamicValue
+	if v.Value != "" {
+		value = v.Value
+	}
+	
 	if v.Base64 {
-		return Base64DynamicValue
+		return base64.StdEncoding.EncodeToString([]byte(value))
 	} else {
-		return DynamicValue
+		return value
 	}
 }
 

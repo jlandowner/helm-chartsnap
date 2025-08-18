@@ -6,7 +6,7 @@ kind: ServiceAccount
 metadata:
   name: chartsnap-app1
   labels:
-    helm.sh/chart: '###DYNAMIC_FIELD###'
+    helm.sh/chart: '###CHART_VERSION###'
     app.kubernetes.io/name: app1
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/version: "1.16.0"
@@ -20,16 +20,16 @@ metadata:
   name: app1-cert
   namespace: default
   labels:
-    helm.sh/chart: '###DYNAMIC_FIELD###'
+    helm.sh/chart: '###CHART_VERSION###'
     app.kubernetes.io/name: app1
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/version: "1.16.0"
     app.kubernetes.io/managed-by: Helm
 type: kubernetes.io/tls
 data:
-  ca.crt: '###DYNAMIC_FIELD###'
-  tls.crt: '###DYNAMIC_FIELD###'
-  tls.key: '###DYNAMIC_FIELD###'
+  ca.crt: '###CUSTOM_CERT_DATA###'
+  tls.crt: '###CUSTOM_CERT_DATA###'
+  tls.key: '###CUSTOM_CERT_DATA###'
 ---
 # Source: app1/templates/service.yaml
 apiVersion: v1
@@ -37,7 +37,7 @@ kind: Service
 metadata:
   name: chartsnap-app1
   labels:
-    helm.sh/chart: '###DYNAMIC_FIELD###'
+    helm.sh/chart: '###CHART_VERSION###'
     app.kubernetes.io/name: app1
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/version: "1.16.0"
@@ -59,7 +59,7 @@ kind: Deployment
 metadata:
   name: chartsnap-app1
   labels:
-    helm.sh/chart: '###DYNAMIC_FIELD###'
+    helm.sh/chart: '###CHART_VERSION###'
     app.kubernetes.io/name: app1
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/version: "1.16.0"
@@ -105,7 +105,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: chartsnap-app1
   labels:
-    helm.sh/chart: '###DYNAMIC_FIELD###'
+    helm.sh/chart: '###CHART_VERSION###'
     app.kubernetes.io/name: app1
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/version: "1.16.0"
@@ -131,7 +131,7 @@ kind: Pod
 metadata:
   name: "chartsnap-app1-test-connection"
   labels:
-    helm.sh/chart: '###DYNAMIC_FIELD###'
+    helm.sh/chart: '###CHART_VERSION###'
     app.kubernetes.io/name: app1
     app.kubernetes.io/instance: chartsnap
     app.kubernetes.io/version: "1.16.0"

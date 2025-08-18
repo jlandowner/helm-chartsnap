@@ -11,7 +11,8 @@ SnapShot = """
         \"/data/tls.crt\",
         \"/data/tls.key\"
       ],
-      \"Base64\": true
+      \"Base64\": true,
+      \"Value\": \"\"
     }
   ],
   \"SnapshotFileExt\": \"\",
@@ -41,7 +42,8 @@ SnapShot = """
           \"/data/tls.crt\",
           \"/data/tls.key\"
         ],
-        \"Base64\": true
+        \"Base64\": true,
+        \"Value\": \"\"
       }
     ],
     \"SnapshotFileExt\": \"\",
@@ -61,7 +63,8 @@ SnapShot = """
       \"JSONPath\": [
         \"/spec/ports/0/targetPort\"
       ],
-      \"Base64\": false
+      \"Base64\": false,
+      \"Value\": \"\"
     },
     {
       \"Kind\": \"Pod\",
@@ -70,7 +73,8 @@ SnapShot = """
       \"JSONPath\": [
         \"/metadata/name\"
       ],
-      \"Base64\": false
+      \"Base64\": false,
+      \"Value\": \"\"
     },
     {
       \"Kind\": \"service\",
@@ -79,7 +83,8 @@ SnapShot = """
       \"JSONPath\": [
         \"/spec/ports/0/targetPort\"
       ],
-      \"Base64\": false
+      \"Base64\": false,
+      \"Value\": \"\"
     },
     {
       \"Kind\": \"Service\",
@@ -88,7 +93,8 @@ SnapShot = """
       \"JSONPath\": [
         \"/spec/ports/1/targetPort\"
       ],
-      \"Base64\": false
+      \"Base64\": false,
+      \"Value\": \"\"
     }
   ],
   \"SnapshotFileExt\": \"\",

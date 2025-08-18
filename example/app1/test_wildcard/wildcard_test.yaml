@@ -7,8 +7,10 @@ testSpec:
   dynamicFields:
     - jsonPath:
       - /metadata/labels/helm.sh~1chart
+      value: '###CHART_VERSION###'
     - kind: Secret
       jsonPath:
       - /data/ca.crt
       - /data/tls.crt
       - /data/tls.key
+      value: '###CUSTOM_CERT_DATA###'
