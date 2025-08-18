@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
+	yaml "go.yaml.in/yaml/v3"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	yaml "sigs.k8s.io/yaml/goyaml.v3"
 )
 
 func TestUnknown_Unstructured(t *testing.T) {

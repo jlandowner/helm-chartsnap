@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	yaml "sigs.k8s.io/yaml/goyaml.v3"
+	yaml "go.yaml.in/yaml/v3"
 )
 
 func FromFile[T SnapshotValues | SnapshotConfig](filePath string, out *T) error {
