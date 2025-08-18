@@ -61,9 +61,9 @@ var _ = Describe("Helm", func() {
 				HelmPath:       "./testdata/helm_cmd.bash",
 				ReleaseName:    "chartsnap",
 				Namespace:      "xxx",
-				Chart:          "postgres",
-				ValuesFile:     "postgres.values.yaml",
-				AdditionalArgs: []string{"--repo", "https://charts.bitnami.com/bitnami", "--skip-tests"},
+				Chart:          "ingress-nginx",
+				ValuesFile:     "ingress-nginx.values.yaml",
+				AdditionalArgs: []string{"--repo", "https://kubernetes.github.io/ingress-nginx", "--skip-tests"},
 			}
 
 			out, err := o.Execute(context.Background())

@@ -10,7 +10,7 @@ HELM_DEBUG=false
 
 ['Helm when Execute with additional args should execute with expected args and env 1']
 SnapShot = """
-Arguments for helm: template chartsnap postgres --namespace=xxx --values=postgres.values.yaml --repo https://charts.bitnami.com/bitnami --skip-tests
+Arguments for helm: template chartsnap ingress-nginx --namespace=xxx --values=ingress-nginx.values.yaml --repo https://kubernetes.github.io/ingress-nginx --skip-tests
 Environment variables starting with HELM_:
 HELM_DEBUG=false
 """
