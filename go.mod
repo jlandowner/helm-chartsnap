@@ -13,11 +13,11 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.4
 	github.com/spf13/afero v1.14.0
 	github.com/spf13/cobra v1.9.1
+	go.yaml.in/yaml/v3 v3.0.4
 	golang.org/x/sync v0.16.0
 	k8s.io/apimachinery v0.34.0-rc.1
 	sigs.k8s.io/controller-runtime v0.21.0
 	sigs.k8s.io/kustomize/kyaml v0.20.1
-	sigs.k8s.io/yaml v1.6.0
 )
 
 require (
@@ -51,7 +51,6 @@ require (
 	github.com/xlab/treeprint v1.2.0 // indirect
 	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
-	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
@@ -70,4 +69,5 @@ require (
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730 // indirect
 	sigs.k8s.io/randfill v1.0.0 // indirect
 	sigs.k8s.io/structured-merge-diff/v6 v6.3.0 // indirect
+	sigs.k8s.io/yaml v1.6.0 // indirect
 )
