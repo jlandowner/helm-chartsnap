@@ -108,8 +108,8 @@ github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:248.16,250.3 1 0
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:251.2,254.8 1 3
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:257.113,263.16 4 10
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:263.16,265.3 1 0
-github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:268.2,268.77 1 10
-github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:268.77,270.3 1 0
+github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:268.2,268.76 1 10
+github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:268.76,270.3 1 0
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:272.2,273.16 2 10
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:273.16,275.3 1 0
 github.com/jlandowner/helm-chartsnap/pkg/charts/snap.go:277.2,283.16 4 10
@@ -397,7 +397,7 @@ github.com/jlandowner/helm-chartsnap/pkg/yaml/diff.go:196.4,196.13 1 1
 github.com/jlandowner/helm-chartsnap/pkg/yaml/diff.go:199.2,199.11 1 0
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:23.36,27.2 3 1
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:29.25,32.19 3 165
-github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:32.19,34.3 1 1
+github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:32.19,34.3 1 2
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:35.2,35.15 1 165
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:38.54,43.2 3 12
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:45.55,47.16 2 11
@@ -407,7 +407,7 @@ github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:55.2,56.16 2 11
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:56.16,58.3 1 0
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:59.2,59.17 1 11
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:62.47,69.2 1 12
-github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:71.91,72.36 1 8
+github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:71.90,72.36 1 8
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:72.36,73.28 1 20
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:73.28,76.47 1 87
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:76.47,77.34 1 45
@@ -427,8 +427,8 @@ github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:113.58,119.4 5 1
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:121.2,121.12 1 14
 github.com/jlandowner/helm-chartsnap/pkg/yaml/yaml.go:126.57,128.2 1 79
 github.com/jlandowner/helm-chartsnap/main.go:54.31,56.16 2 36
-github.com/jlandowner/helm-chartsnap/main.go:56.16,58.3 1 32
-github.com/jlandowner/helm-chartsnap/main.go:59.2,59.20 1 4
+github.com/jlandowner/helm-chartsnap/main.go:56.16,58.3 1 28
+github.com/jlandowner/helm-chartsnap/main.go:59.2,59.20 1 8
 github.com/jlandowner/helm-chartsnap/main.go:62.37,64.25 2 23
 github.com/jlandowner/helm-chartsnap/main.go:64.25,66.3 1 1
 github.com/jlandowner/helm-chartsnap/main.go:67.2,67.24 1 22
@@ -467,7 +467,7 @@ github.com/jlandowner/helm-chartsnap/main.go:232.17,234.4 1 1
 github.com/jlandowner/helm-chartsnap/main.go:234.9,236.4 1 2
 github.com/jlandowner/helm-chartsnap/main.go:238.2,239.12 2 8
 github.com/jlandowner/helm-chartsnap/main.go:242.51,248.33 5 17
-github.com/jlandowner/helm-chartsnap/main.go:248.33,249.36 1 1665
+github.com/jlandowner/helm-chartsnap/main.go:248.33,249.36 1 594
 github.com/jlandowner/helm-chartsnap/main.go:249.36,252.4 2 15
 github.com/jlandowner/helm-chartsnap/main.go:255.2,255.84 1 17
 github.com/jlandowner/helm-chartsnap/main.go:255.84,260.3 1 1
