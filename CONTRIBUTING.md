@@ -1,5 +1,9 @@
 # Contributing
 
+## Pre-requisites
+- Go 1.20 or later
+- yq 4.0 or later
+
 ## Development Environment Setup
 
 To set up your development environment, run the following command:
