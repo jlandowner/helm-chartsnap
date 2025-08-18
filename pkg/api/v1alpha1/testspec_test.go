@@ -148,6 +148,7 @@ func TestManifestPath_DynamicValue(t *testing.T) {
 		Name       string
 		JSONPath   []string
 		Base64     bool
+		Value      string
 	}
 	tests := []struct {
 		name   string
@@ -168,6 +169,30 @@ func TestManifestPath_DynamicValue(t *testing.T) {
 			},
 			want: "IyMjRFlOQU1JQ19GSUVMRCMjIw==",
 		},
+		{
+			name: "Test Custom Value",
+			fields: fields{
+				Base64: false,
+				Value:  "###CUSTOM_FIELD###",
+			},
+			want: "###CUSTOM_FIELD###",
+		},
+		{
+			name: "Test Custom Value Base64",
+			fields: fields{
+				Base64: true,
+				Value:  "###CUSTOM_FIELD###",
+			},
+			want: "IyMjQ1VTVE9NX0ZJRUxEIyMj",
+		},
+		{
+			name: "Test Empty Value uses default",
+			fields: fields{
+				Base64: false,
+				Value:  "",
+			},
+			want: "###DYNAMIC_FIELD###",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -177,6 +202,7 @@ func TestManifestPath_DynamicValue(t *testing.T) {
 				Name:       tt.fields.Name,
 				JSONPath:   tt.fields.JSONPath,
 				Base64:     tt.fields.Base64,
+				Value:      tt.fields.Value,
 			}
 			if got := v.DynamicValue(); got != tt.want {
 				t.Errorf("ManifestPath.DynamicValue() = %v, want %v", got, tt.want)

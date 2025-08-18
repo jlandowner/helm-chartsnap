@@ -15,8 +15,8 @@ github.com/jlandowner/helm-chartsnap/main.go:381:				printOptions			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:13:		ToString			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/header.go:17:		ParseHeader			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:11:		FromFile			100.0%
-github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:47:		DynamicValue			100.0%
-github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:57:		Merge				100.0%
+github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:46:		DynamicValue			100.0%
+github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/testspec.go:61:		Merge				100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:21:	NewUnknownError			100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:40:	Error				100.0%
 github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1/unknown_types.go:44:	Unstructured			100.0%
