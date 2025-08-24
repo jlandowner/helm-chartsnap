@@ -8,8 +8,8 @@ import (
 
 	"github.com/aryann/difflib"
 	"github.com/fatih/color"
+	yaml "go.yaml.in/yaml/v3"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	yaml "sigs.k8s.io/yaml/goyaml.v3"
 )
 
 // Encode encoding legacy formatted yaml

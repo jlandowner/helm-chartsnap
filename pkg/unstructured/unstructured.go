@@ -10,10 +10,10 @@ import (
 	"sync"
 
 	jsonpatch "github.com/evanphx/json-patch/v5"
+	yaml "go.yaml.in/yaml/v3"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	yamlUtil "k8s.io/apimachinery/pkg/runtime/serializer/yaml"
-	yaml "sigs.k8s.io/yaml/goyaml.v3"
 
 	"github.com/jlandowner/helm-chartsnap/pkg/api/v1alpha1"
 )
