@@ -54,8 +54,8 @@ integ-test: install-dev-bin
 	helm chartsnap --chart example/app3 --namespace default $(ARGS) -f example/app3/test/ok.yaml
 
 .PHONY: integ-test-kong
-integ-test-kong:
-	cd hack/test; bash test-kong-chart.sh
+integ-test-kong: install-dev-bin
+	cd hack/test; bash test-kong-chart-manual.sh
 
 .PHONY: integ-test-fail
 integ-test-fail: install-dev-bin
