@@ -3,10 +3,15 @@ all: build
 GO_VERSION ?= $(shell grep '^go ' go.mod | awk '{print $$2}')
 GO_BIN := $(shell go env GOBIN | grep -q "^$$" && echo $$(go env GOPATH)/bin || echo $$(go env GOBIN))
 GO ?= $(GO_BIN)/go$(GO_VERSION)
-CONTROLLER_TOOLS_VERSION ?= v0.15.0
 
 .PHONY: setup
-setup: go helm
+setup: go helm controller-gen
+	@echo "Setting up development environment..."
+	$(GO) version
+	helm version
+	controller-gen --version
+	goreleaser --version
+	@echo "Development environment is set up."
 
 .PHONY: go
 go:
@@ -49,8 +54,8 @@ integ-test: install-dev-bin
 	helm chartsnap --chart example/app3 --namespace default $(ARGS) -f example/app3/test/ok.yaml
 
 .PHONY: integ-test-kong
-integ-test-kong:
-	cd hack/test; bash test-kong-chart.sh
+integ-test-kong: install-dev-bin
+	cd hack/test; bash test-kong-chart-manual.sh
 
 .PHONY: integ-test-fail
 integ-test-fail: install-dev-bin
@@ -92,7 +97,7 @@ validate: kubectl-validate
 
 .PHONY: controller-gen
 controller-gen:
-	$(GO) install sigs.k8s.io/controller-tools/cmd/controller-gen@$(CONTROLLER_TOOLS_VERSION)
+	$(GO) install sigs.k8s.io/controller-tools/cmd/controller-gen@latest
 
 .PHONY: crd
 crd:
