@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This simulates helm template output with post-renderer that converts \n to actual newlines
 # This is a problematic case for kyaml parser
