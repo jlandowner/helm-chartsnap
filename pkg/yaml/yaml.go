@@ -91,7 +91,12 @@ func convertInvalidYAMLToUnknown(bs []byte) []byte {
 
 	docs := make([]string, 0, len(splitString))
 	for _, v := range splitString {
-		if err := yaml.NewDecoder(bytes.NewBufferString(v)).Decode(&yaml.Node{}); err == nil {
+		// Try to parse with kio.ByteReader to match the actual decoder used
+		if _, err := (&kio.ByteReader{
+			OmitReaderAnnotations: true,
+			AnchorsAweigh:         true,
+			Reader:                bytes.NewBufferString(v),
+		}).Read(); err == nil {
 			docs = append(docs, v)
 		} else {
 			unknown := v1alpha1.NewUnknownError(v)
