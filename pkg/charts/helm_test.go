@@ -72,6 +72,21 @@ var _ = Describe("Helm", func() {
 		})
 	})
 
+	Context("when Execute with post-renderer output containing multiline strings", func() {
+		It("should execute with expected output", func() {
+			o := &HelmTemplateCmdOptions{
+				HelmPath:       "./testdata/helm_post_renderer.bash",
+				ReleaseName:    "test",
+				Chart:          "test-chart",
+				AdditionalArgs: []string{"--post-renderer", "./fixTemplatePatch.sh"},
+			}
+
+			out, err := o.Execute(context.Background())
+			Expect(err).NotTo(HaveOccurred())
+			Expect(out).To(MatchSnapShot())
+		})
+	})
+
 	Context("test mocks", func() {
 		It("should execute as helm cmd", func() {
 			o := &HelmTemplateCmdOptions{
