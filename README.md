@@ -96,7 +96,7 @@ However, all you have to do with `helm-chartsnap` is just to prepare some `value
 You can install as Helm plugin.
 
 ```sh
-helm plugin install https://github.com/jlandowner/helm-chartsnap
+helm plugin install https://github.com/jlandowner/helm-chartsnap --verify=false
 ```
 
 Other options:

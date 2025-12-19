@@ -69,7 +69,7 @@ update-versions:
 
 .PHONY: install-dev-bin
 install-dev-bin: build
-	-helm plugin install https://github.com/jlandowner/helm-chartsnap
+	-helm plugin install https://github.com/jlandowner/helm-chartsnap --verify=false
 	cp ./dist/chartsnap_*/chartsnap $(HELM_PLUGIN_PATH)/helm-chartsnap/bin/
 	helm chartsnap --version
 
