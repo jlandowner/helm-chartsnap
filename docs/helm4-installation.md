@@ -109,7 +109,7 @@ A: Not cryptographically, but you can:
 
 **Q: When will signatures be available?**
 
-A: We're targeting the next minor release. Track progress in the relevant GitHub issue.
+A: We're targeting the next minor release. Check the [repository issues](https://github.com/jlandowner/helm-chartsnap/issues) for updates on implementation progress.
 
 **Q: What about older Helm versions?**
 
