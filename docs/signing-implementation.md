@@ -1,144 +1,165 @@
-# Implementing Plugin Signing for Helm 4
+# Plugin Signing Implementation for Helm 4
 
-This document outlines the plan to add cryptographic signatures to helm-chartsnap releases.
+This document describes the implementation of cryptographic signatures for helm-chartsnap releases.
 
-## Current Situation
+## Implementation Status
 
-- Helm 4 enforces plugin verification by default
-- Our releases lack `.prov` signature files
-- Users must use `--verify=false` or alternative installation methods
-- This bypasses an important security feature
+✅ **COMPLETED** - Plugin signing is now fully implemented as of version 0.7.0.
 
-## Implementation Plan
+## Overview
 
-### Step 1: GPG Key Setup
+Helm 4 enforces plugin verification by default, requiring `.prov` provenance files alongside plugin archives. We have implemented automated signing in our release process to support this security feature.
 
-Create a dedicated GPG key for signing releases:
+## What Was Implemented
+
+### 1. GoReleaser Configuration
+
+Modified `.goreleaser.yml` to:
+- Include `plugin.yaml` and `scripts/*` in release archives
+- Configure GPG signing for all archive artifacts
+- Generate `.sig` signature files
+- Include `.prov` files in release assets
+
+### 2. Provenance File Generation
+
+Created `scripts/generate_prov_files.sh` to:
+- Calculate SHA256 hashes of release archives
+- Generate Helm-compatible `.prov` provenance files
+- Sign provenance files with GPG
+- Format files according to Helm's requirements
+
+### 3. Release Workflow Updates
+
+Modified `.github/workflows/release.yaml` to:
+- Import GPG keys from GitHub secrets
+- Run GoReleaser with signing enabled
+- Generate `.prov` files after building
+- Upload all signature files to the release
+
+### 4. Documentation Updates
+
+Updated documentation to:
+- Explain signature support in README.md
+- Document installation with signatures in docs/helm4-installation.md
+- Provide setup instructions for maintainers
+
+## How It Works
+
+## How It Works
+
+1. **Build Phase**: GoReleaser creates platform-specific archives containing:
+   - Compiled `chartsnap` binary
+   - `plugin.yaml` manifest
+   - Installation scripts
+
+2. **Signing Phase**: GPG signs each archive to create `.sig` files
+
+3. **Provenance Generation**: A custom script generates `.prov` files containing:
+   - Plugin metadata (name, version, description)
+   - SHA256 hash of the archive
+   - GPG signature (clearsigned format)
+
+4. **Release Phase**: All artifacts are uploaded to GitHub:
+   - `chartsnap_v*.tar.gz` (plugin archive)
+   - `chartsnap_v*.tar.gz.sig` (detached signature)
+   - `chartsnap_v*.tar.gz.prov` (Helm provenance file)
+
+5. **Installation**: Helm 4 automatically:
+   - Downloads both `.tar.gz` and `.tar.gz.prov`
+   - Verifies the SHA256 hash matches
+   - Validates the GPG signature
+   - Installs only if verification succeeds
+
+## Setup Requirements
+
+### For Repository Maintainers
+
+To enable signing, configure these GitHub repository secrets:
+
+- **GPG_PRIVATE_KEY**: The GPG private key in ASCII armor format
+  ```bash
+  gpg --armor --export-secret-keys KEY_ID > private-key.asc
+  ```
+
+- **GPG_FINGERPRINT**: The full key fingerprint
+  ```bash
+  gpg --fingerprint KEY_ID
+  ```
+
+- **GPG_PASSPHRASE**: The key's passphrase (optional if no passphrase)
+
+### Key Generation (For New Projects)
 
 ```bash
+# Generate a new GPG key
 gpg --full-gen-key
 # Choose: RSA and RSA, 4096 bits
-# Name: helm-chartsnap-bot (or project name)
-# Email: maintainer email
+# Name: helm-chartsnap-bot
+# Email: maintainer's email
+
+# Export the key
+gpg --armor --export KEY_ID > helm-chartsnap-public-key.asc
+gpg --armor --export-secret-keys KEY_ID > helm-chartsnap-private-key.asc
+
+# Get fingerprint
+gpg --fingerprint KEY_ID
 ```
 
-Export and store the key securely:
-```bash
-gpg --armor --export <KEY_ID> > helm-chartsnap-public-key.asc
-gpg --export-secret-keys <KEY_ID> > helm-chartsnap-private-key.gpg
+## Provenance File Format
+
+The `.prov` files follow Helm's standard format:
+
+```
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+name: chartsnap
+version: 0.7.0
+description: Snapshot testing for Helm charts
+home: https://github.com/jlandowner/helm-chartsnap
+
+...
+files:
+  chartsnap_v0.7.0_linux_amd64.tar.gz: sha256:abc123...
+
+-----BEGIN PGP SIGNATURE-----
+[GPG signature block]
+-----END PGP SIGNATURE-----
 ```
 
-Store private key in GitHub Secrets as `GPG_PRIVATE_KEY` and passphrase as `GPG_PASSPHRASE`.
+This format allows Helm to:
+- Verify the archive hasn't been tampered with
+- Confirm it comes from a trusted source
+- Ensure the archive matches the signed hash
 
-### Step 2: Update GoReleaser Configuration
+## Backward Compatibility
 
-Modify `.goreleaser.yml` to enable signing:
+- Versions < 0.7.0: No signatures, requires `--verify=false`
+- Versions >= 0.7.0: Signed, works with Helm 4's default verification
+- Helm 3.x: Ignores verification by default, works with all versions
 
-```yaml
-# Add to the file
-signs:
-  - cmd: gpg
-    args:
-      - --batch
-      - --local-user
-      - "{{ .Env.GPG_FINGERPRINT }}"
-      - --output
-      - "${signature}"
-      - --detach-sign
-      - "${artifact}"
-    artifacts: all
-    signature: "${artifact}.sig"
-```
+## Testing Locally
 
-For Helm plugin-specific provenance, we need to generate `.prov` files that follow Helm's format.
-
-### Step 3: Modify Release Workflow
-
-Update `.github/workflows/release.yaml`:
-
-```yaml
-- name: Import GPG key
-  run: |
-    echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-    
-- name: Configure Git for signing
-  run: |
-    git config --global user.signingkey ${{ secrets.GPG_FINGERPRINT }}
-    git config --global commit.gpgsign true
-```
-
-### Step 4: Generate Helm-Compatible Provenance
-
-After GoReleaser creates the archives, generate Helm provenance files:
+To test the signing process without a release:
 
 ```bash
-for file in dist/*.tar.gz; do
-  gpg --armor --detach-sign --local-user <KEY_ID> "$file"
-  mv "$file.asc" "$file.prov"
-done
+# Set required environment variables
+export GPG_FINGERPRINT="YOUR_KEY_FINGERPRINT"
+export GPG_PASSPHRASE="your_passphrase"  # optional
+export GITHUB_REF_NAME="v0.7.0"
+
+# Build with goreleaser in snapshot mode
+goreleaser build --snapshot --clean
+
+# Generate .prov files
+bash scripts/generate_prov_files.sh dist "$GPG_FINGERPRINT" "$GPG_PASSPHRASE"
+
+# Verify a .prov file
+gpg --verify dist/chartsnap_v0.7.0_linux_amd64.tar.gz.prov
 ```
-
-Upload `.prov` files alongside release artifacts.
-
-### Step 5: Publish Public Key
-
-Add the public key to the repository:
-- Commit `helm-chartsnap-public-key.asc` to repo root
-- Document the key fingerprint in README
-- Add verification instructions
-
-### Step 6: Update Documentation
-
-Modify installation docs to show verification:
-
-```bash
-# Import public key
-curl -fsSL https://raw.githubusercontent.com/jlandowner/helm-chartsnap/main/helm-chartsnap-public-key.asc | gpg --import
-
-# Install with verification (no --verify=false needed!)
-helm plugin install https://github.com/jlandowner/helm-chartsnap/releases/download/v0.7.0/chartsnap_v0.7.0_linux_amd64.tar.gz
-```
-
-## Testing Plan
-
-1. Create test GPG key in development environment
-2. Run release process locally with `goreleaser build --snapshot`
-3. Verify signature files are created correctly
-4. Test installation with and without verification
-5. Confirm error messages when signature is invalid
-
-## Rollout Strategy
-
-1. Implement signing in a beta release first
-2. Document the new process thoroughly  
-3. Keep `--verify=false` instructions for older releases
-4. Announce signing support in release notes
-5. Update README to prefer signed installation after 1-2 releases
-6. Eventually deprecate `--verify=false` examples
-
-## Alternative: Sigstore/Cosign
-
-As an alternative to GPG, consider Sigstore's cosign for keyless signing:
-
-```bash
-# Sign with cosign (uses OIDC, no key management)
-cosign sign-blob --bundle chartsnap.bundle chartsnap_v0.7.0_linux_amd64.tar.gz
-
-# Verify
-cosign verify-blob --bundle chartsnap.bundle --certificate-identity=... --certificate-oidc-issuer=...
-```
-
-However, Helm's native verification only supports GPG/PGP signatures, so this would require custom verification scripts.
-
-## Timeline
-
-- **Immediate**: Document current state (this PR)
-- **Next release (0.7.0)**: Implement GPG signing
-- **Following release (0.8.0)**: Make signed installation the default
-- **Future**: Consider Sigstore integration if Helm adds support
 
 ## References
 
 - [Helm Provenance Documentation](https://helm.sh/docs/topics/provenance/)
-- [GoReleaser Signing Documentation](https://goreleaser.com/customization/sign/)
-- [GitHub Actions GPG Signing](https://docs.github.com/en/authentication/managing-commit-signature-verification)
+- [GoReleaser Signing](https://goreleaser.com/customization/sign/)
+- [GPG Signing in GitHub Actions](https://docs.github.com/en/authentication/managing-commit-signature-verification)
