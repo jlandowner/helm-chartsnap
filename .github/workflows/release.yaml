@@ -62,11 +62,37 @@ jobs:
           go-version-file: go.mod
       - run: go version
 
+      - name: Import GPG key
+        if: ${{ secrets.GPG_PRIVATE_KEY != '' }}
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          echo "GPG key imported successfully"
+          gpg --list-secret-keys
+
       - name: GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
           version: latest
           args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_FINGERPRINT: ${{ secrets.GPG_FINGERPRINT }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Generate Helm .prov files
+        if: ${{ secrets.GPG_PRIVATE_KEY != '' }}
+        run: |
+          bash scripts/generate_prov_files.sh dist "${{ secrets.GPG_FINGERPRINT }}" "${{ secrets.GPG_PASSPHRASE }}"
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+
+      - name: Upload .prov files to release
+        if: ${{ secrets.GPG_PRIVATE_KEY != '' }}
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*.prov
+          tag_name: v${{ github.event.inputs.semver }}
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
