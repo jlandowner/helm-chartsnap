@@ -85,7 +85,7 @@ jobs:
         run: |
           bash scripts/generate_prov_files.sh dist "${{ secrets.GPG_FINGERPRINT }}" "${{ secrets.GPG_PASSPHRASE }}"
         env:
-          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_REF_NAME: v${{ github.event.inputs.semver }}
 
       - name: Upload .prov files to release
         if: ${{ secrets.GPG_PRIVATE_KEY != '' }}
