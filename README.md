@@ -93,21 +93,42 @@ However, all you have to do with `helm-chartsnap` is just to prepare some `value
 
 ## Installation 🚀
 
-You can install as Helm plugin.
+### Helm Plugin (Multiple Options)
+
+**For Helm 4 users** - Choose the method that fits your security requirements:
+
+```sh
+# Option 1: Install from release archive (recommended - version pinned)
+VERSION=0.6.0
+OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+helm plugin install https://github.com/jlandowner/helm-chartsnap/releases/download/v${VERSION}/chartsnap_v${VERSION}_${OS}_${ARCH}.tar.gz
+
+# Option 2: Clone and install locally (best for development/auditing)
+git clone https://github.com/jlandowner/helm-chartsnap.git
+helm plugin install ./helm-chartsnap
+
+# Option 3: Direct install from GitHub (requires --verify=false)
+helm plugin install https://github.com/jlandowner/helm-chartsnap --verify=false
+```
+
+> 📘 **About `--verify=false`**: Helm 4 requires plugin signatures by default. We're working on adding signatures to releases. Until then, Option 1 or 2 are more secure than Option 3. See [Helm 4 Installation Guide](docs/helm4-installation.md) for details.
+
+**For Helm 3 users** - Simple one-line install:
 
 ```sh
 helm plugin install https://github.com/jlandowner/helm-chartsnap
 ```
 
-Other options:
+### Alternative: Standalone Binary
 
-- Go install
+- **Go install**
 
   ```sh
   go install github.com/jlandowner/helm-chartsnap@latest
   ```
 
-- [Download release binary](https://github.com/jlandowner/helm-chartsnap/releases)
+- **Download release binary** from [GitHub Releases](https://github.com/jlandowner/helm-chartsnap/releases)
 
 ## Usage
 
