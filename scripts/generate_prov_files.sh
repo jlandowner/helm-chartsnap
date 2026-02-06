@@ -41,11 +41,8 @@ for archive in "$DIST_DIR"/*.tar.gz; do
         exit 1
     fi
     
-    # Create the provenance file content
+    # Create the provenance file content (without PGP headers - clearsign will add them)
     cat > "${prov_file}.unsigned" <<EOF
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
-
 name: chartsnap
 version: ${GITHUB_REF_NAME#v}
 description: Snapshot testing for Helm charts
