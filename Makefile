@@ -20,7 +20,7 @@ go:
 
 .PHONY: helm
 helm:
-	curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+	curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4 | bash
 
 goreleaser:
 	$(GO) install github.com/goreleaser/goreleaser@latest
