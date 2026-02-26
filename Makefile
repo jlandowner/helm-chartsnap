@@ -52,6 +52,16 @@ integ-test: install-dev-bin
 	helm chartsnap --chart example/app3 --namespace default $(ARGS)
 	helm chartsnap --chart example/app3 --namespace default --snapshot-file-ext yaml $(ARGS)
 	helm chartsnap --chart example/app3 --namespace default $(ARGS) -f example/app3/test/ok.yaml
+	@echo "--- exit 0: snapshot matched ---"
+	helm chartsnap --chart example/app1 -f example/app1/test_latest/test_ingress_enabled.yaml --namespace default $(ARGS); \
+	code=$$?; if [ $$code -ne 0 ]; then echo "FAIL: expected exit code 0, got $$code"; exit 1; fi
+	@echo "--- exit 2: snapshot diff detected ---"
+	helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/test_ingress_enabled.yaml $(ARGS); \
+	code=$$?; if [ $$code -ne 2 ]; then echo "FAIL: expected exit code 2, got $$code"; exit 1; fi
+	@echo "--- exit 1: execution error (values file not found) ---"
+	helm chartsnap --chart example/app1 -f example/app1/test_latest/notfound.yaml --namespace default $(ARGS); \
+	code=$$?; if [ $$code -ne 1 ]; then echo "FAIL: expected exit code 1, got $$code"; exit 1; fi
+	@echo "--- all exit code tests passed ---"
 
 .PHONY: integ-test-kong
 integ-test-kong: install-dev-bin
