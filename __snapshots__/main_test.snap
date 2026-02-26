@@ -77,23 +77,10 @@ SnapShot = """
  FAIL  Snapshot does not match chart=example/app1 values=example/app1/testfail/test_ingress_enabled.yaml snapshot_version=v2
 """
 
-['rootCmd fail snapshot is different should fail with snapshotNotMatchError for exit code 2 1']
-SnapShot = 'snapshot does not match chart=example/app1 values=example/app1/testfail/test_ingress_enabled.yaml'
-
-['rootCmd fail snapshot is different should fail with snapshotNotMatchError for exit code 2 2']
-SnapShot = """
- RUNS  Snapshot testing chart=example/app1 values=example/app1/testfail/test_ingress_enabled.yaml
- FAIL  Snapshot does not match chart=example/app1 values=example/app1/testfail/test_ingress_enabled.yaml snapshot_version=v2
-"""
-
 ['rootCmd fail values directory contains not matched snapshots should fail 1']
 SnapShot = 'snapshot does not match chart=example/app1 values=example/app1/testfail/test_ingress_enabled.yaml'
 
 ['rootCmd fail values file not found should fail 1']
-SnapShot = """
-values file 'example/app1/test_latest/notfound.yaml' not found"""
-
-['rootCmd fail values file not found should fail with general error for exit code 1 1']
 SnapShot = """
 values file 'example/app1/test_latest/notfound.yaml' not found"""
 

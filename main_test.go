@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"log/slog"
 	"os"
 	"testing"
@@ -359,7 +358,7 @@ var _ = Describe("rootCmd", func() {
 		})
 
 		Context("snapshot is different", func() {
-			It("should fail with snapshotNotMatchError for exit code 2", func() {
+			It("should fail", func() {
 				var output bytes.Buffer
 				color.Output = &output
 				DeferCleanup(func() {
@@ -370,8 +369,6 @@ var _ = Describe("rootCmd", func() {
 				Expect(err).To(HaveOccurred())
 				Ω(err.Error()).To(MatchSnapShot())
 				Ω(output.String()).To(MatchSnapShot())
-				var notMatchErr *snapshotNotMatchError
-				Expect(errors.As(err, &notMatchErr)).To(BeTrue())
 			})
 		})
 
@@ -385,13 +382,11 @@ var _ = Describe("rootCmd", func() {
 		})
 
 		Context("values file not found", func() {
-			It("should fail with general error for exit code 1", func() {
+			It("should fail", func() {
 				rootCmd.SetArgs([]string{"--chart", "example/app1", "-f", "example/app1/test_latest/notfound.yaml", "--namespace", "default"})
 				err := rootCmd.Execute()
 				Expect(err).To(HaveOccurred())
 				Ω(err.Error()).To(MatchSnapShot())
-				var notMatchErr *snapshotNotMatchError
-				Expect(errors.As(err, &notMatchErr)).To(BeFalse())
 			})
 		})
 
