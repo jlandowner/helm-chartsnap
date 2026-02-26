@@ -52,6 +52,7 @@ integ-test: install-dev-bin
 	helm chartsnap --chart example/app3 --namespace default $(ARGS)
 	helm chartsnap --chart example/app3 --namespace default --snapshot-file-ext yaml $(ARGS)
 	helm chartsnap --chart example/app3 --namespace default $(ARGS) -f example/app3/test/ok.yaml
+	@echo "--- exit code tests ---"
 	@echo "--- exit 0: snapshot matched ---"
 	helm chartsnap --chart example/app1 -f example/app1/test_latest/test_ingress_enabled.yaml --namespace default $(ARGS); \
 	code=$$?; if [ $$code -ne 0 ]; then echo "FAIL: expected exit code 0, got $$code"; exit 1; fi
@@ -72,23 +73,6 @@ integ-test-fail: install-dev-bin
 	helm chartsnap --chart example/app1 --namespace default $(ARGS) && echo "should fail" && exit 1 || (echo "--- fail is expected ---"; true)
 	helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/test_ingress_enabled.yaml $(ARGS) && echo "should fail" && exit 1 || (echo "--- fail is expected ---"; true)
 	helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/ $(ARGS) && echo "should fail" && exit 1 || (echo "--- fail is expected ---"; true)
-
-# integ-test-exitcode verifies the exit code behavior:
-#   exit 0: snapshot matched
-#   exit 1: execution error (e.g. missing values file)
-#   exit 2: snapshot diff detected
-.PHONY: integ-test-exitcode
-integ-test-exitcode: install-dev-bin
-	@echo "--- exit 0: snapshot matched ---"
-	helm chartsnap --chart example/app1 -f example/app1/test_latest/test_ingress_enabled.yaml --namespace default $(ARGS); \
-	code=$$?; if [ $$code -ne 0 ]; then echo "FAIL: expected exit code 0, got $$code"; exit 1; fi
-	@echo "--- exit 2: snapshot diff detected ---"
-	helm chartsnap --chart example/app1 --namespace default -f example/app1/testfail/test_ingress_enabled.yaml $(ARGS); \
-	code=$$?; if [ $$code -ne 2 ]; then echo "FAIL: expected exit code 2, got $$code"; exit 1; fi
-	@echo "--- exit 1: execution error (values file not found) ---"
-	helm chartsnap --chart example/app1 -f example/app1/test_latest/notfound.yaml --namespace default $(ARGS); \
-	code=$$?; if [ $$code -ne 1 ]; then echo "FAIL: expected exit code 1, got $$code"; exit 1; fi
-	@echo "--- all exit code tests passed ---"
 
 .PHONY: update-versions
 update-versions:
