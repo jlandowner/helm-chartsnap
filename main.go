@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
@@ -206,9 +207,27 @@ MIT 2023 jlandowner/helm-chartsnap
 	rootCmd.PersistentFlags().BoolVar(&o.FailHelmError, "fail-helm-error", false, "fail if 'helm template' command failed")
 }
 
+// snapshotNotMatchError is a sentinel error type used to signal that snapshot testing
+// completed successfully but a diff was detected. It maps to exit code 2.
+type snapshotNotMatchError struct {
+	err error
+}
+
+func (e *snapshotNotMatchError) Error() string {
+	return e.err.Error()
+}
+
+func (e *snapshotNotMatchError) Unwrap() error {
+	return e.err
+}
+
 func main() {
 	if err := rootCmd.Execute(); err != nil {
 		slog.New(slogHandler()).Error(err.Error())
+		var notMatchErr *snapshotNotMatchError
+		if errors.As(err, &notMatchErr) {
+			os.Exit(2)
+		}
 		os.Exit(1)
 	}
 }
@@ -356,7 +375,7 @@ func run(cmd *cobra.Command, args []string) error {
 			if !result.Match {
 				bannerPrintln("FAIL", fmt.Sprintf("Snapshot does not match chart=%s values=%s snapshot_version=%s", ht.Chart, ht.ValuesFile, snapshotter.SnapshotConfig.SnapshotVersion), color.FgRed, color.BgRed)
 				fmt.Println(result.FailureMessage)
-				return fmt.Errorf("snapshot does not match chart=%s values=%s", ht.Chart, ht.ValuesFile)
+				return &snapshotNotMatchError{fmt.Errorf("snapshot does not match chart=%s values=%s", ht.Chart, ht.ValuesFile)}
 			}
 			bannerPrintln("PASS", fmt.Sprintf("Snapshot %s chart=%s values=%s snapshot_version=%s", o.OK(), ht.Chart, ht.ValuesFile, snapshotter.SnapshotConfig.SnapshotVersion), color.FgGreen, color.BgGreen)
 			return nil
