@@ -43,6 +43,9 @@ jobs:
           go-version-file: go.mod
       - run: go version
 
+      - name: Install Helm v4
+        run: make helm
+
       - name: Integration test
         run: |
           FORCE_COLOR=1 make integ-test GO=go
