@@ -86,12 +86,21 @@ func ApplyFixedValueToDynamicFields(t v1alpha1.SnapshotConfig, docs []*yaml.RNod
 	return nil
 }
 
+// convertInvalidYAMLToUnknown converts YAML documents that cannot be parsed by kyaml into Unknown resources.
+// This handles edge cases where valid YAML structures (e.g., multiline strings containing "---") cannot be
+// parsed by kio.ByteReader but are valid according to the YAML spec. By using kio.ByteReader for validation
+// (the same parser used in decode), we ensure consistent behavior and graceful handling of unparseable content.
 func convertInvalidYAMLToUnknown(bs []byte) []byte {
 	splitString := regexp.MustCompile(`(?m)^---$`).Split(string(bs), -1)
 
 	docs := make([]string, 0, len(splitString))
 	for _, v := range splitString {
-		if err := yaml.NewDecoder(bytes.NewBufferString(v)).Decode(&yaml.Node{}); err == nil {
+		// Try to parse with kio.ByteReader to match the actual decoder used
+		if _, err := (&kio.ByteReader{
+			OmitReaderAnnotations: true,
+			AnchorsAweigh:         true,
+			Reader:                bytes.NewBufferString(v),
+		}).Read(); err == nil {
 			docs = append(docs, v)
 		} else {
 			unknown := v1alpha1.NewUnknownError(v)
