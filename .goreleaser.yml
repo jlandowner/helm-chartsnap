@@ -20,5 +20,27 @@ archives:
     name_template: "chartsnap_{{ .Tag }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     wrap_in_directory: false
     format: tar.gz
+    files:
+      - plugin.yaml
+      - scripts/*
+signs:
+  - cmd: gpg
+    args:
+      - --batch
+      - --yes
+      - --passphrase
+      - "{{ .Env.GPG_PASSPHRASE }}"
+      - --pinentry-mode
+      - loopback
+      - --local-user
+      - "{{ .Env.GPG_FINGERPRINT }}"
+      - --output
+      - "${signature}"
+      - --detach-sign
+      - "${artifact}"
+    artifacts: archive
+    signature: "${artifact}.sig"
 release:
   draft: true
+  extra_files:
+    - glob: "./dist/*.prov"
