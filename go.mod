@@ -17,7 +17,7 @@ require (
 	golang.org/x/sync v0.17.0
 	k8s.io/apimachinery v0.34.1
 	sigs.k8s.io/controller-runtime v0.22.1
-	sigs.k8s.io/kustomize/kyaml v0.20.1
+	sigs.k8s.io/kustomize/kyaml v0.21.0
 )
 
 require (
