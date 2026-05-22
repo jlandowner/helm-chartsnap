@@ -113,13 +113,11 @@ data:
   nodes-gc-interval: "5m0s"
   # If you want to run cilium in debug mode change this value to true
   debug: "false"
-  debug-verbose: ""
   metrics-sampling-interval: "5m"
   # The agent can be put into the following three policy enforcement modes
   # default, always and never.
   # https://docs.cilium.io/en/latest/security/policy/intro/#policy-enforcement-modes
   enable-policy: "default"
-  policy-cidr-match-mode: ""
   # If you want metrics enabled in cilium-operator, set the port for
   # which the Cilium Operator will have their metrics exposed.
   # NOTE that this will open the port on the nodes where Cilium operator pod
@@ -226,7 +224,6 @@ data:
   kube-proxy-replacement: "false"
   enable-no-service-endpoints-routable: "true"
   bpf-lb-sock: "false"
-  nodeport-addresses: ""
   enable-health-check-nodeport: "true"
   enable-health-check-loadbalancer-ip: "false"
   node-port-bind-protection: "true"
