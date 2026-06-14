@@ -24,6 +24,9 @@ jobs:
           go-version-file: go.mod
       - run: go version
 
+      - name: Install Helm v4
+        run: make helm
+
       - name: Unittest
         run: |
           make test GO=go
