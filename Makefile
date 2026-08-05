@@ -45,6 +45,7 @@ integ-test: install-dev-bin
 	helm chartsnap --chart example/app1 -f example/app1/test_v2/ --namespace default $(ARGS)
 	helm chartsnap --chart example/app1 -f example/app1/test_v3/ --namespace default $(ARGS)
 	helm chartsnap --chart example/app1 -f example/app1/test_wildcard/ --namespace default $(ARGS)
+	helm chartsnap --chart example/app1 -f example/app1/test_order/ --namespace default $(ARGS) && diff example/app1/test_order/__snapshots__/test_order_a.snap example/app1/test_order/__snapshots__/test_order_b.snap
 	helm chartsnap --chart oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric -f example/remote/nginx-gateway-fabric.values.yaml $(ARGS) -- --namespace nginx-gateway $(EXTRA_ARGS)
 	helm chartsnap --chart cilium -f example/remote/cilium.values.yaml $(ARGS) -- --namespace kube-system --repo https://helm.cilium.io $(EXTRA_ARGS)
 	helm chartsnap --chart ingress-nginx -f example/remote/ingress-nginx.values.yaml $(ARGS) -- --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --skip-tests $(EXTRA_ARGS)
