@@ -1,0 +1,15 @@
+configMaps:
+  - name: alpha
+    data:
+      - key: LOG_LEVEL
+        value: info
+      - key: REGION
+        value: us-east-1
+  - name: beta
+    data:
+      - key: TIMEOUT
+        value: "30"
+  - name: gamma
+    data:
+      - key: FEATURE_FLAG
+        value: "true"

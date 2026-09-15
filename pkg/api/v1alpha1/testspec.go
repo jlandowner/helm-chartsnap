@@ -30,6 +30,7 @@ type SnapshotConfig struct {
 	DynamicFields   []ManifestPath `yaml:"dynamicFields,omitempty"`
 	SnapshotFileExt string         `yaml:"snapshotFileExt,omitempty"`
 	SnapshotVersion string         `yaml:"snapshotVersion,omitempty"`
+	IgnoreOrder      bool           `yaml:"ignoreOrder,omitempty"`
 }
 
 type ManifestPath struct {
@@ -67,5 +68,8 @@ func (t *SnapshotConfig) Merge(cfg SnapshotConfig) {
 	}
 	if cfg.SnapshotVersion != "" {
 		t.SnapshotVersion = cfg.SnapshotVersion
+	}
+	if cfg.IgnoreOrder {
+		t.IgnoreOrder = true
 	}
 }
