@@ -57,6 +57,47 @@ var _ = Describe("Decode & Encode", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Ω(buf).Should(MatchSnapShot())
 	})
+
+	It("should handle post-renderer output with multiline strings", func() {
+		// This tests the case where post-renderer converts \n to actual newlines
+		// which can cause kyaml parser to fail
+		yamlStr := `---
+# Source: test-chart/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: test-secret
+stringData:
+  certificate: "-----BEGIN CERTIFICATE-----
+MIIDXTCCAkWgAwIBAgIJAKZ
+-----END CERTIFICATE-----"
+---
+# Source: test-chart/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-config
+data:
+  message: "hello world"`
+
+		// Decode - should handle the problematic YAML gracefully
+		manifests, err := Decode([]byte(yamlStr))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(len(manifests)).Should(Equal(2))
+
+		// The first resource (Secret) should be converted to Unknown
+		// because kyaml can't parse it
+		Expect(manifests[0].GetKind()).Should(Equal("Unknown"))
+
+		// The second resource (ConfigMap) should be parsed correctly
+		Expect(manifests[1].GetKind()).Should(Equal("ConfigMap"))
+		Expect(manifests[1].GetName()).Should(Equal("test-config"))
+
+		// Encode again
+		buf, err := Encode(manifests)
+		Expect(err).NotTo(HaveOccurred())
+		Ω(buf).Should(MatchSnapShot())
+	})
 })
 
 var _ = Describe("ApplyFixedValueToDynamicFields", func() {

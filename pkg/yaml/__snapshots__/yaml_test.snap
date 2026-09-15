@@ -619,6 +619,33 @@ data:
   tls.key: '###DYNAMIC_FIELD###'
 """
 
+['Decode & Encode should handle post-renderer output with multiline strings 1']
+SnapShot = """
+apiVersion: helm-chartsnap.jlandowner.dev/v1alpha1
+kind: Unknown
+metadata:
+  name: helm-output
+raw: |2
+
+  # Source: test-chart/templates/secret.yaml
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: test-secret
+  stringData:
+    certificate: \"-----BEGIN CERTIFICATE-----
+  MIIDXTCCAkWgAwIBAgIJAKZ
+  -----END CERTIFICATE-----\"
+---
+# Source: test-chart/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-config
+data:
+  message: \"hello world\"
+"""
+
 ['Decode & Encode should success 1']
 SnapShot = """
 # Source: app1/templates/serviceaccount.yaml
