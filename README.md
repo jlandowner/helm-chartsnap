@@ -108,11 +108,11 @@ helm plugin install https://github.com/jlandowner/helm-chartsnap/releases/downlo
 git clone https://github.com/jlandowner/helm-chartsnap.git
 helm plugin install ./helm-chartsnap
 
-# Option 3: Direct install from GitHub (requires --verify=false)
+# Option 3: Direct install from GitHub (requires --verify=false for versions < 0.7.0)
 helm plugin install https://github.com/jlandowner/helm-chartsnap --verify=false
 ```
 
-> 📘 **About `--verify=false`**: Helm 4 requires plugin signatures by default. We're working on adding signatures to releases. Until then, Option 1 or 2 are more secure than Option 3. See [Helm 4 Installation Guide](docs/helm4-installation.md) for details.
+> 📘 **About plugin signatures**: Starting from version 0.7.0, releases include cryptographic signatures (`.prov` files) for Helm 4 verification. For older versions, you may need to use `--verify=false`. See [Helm 4 Installation Guide](docs/helm4-installation.md) for details.
 
 **For Helm 3 users** - Simple one-line install:
 
