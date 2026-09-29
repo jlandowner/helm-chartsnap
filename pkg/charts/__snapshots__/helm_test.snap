@@ -15,6 +15,28 @@ Environment variables starting with HELM_:
 HELM_DEBUG=false
 """
 
+['Helm when Execute with post-renderer output containing multiline strings should execute with expected output 1']
+SnapShot = """
+---
+# Source: test-chart/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: test-secret
+stringData:
+  certificate: \"-----BEGIN CERTIFICATE-----
+MIIDXTCCAkWgAwIBAgIJAKZ
+-----END CERTIFICATE-----\"
+---
+# Source: test-chart/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-config
+data:
+  message: \"hello world\"
+"""
+
 ['Helm when Execute without namespace should execute with expected args and env 1']
 SnapShot = """
 Arguments for helm: template chartsnap charts/app1/ --values=charts/app1/test/test.values.yaml
