@@ -7,7 +7,7 @@ metadata:
   name: "cilium-secrets"
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 ---
 # Source: cilium/templates/cilium-agent/serviceaccount.yaml
 apiVersion: v1
@@ -377,7 +377,7 @@ metadata:
   name: cilium
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 rules:
 - apiGroups:
   - networking.k8s.io
@@ -489,7 +489,7 @@ metadata:
   name: cilium-operator
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 rules:
 - apiGroups:
   - ""
@@ -751,7 +751,7 @@ metadata:
   name: hubble-ui
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 rules:
 - apiGroups:
   - ""
@@ -781,7 +781,7 @@ metadata:
   name: cilium
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -798,7 +798,7 @@ metadata:
   name: cilium-operator
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -815,7 +815,7 @@ metadata:
   name: hubble-ui
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -833,7 +833,7 @@ metadata:
   namespace: kube-system
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 rules:
 - apiGroups:
   - ""
@@ -852,7 +852,7 @@ metadata:
   namespace: "cilium-secrets"
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 rules:
 - apiGroups:
   - ""
@@ -871,7 +871,7 @@ metadata:
   namespace: "cilium-secrets"
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 rules:
 - apiGroups:
   - ""
@@ -891,7 +891,7 @@ metadata:
   namespace: kube-system
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 rules:
 # ZTunnel DaemonSet management permissions
 # Note: These permissions must always be granted (not conditional on encryption.type)
@@ -923,7 +923,7 @@ metadata:
   namespace: kube-system
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -941,7 +941,7 @@ metadata:
   namespace: "cilium-secrets"
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -959,7 +959,7 @@ metadata:
   namespace: "cilium-secrets"
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -977,7 +977,7 @@ metadata:
   namespace: kube-system
   labels:
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -1000,7 +1000,7 @@ metadata:
     k8s-app: cilium-envoy
     app.kubernetes.io/name: cilium-envoy
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
     io.cilium/app: proxy
 spec:
   clusterIP: None
@@ -1023,7 +1023,7 @@ metadata:
     k8s-app: hubble-relay
     app.kubernetes.io/name: hubble-relay
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 spec:
   type: "ClusterIP"
   selector:
@@ -1043,7 +1043,7 @@ metadata:
     k8s-app: hubble-ui
     app.kubernetes.io/name: hubble-ui
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 spec:
   type: "ClusterIP"
   selector:
@@ -1063,7 +1063,7 @@ metadata:
     k8s-app: cilium
     app.kubernetes.io/part-of: cilium
     app.kubernetes.io/name: hubble-peer
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 spec:
   selector:
     k8s-app: cilium
@@ -1084,7 +1084,7 @@ metadata:
     k8s-app: cilium
     app.kubernetes.io/part-of: cilium
     app.kubernetes.io/name: cilium-agent
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 spec:
   selector:
     matchLabels:
@@ -1101,7 +1101,7 @@ spec:
         k8s-app: cilium
         app.kubernetes.io/name: cilium-agent
         app.kubernetes.io/part-of: cilium
-        helm.sh/chart: cilium-1.20.4
+        helm.sh/chart: cilium-1.20.5
     spec:
       securityContext:
         appArmorProfile:
@@ -1110,7 +1110,7 @@ spec:
           type: Unconfined
       containers:
       - name: cilium-agent
-        image: "quay.io/cilium/cilium:v1.20.4@sha256:20fe92e4c86641233a450098c158d2d29085f3419931ab6bf681d2485dedf16e"
+        image: "quay.io/cilium/cilium:v1.20.5@sha256:aa72499f075ad729947ea91b026218aceba24f1a8e4534bf36b8368c7c561526"
         imagePullPolicy: IfNotPresent
         command:
         - cilium-agent
@@ -1282,7 +1282,7 @@ spec:
           mountPath: /tmp
       initContainers:
       - name: config
-        image: "quay.io/cilium/cilium:v1.20.4@sha256:20fe92e4c86641233a450098c158d2d29085f3419931ab6bf681d2485dedf16e"
+        image: "quay.io/cilium/cilium:v1.20.5@sha256:aa72499f075ad729947ea91b026218aceba24f1a8e4534bf36b8368c7c561526"
         imagePullPolicy: IfNotPresent
         command:
         - cilium-dbg
@@ -1311,7 +1311,7 @@ spec:
       # Required to mount cgroup2 filesystem on the underlying Kubernetes node.
       # We use nsenter command with host's cgroup and mount namespaces enabled.
       - name: mount-cgroup
-        image: "quay.io/cilium/cilium:v1.20.4@sha256:20fe92e4c86641233a450098c158d2d29085f3419931ab6bf681d2485dedf16e"
+        image: "quay.io/cilium/cilium:v1.20.5@sha256:aa72499f075ad729947ea91b026218aceba24f1a8e4534bf36b8368c7c561526"
         imagePullPolicy: IfNotPresent
         env:
         - name: CGROUP_ROOT
@@ -1348,7 +1348,7 @@ spec:
             drop:
             - ALL
       - name: apply-sysctl-overwrites
-        image: "quay.io/cilium/cilium:v1.20.4@sha256:20fe92e4c86641233a450098c158d2d29085f3419931ab6bf681d2485dedf16e"
+        image: "quay.io/cilium/cilium:v1.20.5@sha256:aa72499f075ad729947ea91b026218aceba24f1a8e4534bf36b8368c7c561526"
         imagePullPolicy: IfNotPresent
         env:
         - name: BIN_PATH
@@ -1386,7 +1386,7 @@ spec:
       # from a privileged container because the mount propagation bidirectional
       # only works from privileged containers.
       - name: mount-bpf-fs
-        image: "quay.io/cilium/cilium:v1.20.4@sha256:20fe92e4c86641233a450098c158d2d29085f3419931ab6bf681d2485dedf16e"
+        image: "quay.io/cilium/cilium:v1.20.5@sha256:aa72499f075ad729947ea91b026218aceba24f1a8e4534bf36b8368c7c561526"
         imagePullPolicy: IfNotPresent
         args:
         - 'mount | grep "/sys/fs/bpf type bpf" || mount -t bpf bpf /sys/fs/bpf'
@@ -1402,7 +1402,7 @@ spec:
           mountPath: /sys/fs/bpf
           mountPropagation: Bidirectional
       - name: clean-cilium-state
-        image: "quay.io/cilium/cilium:v1.20.4@sha256:20fe92e4c86641233a450098c158d2d29085f3419931ab6bf681d2485dedf16e"
+        image: "quay.io/cilium/cilium:v1.20.5@sha256:aa72499f075ad729947ea91b026218aceba24f1a8e4534bf36b8368c7c561526"
         imagePullPolicy: IfNotPresent
         command:
         - /init-container.sh
@@ -1449,7 +1449,7 @@ spec:
           mountPath: /var/run/cilium # wait-for-kube-proxy
       # Install the CNI binaries in an InitContainer so we don't have a writable host mount in the agent
       - name: install-cni-binaries
-        image: "quay.io/cilium/cilium:v1.20.4@sha256:20fe92e4c86641233a450098c158d2d29085f3419931ab6bf681d2485dedf16e"
+        image: "quay.io/cilium/cilium:v1.20.5@sha256:aa72499f075ad729947ea91b026218aceba24f1a8e4534bf36b8368c7c561526"
         imagePullPolicy: IfNotPresent
         command:
         - "/install-plugin.sh"
@@ -1614,7 +1614,7 @@ metadata:
     app.kubernetes.io/part-of: cilium
     app.kubernetes.io/name: cilium-envoy
     name: cilium-envoy
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 spec:
   selector:
     matchLabels:
@@ -1631,14 +1631,14 @@ spec:
         name: cilium-envoy
         app.kubernetes.io/name: cilium-envoy
         app.kubernetes.io/part-of: cilium
-        helm.sh/chart: cilium-1.20.4
+        helm.sh/chart: cilium-1.20.5
     spec:
       securityContext:
         appArmorProfile:
           type: Unconfined
       containers:
       - name: cilium-envoy
-        image: "quay.io/cilium/cilium-envoy:v1.39.5-1792733054-8c73b2816bc8239e27f1fd53b271884688137459@sha256:547ab45f6092f681d9f54f3be9fa8fb1e705c9c5dc2df388efe3a52aa6965629"
+        image: "quay.io/cilium/cilium-envoy:v1.39.6-1794557904-dee711ff0e84b106edd0abcdd71961af1b870359@sha256:bdef13043ebaa7b9dcd8e3a86be41080bb5369e017cd759a12daf89e2b8fafe7"
         imagePullPolicy: IfNotPresent
         command:
         - /usr/bin/cilium-envoy-starter
@@ -1787,7 +1787,7 @@ metadata:
     name: cilium-operator
     app.kubernetes.io/part-of: cilium
     app.kubernetes.io/name: cilium-operator
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 spec:
   # See docs on ServerCapabilities.LeasesResourceLock in file pkg/k8s/version/version.go
   # for more details.
@@ -1815,14 +1815,14 @@ spec:
         name: cilium-operator
         app.kubernetes.io/part-of: cilium
         app.kubernetes.io/name: cilium-operator
-        helm.sh/chart: cilium-1.20.4
+        helm.sh/chart: cilium-1.20.5
     spec:
       securityContext:
         seccompProfile:
           type: RuntimeDefault
       containers:
       - name: cilium-operator
-        image: "quay.io/cilium/operator-aws:v1.20.4@sha256:caab27c6e3286a596d502f76aa6cffe2efab6e8a92234a0d10d2eed3eda85c7c"
+        image: "quay.io/cilium/operator-aws:v1.20.5@sha256:a22e3a18046db179141563cec088d054d8bb0e2c949516086cd6d56448f1859d"
         imagePullPolicy: IfNotPresent
         command:
         - cilium-operator-aws
@@ -1923,6 +1923,8 @@ spec:
         operator: Exists
       - key: node-role.kubernetes.io/master
         operator: Exists
+      - key: node-role.kubernetes.io/etcd
+        operator: Exists
       - key: node.kubernetes.io/not-ready
         operator: Exists
       - key: node.cloudprovider.kubernetes.io/uninitialized
@@ -1945,7 +1947,7 @@ metadata:
     k8s-app: hubble-relay
     app.kubernetes.io/name: hubble-relay
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 spec:
   replicas: 1
   selector:
@@ -1962,7 +1964,7 @@ spec:
         k8s-app: hubble-relay
         app.kubernetes.io/name: hubble-relay
         app.kubernetes.io/part-of: cilium
-        helm.sh/chart: cilium-1.20.4
+        helm.sh/chart: cilium-1.20.5
     spec:
       securityContext:
         fsGroup: 65532
@@ -1981,7 +1983,7 @@ spec:
           runAsUser: 65532
           seccompProfile:
             type: RuntimeDefault
-        image: "quay.io/cilium/hubble-relay:v1.20.4@sha256:cb23408209697ed30d2bc462e1f01eb622ea4423a891458f78bc88d7255bbfc1"
+        image: "quay.io/cilium/hubble-relay:v1.20.5@sha256:d0b3f5b944adc4a79f82ac51bcdc2d723b734c2c97872d8551626ad48b3c5538"
         imagePullPolicy: IfNotPresent
         command:
         - hubble-relay
@@ -2080,7 +2082,7 @@ metadata:
     k8s-app: hubble-ui
     app.kubernetes.io/name: hubble-ui
     app.kubernetes.io/part-of: cilium
-    helm.sh/chart: cilium-1.20.4
+    helm.sh/chart: cilium-1.20.5
 spec:
   replicas: 1
   selector:
@@ -2097,7 +2099,7 @@ spec:
         k8s-app: hubble-ui
         app.kubernetes.io/name: hubble-ui
         app.kubernetes.io/part-of: cilium
-        helm.sh/chart: cilium-1.20.4
+        helm.sh/chart: cilium-1.20.5
     spec:
       securityContext:
         fsGroup: 1001
