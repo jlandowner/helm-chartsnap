@@ -1,0 +1,16 @@
+# Same ConfigMaps as test_order_a.yaml but in different order — snapshots are sorted so both produce identical output.
+configMaps:
+  - name: gamma
+    data:
+      - key: FEATURE_FLAG
+        value: "true"
+  - name: alpha
+    data:
+      - key: LOG_LEVEL
+        value: info
+      - key: REGION
+        value: us-east-1
+  - name: beta
+    data:
+      - key: TIMEOUT
+        value: "30"

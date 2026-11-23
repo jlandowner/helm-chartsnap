@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log/slog"
 	"regexp"
+	"cmp"
+	"slices"
 	"strings"
 	"sync"
 
@@ -119,6 +121,17 @@ func convertToUnknownNode(docs []*yaml.RNode) error {
 		}
 	}
 	return nil
+}
+
+// SortResources sorts resources in-place by APIVersion, Kind, then Name
+func SortResources(resources []*yaml.RNode) {
+	slices.SortStableFunc(resources, func(a, b *yaml.RNode) int {
+		return cmp.Or(
+			cmp.Compare(a.GetApiVersion(), b.GetApiVersion()),
+			cmp.Compare(a.GetKind(), b.GetKind()),
+			cmp.Compare(a.GetName(), b.GetName()),
+		)
+	})
 }
 
 // Replace replaces the value at the given jsonpath with the given value.

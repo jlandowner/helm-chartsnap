@@ -1,0 +1,13 @@
+{{- range .Values.configMaps }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "app1.fullname" $ }}-{{ .name }}
+  labels:
+    {{- include "app1.labels" $ | nindent 4 }}
+data:
+  {{- range .data }}
+  {{ .key }}: {{ .value | quote }}
+  {{- end }}
+{{- end }}

@@ -269,6 +269,10 @@ func (o *ChartSnapshotter) snapV3(cfg v1alpha1.SnapshotConfig, data []byte) (res
 		return nil, fmt.Errorf("failed to replace json path: %w", err)
 	}
 
+	if cfg.IgnoreOrder {
+		yaml.SortResources(manifests)
+	}
+
 	raw, err := yaml.Encode(manifests)
 	if err != nil {
 		return nil, fmt.Errorf("failed to encode manifests: %w", err)

@@ -105,3 +105,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+configMaps: []
+# - name: app-config
+#   data:
+#     - key: LOG_LEVEL
+#       value: info
